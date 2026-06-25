@@ -1,0 +1,819 @@
+---
+---
+
+<section class="site-container py-8 sm:py-12">
+	<!-- Dashboard Header -->
+	<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-border pb-6">
+		<div>
+			<div class="inline-flex mb-2">
+				<span class="badge badge-accent">Phases 3 & 4 Active</span>
+			</div>
+			<h1 class="text-3xl font-black text-foreground sm:text-4xl">Strategy Workspace</h1>
+			<p class="text-sm text-muted-foreground mt-1">Local-first body composition tracking, linear forecasting, and plateau diagnostics.</p>
+		</div>
+		
+		<div class="flex items-center gap-3">
+			<!-- Unit Toggle -->
+			<div class="segmented" role="group" aria-label="Dashboard units">
+				<button type="button" data-dashboard-unit="metric" aria-pressed="true">Metric</button>
+				<button type="button" data-dashboard-unit="imperial" aria-pressed="false">Imperial</button>
+			</div>
+			
+			<!-- Print/Export Actions -->
+			<button id="print-report-btn" class="button-secondary text-xs py-2 min-h-10">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+				Print Report
+			</button>
+		</div>
+	</div>
+
+	<!-- Custom Tabbed Navigation Bar -->
+	<nav class="flex gap-1 border-b border-border mt-6 overflow-x-auto pb-px" aria-label="Dashboard sections">
+		<button class="tab-btn active" data-tab="overview">Overview Hub</button>
+		<button class="tab-btn" data-tab="logs">Check-in Database</button>
+		<button class="tab-btn" data-tab="forecast">Forecasting Engine</button>
+		<button class="tab-btn" data-tab="plateau">Plateau & Diet Guidance</button>
+	</nav>
+
+	<!-- TAB PANELS -->
+	
+	<!-- 1. OVERVIEW PANEL -->
+	<div id="tab-overview" class="tab-panel mt-8 space-y-8">
+		<!-- Scores & Metrics Bento Grid -->
+		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" id="scores-grid">
+			<!-- Rendered dynamically via JS -->
+		</div>
+
+		<!-- Reassessment Notification Banner -->
+		<div id="reassessment-alert" class="hidden rounded-xl border border-warning/20 bg-warning/5 p-4 text-sm text-warning flex items-start gap-3">
+			<svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+			<div>
+				<p class="font-bold">Monthly Strategy Reassessment Recommended</p>
+				<p class="mt-1 text-xs text-muted-foreground">It has been over 30 days since your latest strategy assessment. Re-run the Strategy Finder to confirm your recommended target direction matches your current body fat and training status.</p>
+				<a class="inline-block mt-3 text-xs font-bold underline" href="/assess">Launch Strategy Finder</a>
+			</div>
+		</div>
+
+		<!-- Main Active Strategy Summary -->
+		<div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+			<div class="surface rounded-2xl p-6 sm:p-8 space-y-6">
+				<h2 class="text-xl font-black text-foreground">Current Active Plan</h2>
+				<div id="active-strategy-summary" class="grid gap-4 sm:grid-cols-2">
+					<!-- Dynamic plan variables -->
+				</div>
+			</div>
+			
+			<!-- Goal Completion Progress Ring -->
+			<div class="surface rounded-2xl p-6 flex flex-col justify-between">
+				<div>
+					<h3 class="text-sm font-bold text-foreground">Goal Progress Meter</h3>
+					<p class="text-xs text-muted-foreground mt-1">Percentage of total target weight changes achieved so far.</p>
+				</div>
+				<div class="my-6 flex items-center justify-center">
+					<div class="relative h-32 w-32 flex items-center justify-center">
+						<!-- Circle SVG -->
+						<svg class="absolute inset-0 transform -rotate-90" viewBox="0 0 100 100">
+							<circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--border)" stroke-width="8"></circle>
+							<circle id="progress-circle-bar" cx="50" cy="50" r="40" fill="transparent" stroke="var(--accent)" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round"></circle>
+						</svg>
+						<span id="progress-percentage-text" class="text-2xl font-black text-foreground">0%</span>
+					</div>
+				</div>
+				<div class="flex justify-between text-xs text-muted-foreground border-t border-border/40 pt-3">
+					<span id="progress-start-weight">Start: -</span>
+					<span id="progress-goal-weight">Goal: -</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Saved Assessments List -->
+		<div class="surface rounded-2xl p-6">
+			<h2 class="text-lg font-bold text-foreground mb-4">Saved Strategy Assessment Logs</h2>
+			<div id="saved-assessments" class="overflow-x-auto">
+				<!-- Dynamic history list -->
+			</div>
+		</div>
+	</div>
+
+	<!-- 2. CHECK-IN LOGS PANEL -->
+	<div id="tab-logs" class="tab-panel mt-8 space-y-8 hidden">
+		<div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+			<!-- Check-in Form -->
+			<div class="surface rounded-2xl p-6 sm:p-8">
+				<h2 class="text-xl font-black text-foreground mb-2">New Weekly Entry</h2>
+				<p class="text-xs text-muted-foreground mb-6">Log weight and details under similar fasting conditions weekly.</p>
+				
+				<form id="checkin-form" class="grid gap-4 sm:grid-cols-2">
+					<div class="field">
+						<label for="date">Check-in Date</label>
+						<input id="date" type="date" required />
+					</div>
+					<div class="field">
+						<label for="weight">Weight <span data-dashboard-weight-unit>(kg)</span></label>
+						<input id="weight" type="number" step="0.1" min="35" max="250" required />
+					</div>
+					<div class="field">
+						<label for="bodyFat">Body Fat % (optional)</label>
+						<input id="bodyFat" type="number" step="0.1" min="3" max="60" placeholder="e.g., 18" />
+					</div>
+					<div class="field">
+						<label for="adherence">Diet Adherence (%)</label>
+						<input id="adherence" type="number" min="0" max="100" value="80" required />
+						<p class="text-[10px] text-muted-foreground">Percentage of target meal goals met this past week.</p>
+					</div>
+					<div class="field sm:col-span-2">
+						<label for="goalWeight">Target Weight <span data-dashboard-weight-unit>(kg)</span></label>
+						<input id="goalWeight" type="number" step="0.1" min="35" max="250" value="75" required />
+					</div>
+					<button class="button-primary sm:col-span-2 mt-2" type="submit">Save Weekly Check-In</button>
+				</form>
+			</div>
+
+			<!-- Local Data Management Actions -->
+			<div class="surface rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+				<div>
+					<h2 class="text-xl font-black text-foreground mb-2">Data Administration</h2>
+					<p class="text-xs text-muted-foreground">Download, upload, or completely wipe your local data logs from this browser's memory storage.</p>
+				</div>
+				
+				<div class="grid gap-3 sm:grid-cols-2 my-6">
+					<button id="export-data-btn" class="button-secondary text-xs justify-center">
+						Export Logs (JSON)
+					</button>
+					<label class="button-secondary text-xs justify-center cursor-pointer text-center flex items-center">
+						Import Logs (JSON)
+						<input id="import-data-file" type="file" accept=".json" class="hidden" />
+					</label>
+				</div>
+
+				<div class="border-t border-border/40 pt-4">
+					<button id="clear-database-btn" class="button-ghost text-xs text-destructive hover:bg-destructive/10 w-full text-left flex justify-between items-center">
+						<span>Wipe All Local History</span>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Local Log Database Table -->
+		<div class="surface rounded-2xl p-6">
+			<h2 class="text-lg font-bold text-foreground mb-4">Historical Check-In Database</h2>
+			<div id="history" class="overflow-x-auto">
+				<!-- Dynamic logs table -->
+			</div>
+		</div>
+	</div>
+
+	<!-- 3. FORECASTING PANEL -->
+	<div id="tab-forecast" class="tab-panel mt-8 space-y-8 hidden">
+		<!-- Dual Weight & Forecast Charts Area -->
+		<div class="chart-surface rounded-2xl p-6">
+			<div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center border-b border-border/20 pb-4 mb-4">
+				<div>
+					<p class="eyebrow">Visual Forecasting Engine</p>
+					<h2 class="text-lg font-bold text-foreground">Dual-Line Trend & Projection</h2>
+				</div>
+				<div class="flex items-center gap-4 text-xs font-semibold">
+					<span class="flex items-center gap-1.5"><span class="h-2 w-4 rounded bg-accent inline-block"></span> Actual Weight</span>
+					<span class="flex items-center gap-1.5"><span class="h-2 w-4 rounded bg-warning border border-dashed border-warning inline-block"></span> Forecast Projection</span>
+					<span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-success inline-block"></span> Body Fat %</span>
+				</div>
+			</div>
+			<!-- SVG Dual Chart -->
+			<div id="forecast-dual-chart" class="min-h-60">
+				<!-- Rendered dynamically -->
+			</div>
+		</div>
+
+		<!-- Prediction Cards -->
+		<div id="forecast-prediction-summary" class="grid gap-4 sm:grid-cols-3">
+			<!-- Forecast summaries -->
+		</div>
+	</div>
+
+	<!-- 4. PLATEAU & DIET PANEL -->
+	<div id="tab-plateau" class="tab-panel mt-8 space-y-8 hidden">
+		<!-- Dynamic Plateau Diagnostic Report -->
+		<div class="surface rounded-2xl p-6 sm:p-8" id="plateau-report-container">
+			<!-- Loaded dynamically from analyzePlateau -->
+		</div>
+
+		<!-- YMYL-Safe Strategic Weight Loss Dietary Recommendations -->
+		<div class="grid gap-6 md:grid-cols-2">
+			<!-- Diet Guidelines -->
+			<div class="surface rounded-2xl p-6 sm:p-8 space-y-4">
+				<h3 class="text-lg font-bold text-foreground flex items-center gap-2">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+					Satiety & Macro Nutrition Advice
+				</h3>
+				<p class="text-xs text-muted-foreground leading-relaxed">
+					Strategic nutritional practices focus on boosting satiety metrics and preventing protein degradation without requiring extreme crash diets or caloric limits.
+				</p>
+				<ul class="space-y-3 text-xs text-muted-foreground pl-4 list-disc">
+					<li><strong>Protein Adequacy</strong>: Aim for 1.6 to 2.2 grams per kilogram of body weight daily. Protein preserves muscle tissue during metabolic deficits and has the highest thermic effect of food (TEF).</li>
+					<li><strong>Energy Density Focus</strong>: Prioritize high-volume, low-calorie foods (leafy greens, cruciferous vegetables, berries) which fill stomach volume and stimulate stretch receptors to trigger fullness.</li>
+					<li><strong>Hydration Targets</strong>: Drink 2.5 - 3.5 liters of fluids daily. Thirst signals are frequently confused with hunger; drinking water before meals natively suppresses caloric intake.</li>
+					<li><strong>Fat Regulation</strong>: Essential fatty acids support hormone production, but fats are energy dense (9 kcal/g). Limit dietary fat to 20-30% of daily calories, prioritizing whole food sources like avocados or wild fish.</li>
+				</ul>
+			</div>
+
+			<!-- Training & Non-Diet Guidelines -->
+			<div class="surface rounded-2xl p-6 sm:p-8 space-y-4">
+				<h3 class="text-lg font-bold text-foreground flex items-center gap-2">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12M6 21h12M8 3v18M16 3v18"></path></svg>
+					Training & Recovery Guidelines
+				</h3>
+				<p class="text-xs text-muted-foreground leading-relaxed">
+					Physical composition is strongly governed by skeletal stress loading and metabolic recovery. Frame your training habits accordingly.
+				</p>
+				<ul class="space-y-3 text-xs text-muted-foreground pl-4 list-disc">
+					<li><strong>Resistance Training</strong>: Prioritize progressive overload (increasing load or reps over time) in the gym 3-5 times weekly. This sends a biological signal to preserve muscle mass.</li>
+					<li><strong>Active Step Counts</strong>: Target a consistent daily step count (e.g. 8,000 - 10,000 steps). Unlike cardio training, high-step counts prevent sudden drops in NEAT (Non-Exercise Activity Thermogenesis).</li>
+					<li><strong>Sleep Hygiene</strong>: Achieve 7-8.5 hours of sleep nightly. Sleep deprivation elevates cortisol levels, which promotes water retention and shifts tissue loss towards lean muscle rather than fat.</li>
+					<li><strong>Rest Interval Pacing</strong>: Allow 48 hours of recovery for loaded muscle groups before restressing them. Muscle recovery is when synthesis actually happens.</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Script handling Tab Switching, Local Storage, SVGs, Plateau diagnosis, and Printing -->
+<script>
+	import { 
+		calculateAdherenceScore, 
+		calculateBodyCompScore, 
+		analyzePlateau, 
+		forecastProgress,
+		labelGoal
+	} from '../lib/engines';
+
+	const today = new Date().toISOString().slice(0, 10);
+	const dateInput = document.querySelector('#date') as HTMLInputElement;
+	if (dateInput) dateInput.value = today;
+
+	let dashboardUnit = 'metric';
+
+	// Helper conversions
+	function kgToLb(kg) { return kg * 2.2046226218; }
+	function lbToKg(lb) { return lb / 2.2046226218; }
+	function r(n, d = 1) { const p = 10 ** d; return Math.round(n * p) / p; }
+
+	function formatWeight(kg, digits = 1) {
+		return dashboardUnit === 'metric' ? `${r(kg, digits)} kg` : `${r(kgToLb(kg), digits)} lb`;
+	}
+
+	// Fetch Data Helpers
+	function getCheckins() { return JSON.parse(localStorage.getItem('bodycompos.checkins') || '[]'); }
+	function setCheckins(items) { localStorage.setItem('bodycompos.checkins', JSON.stringify(items)); }
+	function getAssessments() { return JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]'); }
+
+	// Tab Management
+	document.querySelectorAll('.tab-btn').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+			document.querySelectorAll('.tab-panel').forEach((p) => p.classList.add('hidden'));
+			
+			btn.classList.add('active');
+			const tabId = btn.getAttribute('data-tab');
+			document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
+		});
+	});
+
+	// Units Management
+	function setDashboardUnit(unit) {
+		if (unit === dashboardUnit) return;
+		const form = document.querySelector('#checkin-form') as HTMLFormElement;
+		if (!form) return;
+		
+		const weight = Number(form.weight.value || 0);
+		const goal = Number(form.goalWeight.value || 0);
+		
+		if (unit === 'imperial') {
+			if (weight) form.weight.value = String(r(kgToLb(weight), 1));
+			if (goal) form.goalWeight.value = String(r(kgToLb(goal), 1));
+			form.weight.min = '77';
+			form.weight.max = '551';
+			form.goalWeight.min = '77';
+			form.goalWeight.max = '551';
+		} else {
+			if (weight) form.weight.value = String(r(lbToKg(weight), 1));
+			if (goal) form.goalWeight.value = String(r(lbToKg(goal), 1));
+			form.weight.min = '35';
+			form.weight.max = '250';
+			form.goalWeight.min = '35';
+			form.goalWeight.max = '250';
+		}
+		
+		dashboardUnit = unit;
+		document.querySelectorAll('[data-dashboard-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-dashboard-unit') === unit)));
+		document.querySelectorAll('[data-dashboard-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
+		render();
+	}
+	document.querySelectorAll('[data-dashboard-unit]').forEach((button) => button.addEventListener('click', () => setDashboardUnit(button.getAttribute('data-dashboard-unit'))));
+
+	// Dual Weight & Forecast SVG Chart Drawing
+	function renderDualChart(checkins, goalWeight) {
+		const container = document.querySelector('#forecast-dual-chart');
+		if (!container) return;
+
+		if (checkins.length < 2) {
+			container.innerHTML = '<div class="grid min-h-60 place-items-center rounded-xl border border-border bg-muted/10 text-sm font-semibold text-muted-foreground">Add at least two check-ins to generate weight projections.</div>';
+			return;
+		}
+
+		// Sort chronological
+		const sorted = [...checkins].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+		const fc = forecastProgress(sorted, goalWeight);
+		const predictions = fc.predictions;
+
+		const weights = predictions.map(p => p.weight);
+		const bfValues = sorted.map(c => c.bodyFat).filter(Boolean);
+		
+		const minWeight = Math.min(...weights, goalWeight);
+		const maxWeight = Math.max(...weights, goalWeight);
+		const wRange = Math.max(0.5, maxWeight - minWeight);
+
+		// Map to SVG coordinates (width=400, height=180)
+		const pointsStr = predictions.map((item, index) => {
+			const x = 30 + (index / (predictions.length - 1)) * 340;
+			const y = 140 - ((item.weight - minWeight) / wRange) * 100;
+			return `${x},${y}`;
+		});
+
+		// Split into actual points and forecast points
+		const actualCount = predictions.filter(p => !p.isProjected).length;
+		const actualPoints = pointsStr.slice(0, actualCount);
+		const forecastPoints = pointsStr.slice(actualCount - 1); // overlap last actual point
+
+		// Render Body Fat Trend points (plotted on secondary scale if available)
+		let bfElements = '';
+		if (bfValues.length >= 2) {
+			const minBf = Math.min(...bfValues);
+			const maxBf = Math.max(...bfValues);
+			const bfRange = Math.max(1, maxBf - minBf);
+
+			const bfPoints = sorted.map((item, index) => {
+				if (!item.bodyFat) return null;
+				const x = 30 + (index / (predictions.length - 1)) * 340;
+				const y = 140 - ((item.bodyFat - minBf) / bfRange) * 100;
+				return { x, y, val: item.bodyFat, date: item.date };
+			}).filter(Boolean);
+
+			const bfPolylinePoints = bfPoints.map(p => `${p.x},${p.y}`).join(' ');
+			bfElements = `
+				<polyline points="${bfPolylinePoints}" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-dasharray="2,2" opacity="0.85"></polyline>
+				${bfPoints.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="var(--success)"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
+			`;
+		}
+
+		container.innerHTML = `
+			<svg viewBox="0 0 400 180" role="img" aria-label="Dual-line actual and forecasted weight trend chart" class="h-60 w-full overflow-visible">
+				<!-- Background Grid -->
+				<line x1="30" y1="40" x2="370" y2="40" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+				<line x1="30" y1="90" x2="370" y2="90" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+				<line x1="30" y1="140" x2="370" y2="140" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+
+				<!-- Actual Weight Line -->
+				${actualPoints.length >= 2 ? `<polyline points="${actualPoints.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>` : ''}
+				
+				<!-- Forecast Weight Line -->
+				${forecastPoints.length >= 2 ? `<polyline points="${forecastPoints.join(' ')}" fill="none" stroke="var(--warning)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,4"></polyline>` : ''}
+				
+				<!-- Body Fat Trend Line -->
+				${bfElements}
+
+				<!-- Data Markers -->
+				${predictions.filter(p => !p.isProjected).map((item, index) => {
+					const [x, y] = actualPoints[index].split(',');
+					return `<circle cx="${x}" cy="${y}" r="4" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"><title>${item.date}: ${formatWeight(item.weight)}</title></circle>`;
+				}).join('')}
+				${predictions.filter(p => p.isProjected).map((item, index) => {
+					const [x, y] = forecastPoints[index + 1].split(',');
+					return `<circle cx="${x}" cy="${y}" r="3" fill="var(--card)" stroke="var(--warning)" stroke-width="2"><title>[Projected] ${item.date}: ${formatWeight(item.weight)}</title></circle>`;
+				}).join('')}
+
+				<!-- Goal Reference Line -->
+				<line x1="30" y1="${140 - ((goalWeight - minWeight) / wRange) * 100}" x2="370" y2="${140 - ((goalWeight - minWeight) / wRange) * 100}" stroke="var(--destructive)" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6">
+					<title>Goal Target: ${formatWeight(goalWeight)}</title>
+				</line>
+
+				<!-- Axis Labels -->
+				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${predictions[0].date}</text>
+				<text x="320" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${predictions[predictions.length - 1].date}</text>
+			</svg>
+		`;
+	}
+
+	// Render Dashboard Data
+	function render() {
+		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
+		const checkins = getCheckins();
+		const assessments = getAssessments();
+		
+		const rawGoal = Number((document.querySelector('#goalWeight') as HTMLInputElement)?.value || 75);
+		const goal = dashboardUnit === 'metric' ? rawGoal : lbToKg(rawGoal);
+		
+		const lastCheckin = checkins[0];
+		
+		// 1. Calculate Scores
+		const adherenceScore = calculateAdherenceScore(checkins);
+		
+		let compScoreResult = { score: 70, rating: 'Good', details: ['Awaiting assessment inputs.'] };
+		if (latest) {
+			compScoreResult = calculateBodyCompScore({
+				weightKg: lastCheckin ? lastCheckin.weight : latest.weightKg,
+				heightCm: latest.heightCm,
+				bodyFat: lastCheckin && lastCheckin.bodyFat ? lastCheckin.bodyFat : latest.bodyFat,
+				waistCm: latest.waist ? latest.waist : undefined,
+				sex: latest.sex
+			});
+		}
+
+		// 2. Overview Bento Grid Scores
+		const scoresGrid = document.querySelector('#scores-grid');
+		if (scoresGrid) {
+			scoresGrid.innerHTML = `
+				<div class="metric-cell flex flex-col justify-between">
+					<div>
+						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Active Strategy</p>
+						<p class="mt-2 text-xl font-black text-foreground capitalize">${latest ? latest.recommended.replace(/-/g, ' ') : 'No Assessment'}</p>
+					</div>
+					${latest ? `<span class="badge badge-accent mt-4">Confidence: ${latest.confidence}%</span>` : ''}
+				</div>
+				<div class="metric-cell flex flex-col justify-between">
+					<div>
+						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Current Weight</p>
+						<p class="mt-2 text-xl font-black text-foreground capitalize">${lastCheckin ? formatWeight(lastCheckin.weight) : 'No Check-ins'}</p>
+					</div>
+					<span class="text-xs text-muted-foreground mt-4">Goal: ${formatWeight(goal)}</span>
+				</div>
+				<div class="metric-cell flex flex-col justify-between">
+					<div>
+						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Body Comp Rating</p>
+						<p class="mt-2 text-xl font-black text-foreground capitalize">${compScoreResult.rating} <span class="text-xs font-normal">(${compScoreResult.score}/100)</span></p>
+					</div>
+					<div class="mini-bar mt-4"><span style="width:${compScoreResult.score}%"></span></div>
+				</div>
+				<div class="metric-cell flex flex-col justify-between">
+					<div>
+						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Goal Adherence</p>
+						<p class="mt-2 text-xl font-black text-foreground capitalize">${adherenceScore}%</p>
+					</div>
+					<div class="mini-bar mt-4"><span style="width:${adherenceScore}%; background:var(--success)"></span></div>
+				</div>
+			`;
+		}
+
+		// 3. Reassessment Warnings
+		const alertBanner = document.querySelector('#reassessment-alert');
+		if (latest && alertBanner) {
+			const creationDate = new Date(latest.createdAt).getTime();
+			const elapsedDays = (new Date().getTime() - creationDate) / 86400000;
+			if (elapsedDays > 30) {
+				alertBanner.classList.remove('hidden');
+			} else {
+				alertBanner.classList.add('hidden');
+			}
+		}
+
+		// 4. Current Strategy Summary Details
+		const strategySummary = document.querySelector('#active-strategy-summary');
+		if (strategySummary) {
+			if (latest) {
+				strategySummary.innerHTML = `
+					<div>
+						<p class="text-xs text-muted-foreground">Calories target</p>
+						<p class="text-xl font-black text-foreground">${latest.target} kcal/day</p>
+					</div>
+					<div>
+						<p class="text-xs text-muted-foreground">Protein distribution</p>
+						<p class="text-xl font-black text-foreground">${latest.proteinLow} - ${latest.proteinHigh} g/day</p>
+					</div>
+					<div>
+						<p class="text-xs text-muted-foreground">Maintenance (TDEE)</p>
+						<p class="text-base font-bold text-muted-foreground">${latest.maintenance} kcal/day</p>
+					</div>
+					<div>
+						<p class="text-xs text-muted-foreground font-semibold">Body Composition Score Details</p>
+						<ul class="text-[10px] text-muted-foreground list-disc pl-4 mt-1 space-y-1">
+							${compScoreResult.details.map(d => `<li>${d}</li>`).join('')}
+						</ul>
+					</div>
+				`;
+			} else {
+				strategySummary.innerHTML = `
+					<div class="sm:col-span-2 text-center p-6 border border-dashed border-border rounded-xl">
+						<p class="text-sm font-bold text-foreground">No assessment found.</p>
+						<a class="button-primary mt-3 text-xs" href="/assess">Run Strategy Finder</a>
+					</div>
+				`;
+			}
+		}
+
+		// 5. Goal progress Ring Calculations
+		if (latest) {
+			const startWeight = latest.weightKg;
+			const currentWeight = lastCheckin ? lastCheckin.weight : startWeight;
+			const initialGoal = latest.goalWeight || goal;
+
+			const totalSpan = Math.abs(startWeight - initialGoal);
+			const progressSpan = Math.abs(startWeight - currentWeight);
+			
+			let percentage = 0;
+			if (totalSpan > 0.1) {
+				percentage = Math.max(0, Math.min(100, Math.round((progressSpan / totalSpan) * 100)));
+			}
+			
+			const circle = document.querySelector('#progress-circle-bar') as SVGCircleElement;
+			if (circle) {
+				const r = circle.r.baseVal.value;
+				const circum = 2 * Math.PI * r;
+				const offset = circum - (percentage / 100) * circum;
+				circle.style.strokeDashoffset = String(offset);
+			}
+
+			const pctText = document.querySelector('#progress-percentage-text');
+			if (pctText) pctText.textContent = `${percentage}%`;
+
+			const startWeightLabel = document.querySelector('#progress-start-weight');
+			if (startWeightLabel) startWeightLabel.textContent = `Start: ${formatWeight(startWeight)}`;
+
+			const goalWeightLabel = document.querySelector('#progress-goal-weight');
+			if (goalWeightLabel) goalWeightLabel.textContent = `Goal: ${formatWeight(initialGoal)}`;
+		}
+
+		// 6. Saved Assessments History list
+		const assessmentsContainer = document.querySelector('#saved-assessments');
+		if (assessmentsContainer) {
+			if (assessments.length > 0) {
+				assessmentsContainer.innerHTML = `
+					<table class="w-full min-w-[560px] text-left text-sm">
+						<thead>
+							<tr class="border-b border-border">
+								<th class="py-2 text-foreground font-semibold">Date</th>
+								<th class="py-2 text-foreground font-semibold">Sex/Age</th>
+								<th class="py-2 text-foreground font-semibold">Metrics</th>
+								<th class="py-2 text-foreground font-semibold">Recommended</th>
+								<th class="py-2 text-foreground font-semibold">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							${assessments.map((a, idx) => `
+								<tr class="border-b border-border hover:bg-muted/10">
+									<td class="py-3 text-muted-foreground">${new Date(a.createdAt).toLocaleDateString()}</td>
+									<td class="py-3 text-foreground">${a.sex} (${a.age}y)</td>
+									<td class="py-3 text-muted-foreground">${a.heightCm}cm / ${a.weightKg}kg (BF: ${a.bodyFat}%)</td>
+									<td class="py-3 font-semibold text-accent capitalize">${a.recommended.replace(/-/g, ' ')}</td>
+									<td class="py-3 flex gap-2">
+										<button class="button-secondary text-[10px] py-1 min-h-6 load-assessment-btn" data-idx="${idx}">Load</button>
+										<button class="button-ghost text-[10px] text-destructive py-1 min-h-6 delete-assessment-btn" data-idx="${idx}">Delete</button>
+									</td>
+								</tr>
+							`).join('')}
+						</tbody>
+					</table>
+				`;
+				
+				// Attach event listeners to Load/Delete buttons
+				document.querySelectorAll('.load-assessment-btn').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const idx = Number(btn.getAttribute('data-idx'));
+						localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(assessments[idx]));
+						render();
+					});
+				});
+				
+				document.querySelectorAll('.delete-assessment-btn').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const idx = Number(btn.getAttribute('data-idx'));
+						const updated = getAssessments().filter((_, i) => i !== idx);
+						localStorage.setItem('bodycompos.assessments', JSON.stringify(updated));
+						render();
+					});
+				});
+			} else {
+				assessmentsContainer.innerHTML = '<p class="text-xs text-muted-foreground p-4">No strategy history logs found. Run the Strategy Finder assessment to save logs.</p>';
+			}
+		}
+
+		// 7. Render History Logs Table
+		const historyTable = document.querySelector('#history');
+		if (historyTable) {
+			historyTable.innerHTML = checkins.length ? `
+				<table class="w-full min-w-[560px] text-left text-sm">
+					<thead>
+						<tr class="border-b border-border">
+							<th class="py-2 text-foreground font-semibold">Date</th>
+							<th class="py-2 text-foreground font-semibold">Weight</th>
+							<th class="py-2 text-foreground font-semibold">Body Fat (%)</th>
+							<th class="py-2 text-foreground font-semibold">Adherence</th>
+							<th class="py-2 text-foreground font-semibold">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						${checkins.map((i, idx) => `
+							<tr class="border-b border-border hover:bg-muted/10">
+								<td class="py-3 text-muted-foreground font-medium">${i.date}</td>
+								<td class="py-3 text-foreground font-semibold">${formatWeight(i.weight)}</td>
+								<td class="py-3 text-muted-foreground">${i.bodyFat ? i.bodyFat + '%' : '-'}</td>
+								<td class="py-3 text-muted-foreground">${i.adherence}%</td>
+								<td class="py-3">
+									<button class="button-ghost text-destructive text-xs py-1 min-h-6 delete-checkin-btn" data-idx="${idx}">Delete</button>
+								</td>
+							</tr>
+						`).join('')}
+					</tbody>
+				</table>
+			` : '<p class="text-xs text-muted-foreground p-4">No check-in logs registered. Use the Log Weekly Check-In form to add entries.</p>';
+
+			document.querySelectorAll('.delete-checkin-btn').forEach(btn => {
+				btn.addEventListener('click', () => {
+					const idx = Number(btn.getAttribute('data-idx'));
+					const updated = getCheckins().filter((_, i) => i !== idx);
+					setCheckins(updated);
+					render();
+				});
+			});
+		}
+
+		// 8. Forecasting Panel Projections
+		const fc = forecastProgress(checkins, goal);
+		const predictionSummary = document.querySelector('#forecast-prediction-summary');
+		if (predictionSummary) {
+			predictionSummary.innerHTML = `
+				<div class="metric-cell">
+					<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Velocity Pacing</p>
+					<p class="mt-2 text-lg font-black text-foreground capitalize">${fc.pacePerWeek === 0 ? 'Need data' : `${fc.pacePerWeek > 0 ? '+' : ''}${formatWeight(fc.pacePerWeek, 2)}/week`}</p>
+					<span class="text-xs text-muted-foreground mt-4 inline-block">Estimated rate of change</span>
+				</div>
+				<div class="metric-cell">
+					<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Completion ETA</p>
+					<p class="mt-2 text-lg font-black text-foreground capitalize">${fc.etaWeeks ? `${fc.etaWeeks} weeks` : 'Needs Trend Direction'}</p>
+					<span class="text-xs text-muted-foreground mt-4 inline-block">${fc.predictedCompletionDate ? `Est. Completion: ${fc.predictedCompletionDate}` : 'Adjust targets to see ETA'}</span>
+				</div>
+				<div class="metric-cell">
+					<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Completion Status</p>
+					<p class="mt-2 text-lg font-black text-foreground capitalize">${fc.status}</p>
+					<span class="text-xs text-muted-foreground mt-4 inline-block">Compared with target direction</span>
+				</div>
+			`;
+		}
+
+		// 9. Plateau Intelligence Diagnostics
+		const plateauContainer = document.querySelector('#plateau-report-container');
+		if (plateauContainer) {
+			const diagnosis = analyzePlateau(checkins, latest ? latest.recommended : 'recomp', latest);
+			
+			let statusBadge = `<span class="badge">Awaiting Data</span>`;
+			if (checkins.length >= 3) {
+				statusBadge = diagnosis.plateauDetected 
+					? `<span class="badge border-destructive bg-destructive/10 text-destructive font-bold">Plateau Detected</span>`
+					: `<span class="badge border-success bg-success/10 text-success font-bold">Steady Progress</span>`;
+			}
+
+			plateauContainer.innerHTML = `
+				<div class="flex items-center justify-between border-b border-border pb-4 mb-4">
+					<div>
+						<p class="eyebrow">Plateau Intelligence Engine</p>
+						<h2 class="text-xl font-black text-foreground">Diagnostic Report</h2>
+					</div>
+					${statusBadge}
+				</div>
+
+				<div class="space-y-4">
+					<div>
+						<h3 class="text-sm font-bold text-foreground">Diagnostic Output</h3>
+						<p class="text-xs text-muted-foreground mt-1.5 leading-relaxed">${diagnosis.message}</p>
+					</div>
+
+					<div class="rounded-xl border border-border bg-muted/20 p-4">
+						<h3 class="text-sm font-bold text-foreground flex items-center gap-1.5">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+							Course Correction Suggestions
+						</h3>
+						<p class="text-xs text-muted-foreground mt-1.5 leading-relaxed">${diagnosis.actionPlan}</p>
+					</div>
+
+					${diagnosis.dietarySuggestions.length > 0 ? `
+						<div>
+							<h3 class="text-sm font-bold text-foreground mb-2">Adaptive Dietary Adjustments</h3>
+							<ul class="space-y-1.5 pl-6 list-disc text-xs text-muted-foreground">
+								${diagnosis.dietarySuggestions.map(s => `<li>${s}</li>`).join('')}
+							</ul>
+						</div>
+					` : ''}
+				</div>
+			`;
+		}
+
+		renderDualChart(checkins, goal);
+	}
+
+	// Save check-in logic
+	document.querySelector('#checkin-form')?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		const f = event.currentTarget as HTMLFormElement;
+		
+		const weight = dashboardUnit === 'metric' ? Number(f.weight.value) : lbToKg(Number(f.weight.value));
+		const item = { 
+			date: f.date.value, 
+			weight, 
+			bodyFat: f.bodyFat.value ? Number(f.bodyFat.value) : null, 
+			adherence: Number(f.adherence.value || 0) 
+		};
+
+		const items = getCheckins().filter((x) => x.date !== item.date);
+		items.unshift(item);
+		setCheckins(items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 60));
+		
+		f.reset();
+		const dateInput = document.querySelector('#date') as HTMLInputElement;
+		if (dateInput) dateInput.value = today;
+		
+		render();
+	});
+
+	// Print trigger
+	document.getElementById('print-report-btn')?.addEventListener('click', () => {
+		window.print();
+	});
+
+	// Data management triggers
+	document.getElementById('export-data-btn')?.addEventListener('click', () => {
+		const checkins = getCheckins();
+		const assessments = getAssessments();
+		const database = { checkins, assessments };
+		
+		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(database));
+		const dlAnchorElem = document.createElement('a');
+		dlAnchorElem.setAttribute("href", dataStr);
+		dlAnchorElem.setAttribute("download", `bodycompos-profile-backup-${today}.json`);
+		dlAnchorElem.click();
+	});
+
+	document.getElementById('import-data-file')?.addEventListener('change', (event) => {
+		const input = event.target as HTMLInputElement;
+		if (!input.files || input.files.length === 0) return;
+		
+		const file = input.files[0];
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			try {
+				const data = JSON.parse(e.target?.result as string);
+				if (data.checkins) localStorage.setItem('bodycompos.checkins', JSON.stringify(data.checkins));
+				if (data.assessments) localStorage.setItem('bodycompos.assessments', JSON.stringify(data.assessments));
+				if (data.assessments && data.assessments.length > 0) {
+					localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(data.assessments[0]));
+				}
+				alert('Database Profile imported successfully!');
+				render();
+			} catch (err) {
+				alert('Error importing JSON file. Verify formatting.');
+			}
+		};
+		reader.readAsText(file);
+	});
+
+	document.getElementById('clear-database-btn')?.addEventListener('click', () => {
+		if (confirm('Are you absolutely sure you want to clear your local history? This deletes all check-ins and saved assessments.')) {
+			localStorage.removeItem('bodycompos.checkins');
+			localStorage.removeItem('bodycompos.assessments');
+			localStorage.removeItem('bodycompos.latestAssessment');
+			render();
+		}
+	});
+
+	render();
+</script>
+
+<style>
+	.tab-btn {
+		background: transparent;
+		color: var(--muted-foreground);
+		border: none;
+		padding: 0.65rem 1rem;
+		font-size: 0.85rem;
+		font-weight: 680;
+		cursor: pointer;
+		border-bottom: 2px solid transparent;
+		transition: color 180ms ease, border-color 180ms ease;
+		white-space: nowrap;
+	}
+	
+	.tab-btn:hover {
+		color: var(--foreground);
+	}
+	
+	.tab-btn.active {
+		color: var(--accent);
+		border-bottom-color: var(--accent);
+	}
+
+	.tab-panel {
+		animation: fadeIn 0.3s ease-out both;
+	}
+
+	.metric-cell {
+		min-height: 100px;
+	}
+</style>

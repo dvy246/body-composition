@@ -7,11 +7,14 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/generate-sitemap.js",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.0.2"
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^7.0.2",
+    "tailwindcss": "^4.3.1",
+    "uipro-cli": "^2.2.3"
   }
 }

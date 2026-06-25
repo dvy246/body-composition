@@ -1,0 +1,467 @@
+export const SITE = {
+	name: 'BodyCompOS',
+	origin: 'https://bodycompos.com',
+	description:
+		'BodyCompOS is a local-first body composition strategy platform for assessment, calorie and protein targets, forecasting, and progress reassessment.',
+	lastUpdated: '2026-06-25',
+};
+
+export const DOMAIN = SITE.origin;
+
+export type Calculator = {
+	slug: string;
+	title: string;
+	seoTitle: string;
+	metaDescription: string;
+	mode: string;
+	description: string;
+	primaryInputs: string[];
+	formula: string;
+	interpretation: string;
+	related: string[];
+	faqs: [string, string][];
+};
+
+const defaultFaqs: [string, string][] = [
+	[
+		'Are these results medical advice?',
+		'No. BodyCompOS provides educational estimates for planning and reassessment. Use the methodology and disclaimer pages for the full limitations.',
+	],
+	[
+		'How should I use the estimate?',
+		'Use it as a starting point, then compare it with several weeks of consistent trend data before making large changes.',
+	],
+];
+
+export const calculators: Calculator[] = [
+	{
+		slug: 'tdee-calculator',
+		title: 'TDEE Calculator',
+		seoTitle: 'TDEE Calculator - Estimate Maintenance Calories | BodyCompOS',
+		metaDescription: 'Estimate total daily energy expenditure and maintenance calories using BMR, activity level, and body composition context.',
+		mode: 'tdee',
+		description: 'Estimate Total Daily Energy Expenditure and maintenance calories using Mifflin-St Jeor BMR, refined with Katch-McArdle when body fat is available. Activity multipliers range from sedentary (1.2) to competitive (1.9). TDEE is the foundation for calorie planning, fat loss, and lean bulk targets.',
+		primaryInputs: ['Sex', 'Age', 'Height', 'Weight', 'Activity level', 'Optional body fat'],
+		formula: 'Uses Mifflin-St Jeor by default and Katch-McArdle when a body fat estimate is available.',
+		interpretation: 'Treat TDEE as a starting maintenance estimate. Actual maintenance is confirmed by weight trend over time.',
+		related: ['calorie-calculator', 'maintenance-calorie-calculator', 'protein-calculator'],
+		faqs: [
+			['What is TDEE?', 'TDEE is total daily energy expenditure, an estimate of the calories you burn across resting metabolism, activity, and training.'],
+			['Is TDEE the same as maintenance calories?', 'It is commonly used as a maintenance estimate, but real maintenance should be verified with trend data.'],
+			...defaultFaqs,
+		],
+	},
+	{
+		slug: 'calorie-calculator',
+		title: 'Calorie Calculator',
+		seoTitle: 'Calorie Calculator - Cutting, Maintenance, and Lean Bulk Targets | BodyCompOS',
+		metaDescription: 'Estimate calorie targets for fat loss, maintenance, recomp, or lean bulk with conservative body composition guidance.',
+		mode: 'calorie',
+		description: 'Calculate daily calorie targets for fat loss (cutting at 85% TDEE), lean bulk (108%), aggressive bulk (115%), or recomposition (98%). Conservative multipliers optimize fat mobilization while preserving muscle mass. A practical starting point for body composition strategy planning.',
+		primaryInputs: ['Maintenance estimate', 'Goal', 'Weight', 'Activity level'],
+		formula: 'Applies conservative multipliers to estimated maintenance calories by strategy.',
+		interpretation: 'Use the target as a first pass and reassess after 2-4 weeks of consistent measurement.',
+		related: ['tdee-calculator', 'calorie-deficit-calculator', 'calorie-surplus-calculator'],
+		faqs: [
+			['How aggressive should a deficit be?', 'BodyCompOS defaults to moderate targets because adherence, training quality, and trend data matter more than extreme estimates.'],
+			['Can I use this for bulking?', 'Yes. Select a gain-oriented strategy to estimate a controlled surplus.'],
+			...defaultFaqs,
+		],
+	},
+	{
+		slug: 'protein-calculator',
+		title: 'Protein Calculator',
+		seoTitle: 'Protein Calculator - Daily Protein Intake Calculator | BodyCompOS',
+		metaDescription: 'Estimate a daily protein intake range for fat loss, recomp, maintenance, or lean muscle gain goals.',
+		mode: 'protein',
+		description: 'Estimate daily protein intake for muscle protein synthesis, fat loss, and lean mass retention. Based on ISSN guidelines: 1.6-2.2 g/kg body weight adjusted by goal. Higher end (2.2 g/kg) recommended during calorie deficit to prevent muscle catabolism.',
+		primaryInputs: ['Weight', 'Goal'],
+		formula: 'Uses a practical range around 1.6-2.2 g/kg body weight, adjusted conservatively by goal.',
+		interpretation: 'The result is a daily range, not a single mandatory number. Consistency matters more than precision.',
+		related: ['macro-calculator', 'calorie-calculator', 'body-recomposition-calculator'],
+		faqs: [
+			['Why is protein shown as a range?', 'A range is more useful because appetite, body size, goal, and food preferences vary.'],
+			['Should I use lean body mass instead?', 'Lean body mass can refine estimates when body fat data is reliable, but body weight is often more practical.'],
+			...defaultFaqs,
+		],
+	},
+	{
+		slug: 'goal-timeline-calculator',
+		title: 'Goal Timeline Calculator',
+		seoTitle: 'Goal Timeline Calculator - Estimate Weight Goal Timing | BodyCompOS',
+		metaDescription: 'Estimate a realistic timeline for fat loss, lean gain, or target body composition changes.',
+		mode: 'timeline',
+		description: 'Forecast timeline to reach target body weight using compounding metabolic decay rather than linear projection. Accounts for metabolic adaptation with conservative weekly rates: 0.75% for fat loss, 0.2-0.4% for muscle gain. Generates non-linear projection curves for realistic planning.',
+		primaryInputs: ['Current weight', 'Target weight', 'Goal direction'],
+		formula: 'Uses conservative weekly rate assumptions based on the selected strategy and body weight.',
+		interpretation: 'Timelines are planning ranges. Recalculate when your trend pace changes.',
+		related: ['target-weight-calculator', 'calorie-deficit-calculator', 'muscle-gain-calculator'],
+		faqs: [
+			['Why is my timeline approximate?', 'Water weight, adherence, training status, and measurement noise can shift the real pace.'],
+			['When should I reassess?', 'A monthly review is usually more useful than reacting to a single week.'],
+			...defaultFaqs,
+		],
+	},
+	{
+		slug: 'body-fat-calculator',
+		title: 'Body Fat Calculator',
+		seoTitle: 'Body Fat Calculator - Estimate Body Fat Percentage | BodyCompOS',
+		metaDescription: 'Estimate body fat percentage context from body size inputs and use it to guide body composition strategy.',
+		mode: 'bodyfat',
+		description: 'Estimate body fat percentage using the US Navy Circumference Method. Uses neck, waist, and hip measurements with sex-specific logarithmic formulas. Outputs body fat percentage, lean mass, and fat mass for body composition assessment and strategy selection.',
+		primaryInputs: ['Height', 'Weight', 'Waist', 'Optional entered body fat'],
+		formula: 'Combines entered body fat context with BMI and waist-to-height screening signals when available.',
+		interpretation: 'Body fat estimates are noisy. Use consistent measurement methods and trend direction.',
+		related: ['body-composition-calculator', 'ffmi-calculator', 'waist-to-height-ratio-calculator'],
+		faqs: [
+			['What is the most accurate body fat method?', 'Lab methods can be more controlled, but every method has error. Consistent repeat measurement is often more useful for strategy.'],
+			['Can I use photos or calipers?', 'You can use external estimates as an input, then track changes with the same method over time.'],
+			...defaultFaqs,
+		],
+	},
+	{
+		slug: 'ffmi-calculator',
+		title: 'FFMI Calculator',
+		seoTitle: 'FFMI Calculator - Fat-Free Mass Index and Lean Mass | BodyCompOS',
+		metaDescription: 'Calculate FFMI from height, weight, and body fat percentage to understand lean mass context.',
+		mode: 'ffmi',
+		description: 'Calculate Fat-Free Mass Index (FFMI) to quantify muscle mass relative to height. Uses raw FFMI with Kouri height normalization to correct tall-athlete skew. Provides body composition context beyond BMI for training and strategy planning.',
+		primaryInputs: ['Height', 'Weight', 'Body fat percentage'],
+		formula: 'FFMI equals lean body mass in kilograms divided by height in meters squared.',
+		interpretation: 'FFMI is context, not a strategy by itself. Use it alongside training history and goals.',
+		related: ['lean-body-mass-calculator', 'body-composition-calculator', 'bmi-calculator'],
+		faqs: [
+			['What does FFMI measure?', 'FFMI estimates lean mass relative to height, which can add context that BMI alone misses.'],
+			['Does FFMI diagnose anything?', 'No. It is a body composition estimate and should not be treated as a medical determination.'],
+			...defaultFaqs,
+		],
+	},
+	{
+		slug: 'lean-body-mass-calculator',
+		title: 'Lean Body Mass Calculator',
+		seoTitle: 'Lean Body Mass Calculator - Estimate Lean Mass and Fat Mass | BodyCompOS',
+		metaDescription: 'Estimate lean body mass and fat mass from body weight and body fat percentage.',
+		mode: 'lbm',
+		description: 'Calculate Lean Body Mass (LBM) from body weight and body fat percentage. LBM = Weight × (1 - BF/100). Differentiates metabolic tissue from stored fat for body composition assessment, calorie targeting, and goal planning.',
+		primaryInputs: ['Weight', 'Body fat percentage'],
+		formula: 'Lean body mass equals body weight multiplied by one minus body fat percentage.',
+		interpretation: 'Lean mass estimates are only as reliable as the body fat estimate used.',
+		related: ['ffmi-calculator', 'body-composition-calculator', 'target-weight-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'macro-calculator',
+		title: 'Macro Calculator',
+		seoTitle: 'Macro Calculator - Protein, Fat, and Carb Targets | BodyCompOS',
+		metaDescription: 'Estimate daily protein, fat, and carbohydrate targets from calories, weight, and goal.',
+		mode: 'macro',
+		description: 'Determine daily protein, fat, and carb targets aligned with calorie goals. Sets protein first (1.9 g/kg), dietary fat at 28% of calories, then allocates remaining calories to carbohydrates. Practical macro planning for body composition diet adherence.',
+		primaryInputs: ['Calories', 'Weight', 'Goal'],
+		formula: 'Sets protein first, estimates dietary fat as a calorie share, then allocates remaining calories to carbohydrates.',
+		interpretation: 'Macros are planning targets. Keep them flexible enough to support adherence.',
+		related: ['protein-calculator', 'calorie-calculator', 'maintenance-calorie-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'maintenance-calorie-calculator',
+		title: 'Maintenance Calorie Calculator',
+		seoTitle: 'Maintenance Calorie Calculator - Estimate Daily Maintenance | BodyCompOS',
+		metaDescription: 'Estimate maintenance calories using BMR equations, activity factors, and trend-based interpretation.',
+		mode: 'maintenance',
+		description: 'Estimate daily maintenance calories (TDEE at net energy balance) using Mifflin-St Jeor BMR with activity factor multipliers. The baseline for all calorie planning — confirmed when weight trend is stable under consistent intake. Foundation for fat loss and lean bulk targets.',
+		primaryInputs: ['Sex', 'Age', 'Height', 'Weight', 'Activity level'],
+		formula: 'Uses BMR multiplied by an activity factor to estimate maintenance calories.',
+		interpretation: 'Maintenance is confirmed when body weight trend is stable under consistent intake.',
+		related: ['tdee-calculator', 'calorie-calculator', 'bmr-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'ideal-weight-calculator',
+		title: 'Ideal Weight Calculator',
+		seoTitle: 'Ideal Weight Calculator - Height-Based Reference Weight | BodyCompOS',
+		metaDescription: 'Compare height-based reference weight ranges and use them with body composition context.',
+		mode: 'ideal',
+		description: 'Display height-based reference weight range using healthy BMI parameters (18.5-24.9). Provides a flexible range accounting for skeletal frame variation — not a single prescriptive target. Context for body composition goal setting.',
+		primaryInputs: ['Height'],
+		formula: 'Uses BMI reference points as simple height-based weight context.',
+		interpretation: 'Reference weight is not the same as an individual body composition goal.',
+		related: ['bmi-calculator', 'target-weight-calculator', 'body-composition-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'bmi-calculator',
+		title: 'BMI Calculator',
+		seoTitle: 'BMI Calculator - Body Mass Index Calculator With Context | BodyCompOS',
+		metaDescription: 'Calculate BMI as a body size screening estimate and compare it with body composition context.',
+		mode: 'bmi',
+		description: 'Calculate Body Mass Index (BMI) as a weight-to-height screening metric. Categorizes results into underweight, normal (18.5-24.9), overweight, and obese ranges. BMI is a population screening tool, not a body composition assessment.',
+		primaryInputs: ['Height', 'Weight'],
+		formula: 'BMI equals body weight in kilograms divided by height in meters squared.',
+		interpretation: 'BMI is a screening metric and can miss important body composition differences.',
+		related: ['waist-to-height-ratio-calculator', 'body-composition-calculator', 'ideal-weight-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'waist-to-height-ratio-calculator',
+		title: 'Waist-to-Height Ratio Calculator',
+		seoTitle: 'Waist-to-Height Ratio Calculator - WHtR Calculator | BodyCompOS',
+		metaDescription: 'Calculate waist-to-height ratio as a simple body size screening metric.',
+		mode: 'whtr',
+		description: 'Calculate Waist-to-Height Ratio (WHtR) as a central adiposity screening metric. A ratio of 0.50 or higher indicates increased cardiovascular risk. Often more predictive than BMI alone for health context and body composition planning.',
+		primaryInputs: ['Waist', 'Height'],
+		formula: 'Waist-to-height ratio equals waist circumference divided by height.',
+		interpretation: 'WHtR is a screening estimate and should be interpreted with broader context.',
+		related: ['bmi-calculator', 'body-fat-calculator', 'body-composition-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'body-composition-calculator',
+		title: 'Body Composition Calculator',
+		seoTitle: 'Body Composition Calculator - Lean Mass, Fat Mass, and BMI | BodyCompOS',
+		metaDescription: 'Estimate lean mass, fat mass, BMI, and a body composition snapshot from your inputs.',
+		mode: 'composition',
+		description: 'Generate a comprehensive body composition snapshot integrating BMI, WHtR, lean mass, fat mass, and body fat percentage. A multi-dimensional assessment to inform training and nutrition strategy selection for fat loss or muscle gain.',
+		primaryInputs: ['Height', 'Weight', 'Body fat percentage'],
+		formula: 'Combines BMI, lean mass, and fat mass calculations into one snapshot.',
+		interpretation: 'Use the snapshot to choose a strategy, not as a standalone verdict.',
+		related: ['body-fat-calculator', 'lean-body-mass-calculator', 'ffmi-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'calorie-surplus-calculator',
+		title: 'Calorie Surplus Calculator',
+		seoTitle: 'Calorie Surplus Calculator - Lean Bulk Calorie Target | BodyCompOS',
+		metaDescription: 'Estimate a controlled calorie surplus for lean bulk or faster gain strategies.',
+		mode: 'surplus',
+		description: 'Estimate a controlled calorie surplus for muscle gain. Lean bulk: 5-8% above TDEE. Aggressive bulk: 12-15% above TDEE. Choose a smaller surplus to limit unnecessary fat gain while maximizing muscle protein synthesis during lean bulking.',
+		primaryInputs: ['Maintenance calories', 'Weight', 'Goal'],
+		formula: 'Applies a conservative surplus multiplier to estimated maintenance calories.',
+		interpretation: 'A smaller surplus often supports lean gain while limiting unnecessary fat gain.',
+		related: ['muscle-gain-calculator', 'calorie-calculator', 'macro-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'calorie-deficit-calculator',
+		title: 'Calorie Deficit Calculator',
+		seoTitle: 'Calorie Deficit Calculator - Fat Loss Calorie Target | BodyCompOS',
+		metaDescription: 'Estimate a conservative calorie deficit for fat loss while preserving training quality.',
+		mode: 'deficit',
+		description: 'Estimate a sustainable calorie deficit for fat loss. Applies a 15% deficit below TDEE to optimize fat mobilization while defending muscle tissue. Moderate deficit supports training quality, adherence, and long-term body composition progress.',
+		primaryInputs: ['Maintenance calories', 'Weight', 'Goal'],
+		formula: 'Applies a moderate deficit multiplier to estimated maintenance calories.',
+		interpretation: 'Deficit targets should be sustainable enough to support adherence and training.',
+		related: ['calorie-calculator', 'goal-timeline-calculator', 'protein-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'target-weight-calculator',
+		title: 'Target Weight Calculator',
+		seoTitle: 'Target Weight Calculator - Estimate Goal Weight From Body Fat | BodyCompOS',
+		metaDescription: 'Estimate target weight from current lean mass and target body fat percentage.',
+		mode: 'target',
+		description: 'Calculate target body weight from current lean mass and desired body fat percentage. Formula: Target Weight = LBM / (1 - Target BF%). Assumes lean mass is held constant. Practical for setting body composition goals with your strategy.',
+		primaryInputs: ['Current weight', 'Current body fat', 'Target body fat'],
+		formula: 'Estimates current lean mass, then divides it by one minus target body fat percentage.',
+		interpretation: 'Target weight estimates assume lean mass is held constant, which may not happen exactly.',
+		related: ['lean-body-mass-calculator', 'goal-timeline-calculator', 'body-composition-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'muscle-gain-calculator',
+		title: 'Muscle Gain Calculator',
+		seoTitle: 'Muscle Gain Calculator - Estimate Lean Bulk Progress | BodyCompOS',
+		metaDescription: 'Estimate conservative muscle gain expectations and lean bulk planning targets.',
+		mode: 'muscle',
+		description: 'Project realistic muscle gain using the Alan Aragon rate model. Beginners: 0.2% body weight per week. Intermediates: 0.1%. Advanced: 0.05%. Training age, program quality, and adherence strongly affect lean bulk outcomes and timelines.',
+		primaryInputs: ['Weight', 'Training experience', 'Goal'],
+		formula: 'Uses conservative weekly gain assumptions to avoid overstating lean mass progress.',
+		interpretation: 'Training age, program quality, sleep, and adherence strongly affect outcomes.',
+		related: ['calorie-surplus-calculator', 'macro-calculator', 'ffmi-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'body-recomposition-calculator',
+		title: 'Body Recomposition Calculator',
+		seoTitle: 'Body Recomposition Calculator - Calories and Protein for Recomp | BodyCompOS',
+		metaDescription: 'Estimate calories and protein for a recomposition-oriented body composition strategy.',
+		mode: 'recomp',
+		description: 'Calculate calorie and protein targets for simultaneous fat loss and muscle gain. Near-maintenance calories (2% deficit) with higher protein emphasis (2.2 g/kg). Recomp progress is slower; judge results beyond scale weight using body composition trends.',
+		primaryInputs: ['Weight', 'Body fat', 'Training experience', 'Activity level'],
+		formula: 'Uses a near-maintenance calorie target with higher protein emphasis.',
+		interpretation: 'Recomp progress is often slower and should be judged with more than scale weight.',
+		related: ['protein-calculator', 'body-composition-calculator', 'calorie-calculator'],
+		faqs: defaultFaqs,
+	},
+	{
+		slug: 'bmr-calculator',
+		title: 'BMR Calculator',
+		seoTitle: 'BMR Calculator - Basal Metabolic Rate Calculator | BodyCompOS',
+		metaDescription: 'Estimate basal metabolic rate with Mifflin-St Jeor and Katch-McArdle when body fat is available.',
+		mode: 'bmr',
+		description: 'Calculate Basal Metabolic Rate (BMR), the calories burned at complete rest. Uses Mifflin-St Jeor by default; Katch-McArdle when body fat is available. BMR accounts for 60-70% of TDEE and serves as the resting baseline for all calorie planning.',
+		primaryInputs: ['Sex', 'Age', 'Height', 'Weight', 'Optional body fat'],
+		formula: 'Uses Mifflin-St Jeor and optionally Katch-McArdle when body fat is entered.',
+		interpretation: 'BMR is resting energy context. Use TDEE for daily maintenance planning.',
+		related: ['tdee-calculator', 'maintenance-calorie-calculator', 'calorie-calculator'],
+		faqs: defaultFaqs,
+	},
+];
+
+export const calculatorCategories = [
+	{
+		title: 'Energy Targets',
+		description: 'Estimate maintenance, deficit, surplus, BMR, and daily calorie targets.',
+		slugs: ['tdee-calculator', 'calorie-calculator', 'maintenance-calorie-calculator', 'calorie-deficit-calculator', 'calorie-surplus-calculator', 'bmr-calculator'],
+	},
+	{
+		title: 'Protein and Macros',
+		description: 'Turn calorie targets into protein, fat, and carbohydrate planning ranges.',
+		slugs: ['protein-calculator', 'macro-calculator'],
+	},
+	{
+		title: 'Body Composition',
+		description: 'Estimate lean mass, fat mass, FFMI, BMI, and waist-to-height context.',
+		slugs: ['body-fat-calculator', 'ffmi-calculator', 'lean-body-mass-calculator', 'bmi-calculator', 'waist-to-height-ratio-calculator', 'body-composition-calculator'],
+	},
+	{
+		title: 'Goal Planning',
+		description: 'Translate strategy into timelines, target weight, muscle gain, and recomp planning.',
+		slugs: ['goal-timeline-calculator', 'ideal-weight-calculator', 'target-weight-calculator', 'muscle-gain-calculator', 'body-recomposition-calculator'],
+	},
+];
+
+export const infoPages = [
+	{
+		slug: 'methodology',
+		title: 'Methodology',
+		seoTitle: 'Methodology - Body Composition Formulas and Assumptions | BodyCompOS',
+		description: 'How BodyCompOS calculates estimates, confidence, assumptions, and limitations.',
+		type: 'Article',
+		sections: [
+			['Formula Library', 'BodyCompOS uses peer-reviewed equations: Mifflin-St Jeor (Mifflin et al., 1990, American Journal of Clinical Nutrition) for BMR, Katch-McArdle (Katch & McArdle, 1996) when body fat is available, BMI (Quetelet, 1832), Normalized FFMI (Kouri et al., 1995, Clinical Journal of Sport Medicine), and Navy Circumference equations (Hodgdon & Beckett, 1984). These formulas represent the standard metabolic and anthropometric modeling metrics utilized in sports medicine and exercise science.'],
+			['Strategy Confidence', 'The Strategy Finder weighs body fat estimate, training age, goal direction, activity, and protein adequacy when available. Recommendations are grounded in clinical guidelines from the International Society of Sports Nutrition (ISSN) and the American College of Sports Medicine (ACSM) for athletic body composition partitioning.'],
+			['Forecasting', 'Forecasts use local trend data after enough check-ins exist. They estimate current pace, ETA, and confidence, then suggest reassessment when data diverges from the goal.'],
+			['Limitations', 'Inputs can be inaccurate, formulas are population estimates, and real outcomes are affected by adherence, training, sleep, stress, health status, and measurement error.'],
+		],
+		faqs: [
+			['Why do formulas differ?', 'Each formula estimates a different biological or behavioral signal, so results should be treated as planning context rather than exact truth.'],
+			['Where is detailed safety language?', 'The full educational and professional-guidance boundaries live on the Disclaimer page.'],
+		],
+	},
+	{
+		slug: 'about',
+		title: 'About BodyCompOS',
+		seoTitle: 'About BodyCompOS - Local-First Body Composition Strategy Platform | BodyCompOS',
+		description: 'BodyCompOS is a private, local-first body composition strategy platform.',
+		type: 'WebPage',
+		sections: [
+			['Mission', 'BodyCompOS helps users move from isolated calculator results to a structured strategy and reassessment workflow. The product is built around choosing the next phase, setting starting targets, and checking whether the trend supports the plan.'],
+			['Privacy Position', 'The product is designed to work without accounts. Saved assessments and check-ins stay in the browser through localStorage in this static version.'],
+			['Product Boundary', 'BodyCompOS is educational software for planning and tracking. It does not provide diagnosis, treatment, medication guidance, or individualized medical care.'],
+		],
+		faqs: [],
+	},
+	{
+		slug: 'editorial-policy',
+		title: 'Editorial Policy',
+		seoTitle: 'Editorial Policy - BodyCompOS Content Standards | BodyCompOS',
+		description: 'How BodyCompOS keeps body composition content conservative, transparent, and useful.',
+		type: 'Article',
+		sections: [
+			['Standards', 'Content should explain formulas, assumptions, limitations, and uncertainty. When sources are added, they should come from reputable public health organizations, professional bodies, or peer-reviewed research.'],
+			['Corrections', 'When a formula, recommendation range, or citation is updated, the relevant page should be revised and the methodology should reflect the change.'],
+			['Tone', 'BodyCompOS avoids guaranteed outcomes, medical claims, and extreme calorie guidance. Calculator outputs should stay clear and practical, with detailed limitations available through methodology and disclaimer links.'],
+		],
+		faqs: [],
+	},
+	{
+		slug: 'disclaimer',
+		title: 'Disclaimer',
+		seoTitle: 'Disclaimer - Educational Body Composition Estimates | BodyCompOS',
+		description: 'BodyCompOS provides educational estimates and does not provide medical advice.',
+		type: 'WebPage',
+		sections: [
+			['Educational Use', 'BodyCompOS is for general educational use. It does not diagnose, treat, prevent, or cure medical conditions.'],
+			['Professional Guidance', 'Users with medical conditions, pregnancy, a history of eating disorders, unusual symptoms, or medication-related questions should consult a qualified professional.'],
+			['No Guaranteed Outcomes', 'No calculator can predict individual outcomes with certainty. Results may differ because of adherence, training, sleep, stress, health status, and measurement error.'],
+		],
+		faqs: [],
+	},
+	{
+		slug: 'faq',
+		title: 'FAQ Hub',
+		seoTitle: 'FAQ Hub - Body Composition Strategy and Calculator Questions | BodyCompOS',
+		description: 'Common questions about strategy selection, calories, protein, tracking, and forecasting.',
+		type: 'FAQPage',
+		sections: [
+			['Is this a weight loss website?', 'No. BodyCompOS covers fat loss, lean bulk, recomp, maintenance, and weight gain through a body composition strategy lens.'],
+			['Are the outputs medical advice?', 'No. Outputs are educational estimates based on the inputs provided.'],
+			['Where is data stored?', 'Saved assessments and check-ins are stored locally in the browser.'],
+			['What should I do first?', 'Start with the Strategy Finder, then use the calorie and protein calculators to refine the starting targets.'],
+		],
+		faqs: [
+			['Is this a weight loss website?', 'No. BodyCompOS covers fat loss, lean bulk, recomp, maintenance, and weight gain through a body composition strategy lens.'],
+			['Where is data stored?', 'Saved assessments and check-ins are stored locally in the browser.'],
+		],
+	},
+	{
+		slug: 'contact',
+		title: 'Contact',
+		seoTitle: 'Contact BodyCompOS - Feedback and Corrections | BodyCompOS',
+		description: 'Contact information and feedback channel for BodyCompOS.',
+		type: 'ContactPage',
+		sections: [
+			['Feedback and Corrections', 'Use hello@bodycompos.com for product feedback, calculator issues, correction requests, or privacy questions. Include the page URL and a clear description of the issue.'],
+		],
+		faqs: [],
+	},
+	{
+		slug: 'privacy-policy',
+		title: 'Privacy Policy',
+		seoTitle: 'Privacy Policy - Local-First BodyCompOS Data Storage | BodyCompOS',
+		description: 'BodyCompOS privacy policy for a localStorage-only static application.',
+		type: 'WebPage',
+		sections: [
+			['Local Data', 'Assessments and check-ins are stored in localStorage on your device. They are not sent to a BodyCompOS server because this version has no backend.'],
+			['Analytics and Ads', 'If analytics or ads are added later, this policy should be updated before launch.'],
+			['Control', 'You can clear local BodyCompOS data through your browser storage settings.'],
+		],
+		faqs: [],
+	},
+	{
+		slug: 'terms',
+		title: 'Terms',
+		seoTitle: 'Terms - BodyCompOS Educational Tool Terms | BodyCompOS',
+		description: 'Terms for using BodyCompOS educational tools.',
+		type: 'WebPage',
+		sections: [
+			['Use', 'Use BodyCompOS as an educational estimate tool. You are responsible for decisions made from the information shown.'],
+			['Limitations', 'No calculator can predict individual outcomes with certainty. Results may differ because of adherence, training, sleep, stress, health status, and measurement error.'],
+		],
+		faqs: [],
+	},
+];
+
+export const allPagePaths = [
+	'',
+	'assess',
+	'body-composition-strategy-guide',
+	'calculators',
+	'dashboard',
+	...calculators.map((calculator) => `calculators/${calculator.slug}`),
+	...infoPages.map((page) => page.slug),
+	'guides/should-i-cut-or-bulk',
+	'guides/body-recomposition',
+	'guides/protein-nutrition',
+	'guides/body-fat-percentage',
+	'guides/maintenance-calories',
+];
+
+export function getCalculator(slug: string) {
+	return calculators.find((calculator) => calculator.slug === slug);
+}
+
+export function absoluteUrl(path = '') {
+	const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+	return cleanPath ? `${SITE.origin}/${cleanPath}` : SITE.origin;
+}

@@ -1,0 +1,126 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Daily Protein Intake Guide for Body Composition | BodyCompOS";
+const description = "An in-depth review of optimal daily protein ranges for fat loss, muscle retention, and tissue synthesis based on peer-reviewed ISSN position stands.";
+const canonical = `${DOMAIN}/guides/protein-nutrition`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: '2026-06-25',
+	dateModified: '2026-06-25',
+	author: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Editorial Board',
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+	<section class="site-container py-10 sm:py-12">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/guides">Guides</a>
+			<span>/</span>
+			<span class="text-foreground">Protein Guide</span>
+		</nav>
+
+		<!-- Content Hero -->
+		<div class="max-w-3xl">
+			<p class="eyebrow">Nutritional Science</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Daily Protein Intake Guide <br/>
+				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Optimal Ranges for Body Composition</span>
+			</h1>
+			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
+				Protein is the most important macronutrient for modifying body composition. This guide reviews the science behind daily protein targets, protein quality, and intake timing.
+			</p>
+		</div>
+
+		<!-- Main editorial body -->
+		<div class="mt-10 max-w-4xl grid gap-8 lg:grid-cols-[1fr_300px]">
+			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
+					
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">1. The Role of Protein in Body Composition</h2>
+						<p>
+							Unlike carbohydrates and fats, which serve primarily as fuel sources, dietary protein provides the building blocks (amino acids) for cellular repair and skeletal muscle tissue synthesis. When you lift weights, you trigger Muscle Protein Synthesis (MPS). To support this process and rebuild muscle tissue, you need a consistent supply of dietary protein.
+						</p>
+						<p class="mt-3">
+							During a calorie deficit (cutting), adequate protein is essential to protect existing muscle tissue from being broken down for energy. During a calorie surplus (bulking), protein provides the necessary raw materials to support new muscle growth.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">2. Scientific Intake Thresholds</h2>
+						<p>
+							While the government RDA for protein is set at a low 0.8g per kilogram of body weight to prevent deficiency in sedentary individuals, athletic populations require higher levels to optimize body composition.
+						</p>
+						<p class="mt-3">
+							Based on the International Society of Sports Nutrition (ISSN) position stand (Jäger et al., 2017), active individuals should target a daily intake of **1.6 to 2.2 grams of protein per kilogram of body weight** (0.73 to 1.0 g/lb).
+						</p>
+						<p class="mt-3">
+							During intensive caloric deficits, research (Helms et al., 2014, Journal of the International Society of Sports Nutrition) suggests that protein requirements may increase to **2.3 to 3.1 g per kilogram of fat-free mass** (FFM) to defend against muscle loss in lean, resistance-trained individuals.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">3. Protein Pacing & Distribution</h2>
+						<p>
+							Consuming your entire daily protein target in a single meal is less effective than spacing it out. To maximize muscle protein synthesis, aim to distribute your intake across **4 to 5 meals per day, with each meal containing 30 to 40 grams of protein** (approximately 0.40g/kg).
+						</p>
+						<p class="mt-3">
+							Each serving should contain enough high-quality protein to reach the leucine threshold (~3 grams of leucine), which acts as the chemical trigger to turn on muscle protein synthesis via the mTOR pathway. High-quality sources include dairy, eggs, poultry, lean meats, and whey protein.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">4. Reassessment and Safe Limits</h2>
+						<p>
+							Adjust your protein targets when your total body weight changes. High protein diets (up to 2.2g/kg) are safe for healthy individuals with normal kidney function. If you experience changes in kidney function or have pre-existing renal concerns, consult a medical professional before starting a high-protein diet.
+						</p>
+					</section>
+
+					<!-- YMYL Disclaimer -->
+					<div class="border-t border-border pt-6 text-[10px] text-muted-foreground">
+						<p><strong>YMYL Disclaimer:</strong> This guide is for educational purposes only. High protein intakes require healthy renal clearance. Individuals with pre-existing kidney disease, hepatic issues, or other clinical concerns should consult a medical professional before starting a high-protein diet.</p>
+					</div>
+
+				</div>
+			</div>
+			
+			<!-- Sidebar -->
+			<div class="space-y-6">
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
+					<p class="text-xs text-muted-foreground mt-2">Estimate your daily protein targets based on your goals.</p>
+					<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-4 block">Protein Calculator</a>
+				</div>
+
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Cut or Bulk Matrix</a>
+						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
+						<a href="/guides/maintenance-calories" class="block text-accent hover:underline font-semibold">TDEE & Maintenance</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

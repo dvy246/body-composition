@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SITE, calculators, calculatorCategories, absoluteUrl } from '../../data/site';
+
+// Create a helper to fetch a calculator by its slug
+function findCalculator(slug: string) {
+	return calculators.find((c) => c.slug === slug);
+}
+---
+
+<Layout
+	title="Fitness & Body Composition Calculators | BodyCompOS"
+	description="Browse our collection of 19 strategy-supporting calculators. Estimate BMR, TDEE, protein intake, macros, body fat, FFMI, target weight timelines, and more."
+	canonical={absoluteUrl('calculators')}
+>
+	<section class="site-container py-12 sm:py-16">
+		<div class="max-w-3xl">
+			<p class="eyebrow">Strategy Toolbox</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl">Body Composition Calculators</h1>
+			<p class="mt-5 text-lg leading-8 text-muted-foreground">
+				Select any of our calculators to estimate resting metabolic rates, goal timelines, nutritional macro splits, and fat-free mass indices. All tools run client-side to ensure privacy.
+			</p>
+		</div>
+
+		<div class="mt-12 space-y-12">
+			{calculatorCategories.map((category) => (
+				<div class="border-t border-border pt-10">
+					<div class="max-w-xl">
+						<h2 class="text-2xl font-bold text-foreground">{category.title}</h2>
+						<p class="mt-2 text-sm text-muted-foreground">{category.description}</p>
+					</div>
+					<div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+						{category.slugs.map((slug) => {
+							const calc = findCalculator(slug);
+							if (!calc) return null;
+							return (
+								<a class="app-card block group" href={`/calculators/${calc.slug}`}>
+									<div class="flex justify-between items-start">
+										<h3 class="font-bold text-sm text-foreground group-hover:text-accent transition-colors">
+											{calc.title}
+										</h3>
+										<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+									</div>
+									<p class="mt-2 text-xs text-muted-foreground leading-relaxed">
+										{calc.description}
+									</p>
+									<div class="mt-3 flex flex-wrap gap-1">
+										{calc.primaryInputs.slice(0, 3).map((input) => (
+											<span class="text-[10px] font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+												{input}
+											</span>
+										))}
+										{calc.primaryInputs.length > 3 && (
+											<span class="text-[10px] font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+												+{calc.primaryInputs.length - 3} more
+											</span>
+										)}
+									</div>
+								</a>
+							);
+						})}
+					</div>
+				</div>
+			))}
+		</div>
+	</section>
+</Layout>

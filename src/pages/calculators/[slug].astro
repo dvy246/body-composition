@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CalculatorTool from '../../components/CalculatorTool.astro';
+import { calculators, DOMAIN } from '../../data/site';
+
+export function getStaticPaths() {
+	return calculators.map((calculator) => ({
+		params: { slug: calculator.slug },
+		props: { calculator },
+	}));
+}
+
+const { calculator } = Astro.props;
+
+// Dynamically generate FAQ schema for the active calculator
+const faqSchema = calculator.faqs && calculator.faqs.length > 0 ? {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: calculator.faqs.map(([q, a]) => ({
+		'@type': 'Question',
+		name: q,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: a,
+		},
+	})),
+} : null;
+
+// Find related calculators objects
+const relatedCalcs = calculator.related
+	? calculator.related.map((slug) => calculators.find((c) => c.slug === slug)).filter(Boolean)
+	: [];
+---
+
+<Layout
+	title={calculator.seoTitle || `${calculator.title} | BodyCompOS`}
+	description={calculator.metaDescription || calculator.description}
+	canonical={`${DOMAIN}/calculators/${calculator.slug}`}
+	schema={faqSchema ? [faqSchema] : []}
+>
+	<section class="site-container py-10">
+		<!-- Breadcrumbs trail -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/calculators">Calculators</a>
+			<span>/</span>
+			<span class="text-foreground">{calculator.title}</span>
+		</nav>
+
+		<!-- Active Calculator Tool -->
+		<CalculatorTool 
+			mode={calculator.mode} 
+			title={calculator.title} 
+			description={calculator.description}
+			primaryInputs={calculator.primaryInputs}
+			formula={calculator.formula}
+			interpretation={calculator.interpretation}
+		/>
+
+		<!-- Detailed Informational Content (EEAT SEO Depth) -->
+		<div class="prose-lite mt-12 content-panel bg-card border border-border">
+			<div class="border-b border-border pb-5 mb-5">
+				<h2 class="text-2xl font-black text-foreground">Understanding the Calculation</h2>
+				<p class="text-xs text-muted-foreground mt-1">Reviewed on June 24, 2026 by the BodyCompOS Editorial Board</p>
+			</div>
+
+			<h3 class="text-lg font-bold text-foreground">How to Use This Target</h3>
+			<p>
+				Treat this calculation as a starting baseline. Biological factors like training history, daily sleep quality, stress levels, and genetic differences will affect your exact metabolic outputs. If you are tracking progress, weigh yourself consistently under similar conditions and monitor a 2-to-4-week moving average before adjusting calories.
+			</p>
+
+			<h3 class="text-lg font-bold text-foreground mt-6">Assumptions & Formula Logic</h3>
+			<p>
+				{calculator.formula} When body fat composition measurements are omitted, standard age-and-height-based equations are used. For more exact body index splits, consider adding caliper or circumference waist inputs where requested.
+			</p>
+
+			{calculator.faqs && calculator.faqs.length > 0 && (
+				<div class="mt-8 border-t border-border pt-6">
+					<h3 class="text-lg font-bold text-foreground mb-4">Frequently Asked Questions</h3>
+					<div class="space-y-3">
+						{calculator.faqs.map(([q, a]) => (
+							<div class="rounded-lg border border-border bg-muted/10 p-4">
+								<h4 class="text-sm font-bold text-foreground">{q}</h4>
+								<p class="text-xs text-muted-foreground mt-1.5 leading-relaxed">{a}</p>
+							</div>
+						))}
+					</div>
+				</div>
+			)}
+		</div>
+
+		<!-- Related strategy tools -->
+		{relatedCalcs.length > 0 && (
+			<div class="mt-12 border-t border-border pt-10">
+				<h3 class="text-lg font-bold text-foreground mb-4">Related Strategy Tools</h3>
+				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+					{relatedCalcs.map((calc) => (
+						calc && (
+							<a class="app-card block group" href={`/calculators/${calc.slug}`}>
+								<div class="flex justify-between items-center">
+									<h4 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">
+										{calc.title}
+									</h4>
+									<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+								</div>
+								<p class="mt-2 text-xs text-muted-foreground leading-relaxed line-clamp-2">
+									{calc.description}
+								</p>
+							</a>
+						)
+					))}
+				</div>
+			</div>
+		)}
+	</section>
+</Layout>

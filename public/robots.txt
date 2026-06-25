@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Canonical Sitemap URL
+Sitemap: https://bodycompos.com/sitemap-index.xml

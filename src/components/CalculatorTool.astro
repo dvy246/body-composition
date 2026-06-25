@@ -1,0 +1,587 @@
+---
+interface Props {
+	mode: string;
+	title: string;
+	description: string;
+	primaryInputs?: string[];
+	formula?: string;
+	interpretation?: string;
+}
+
+const { mode, title, description, primaryInputs = [], formula = 'Uses the standard formulas described in the methodology page.', interpretation = 'Use the result as a starting estimate and adjust after monitoring trends.' } = Astro.props;
+
+// Map fields to modes to control display
+const fieldGroups = {
+	sex: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition'],
+	age: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition'],
+	height: ['tdee', 'maintenance', 'bodyfat', 'ffmi', 'ideal', 'bmi', 'whtr', 'composition', 'bmr'],
+	weight: ['tdee', 'calorie', 'protein', 'timeline', 'bodyfat', 'ffmi', 'lbm', 'macro', 'maintenance', 'bmi', 'composition', 'deficit', 'surplus', 'target', 'muscle', 'recomp', 'bmr'],
+	bodyFat: ['tdee', 'bodyfat', 'ffmi', 'lbm', 'composition', 'target', 'recomp', 'bmr'],
+	waist: ['bodyfat', 'composition', 'whtr'],
+	neck: ['bodyfat', 'composition'],
+	hip: ['bodyfat', 'composition'],
+	activity: ['tdee', 'calorie', 'maintenance', 'deficit', 'surplus', 'muscle', 'recomp'],
+	goal: ['calorie', 'macro', 'deficit', 'surplus', 'timeline', 'muscle', 'recomp'],
+	targetWeight: ['timeline'],
+	targetBodyFat: ['target'],
+};
+
+function isFieldVisible(key: keyof typeof fieldGroups) {
+	return fieldGroups[key].includes(mode);
+}
+
+function fieldClass(key: keyof typeof fieldGroups) {
+	return `field ${isFieldVisible(key) ? '' : 'hidden'}`;
+}
+---
+
+<div class="surface overflow-hidden rounded-2xl border border-border" data-calculator={mode}>
+	<!-- Header -->
+	<div class="grid gap-6 border-b border-border p-6 lg:grid-cols-[1fr_auto] lg:items-start">
+		<div>
+			<p class="eyebrow">Calculator Module</p>
+			<h1 class="mt-2 text-3xl font-black text-foreground sm:text-4xl">{title}</h1>
+			<p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">{description}</p>
+			{primaryInputs.length > 0 && (
+				<div class="mt-4 flex flex-wrap gap-1.5">
+					{primaryInputs.map((input) => <span class="text-[10px] font-semibold bg-muted px-2 py-0.5 rounded text-muted-foreground">{input}</span>)}
+				</div>
+			)}
+		</div>
+		<div>
+			<p class="mb-2 text-xs font-bold uppercase text-muted-foreground">System Units</p>
+			<div class="segmented" role="group" aria-label="Measurement units">
+				<button type="button" data-unit="metric" aria-pressed="true">Metric</button>
+				<button type="button" data-unit="imperial" aria-pressed="false">Imperial</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Form -->
+	<form id="calc-form" class="grid gap-4 p-6 sm:grid-cols-2">
+		<div class={fieldClass('sex')}>
+			<label for="sex">Biological Sex</label>
+			<div class="select-wrap">
+				<select id="sex"><option value="male">Male</option><option value="female">Female</option></select>
+			</div>
+		</div>
+		<div class={fieldClass('age')}>
+			<label for="age">Age (years)</label>
+			<input id="age" type="number" min="18" max="90" value="32" />
+		</div>
+		<div class={fieldClass('height')}>
+			<label for="height">Height <span data-height-unit>(cm)</span></label>
+			<input id="height" type="number" min="120" max="230" step="0.1" value="175" />
+		</div>
+		<div class={fieldClass('weight')}>
+			<label for="weight">Weight <span data-weight-unit>(kg)</span></label>
+			<input id="weight" type="number" min="35" max="250" step="0.1" value="82" />
+		</div>
+		<div class={fieldClass('bodyFat')}>
+			<label for="bodyFat">Body Fat Percentage (%)</label>
+			<input id="bodyFat" type="number" min="3" max="60" step="0.1" value="22" />
+		</div>
+		<div class={fieldClass('waist')}>
+			<label for="waist">Waist Circumference <span data-height-unit>(cm)</span></label>
+			<input id="waist" type="number" min="40" max="220" step="0.1" value="88" />
+		</div>
+		<div class={fieldClass('neck')}>
+			<label for="neck">Neck Circumference <span data-height-unit>(cm)</span></label>
+			<input id="neck" type="number" min="20" max="80" step="0.1" value="38" />
+		</div>
+		<div id="hip-field" class={fieldClass('hip')}>
+			<label for="hip">Hip Circumference <span data-height-unit>(cm)</span></label>
+			<input id="hip" type="number" min="40" max="220" step="0.1" value="95" />
+		</div>
+		<div class={fieldClass('activity')}>
+			<label for="activity">Daily Activity Level</label>
+			<div class="select-wrap">
+				<select id="activity">
+					<option value="1.2">Sedentary (desk job)</option>
+					<option value="1.375">Lightly Active (moderate walks)</option>
+					<option value="1.55" selected>Moderately Active (trains 3-5x/week)</option>
+					<option value="1.725">Highly Active (heavy training/sports)</option>
+					<option value="1.9">Very Active (demanding labor/athlete)</option>
+				</select>
+			</div>
+		</div>
+		<div class={fieldClass('goal')}>
+			<label for="goal">Goal Strategy</label>
+			<div class="select-wrap">
+				<select id="goal">
+					<option value="fat-loss">Moderate Fat Loss (Cut)</option>
+					<option value="maintain">Weight Maintenance</option>
+					<option value="lean-bulk">Lean Muscle Bulk</option>
+					<option value="recomp">Body Recomposition</option>
+				</select>
+			</div>
+		</div>
+		<div class={fieldClass('targetWeight')}>
+			<label for="targetWeight">Target Body Weight <span data-weight-unit>(kg)</span></label>
+			<input id="targetWeight" type="number" min="35" max="250" step="0.1" value="75" />
+		</div>
+		<div class={fieldClass('targetBodyFat')}>
+			<label for="targetBodyFat">Target Body Fat (%)</label>
+			<input id="targetBodyFat" type="number" min="3" max="50" step="0.1" value="15" />
+		</div>
+		<button class="button-primary sm:col-span-2 mt-2" type="submit">Calculate Estimates</button>
+	</form>
+
+	<!-- Output Results Screen -->
+	<div id="calc-result" class="result-container border-t border-border bg-muted/20 p-6" aria-live="polite" tabindex="-1">
+		<div class="result-placeholder">
+			<svg class="text-muted-foreground" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+			<p class="mt-3 text-sm font-semibold text-foreground">Awaiting Calculator Inputs</p>
+			<p class="mt-1 text-xs text-muted-foreground max-w-xs">Fill in the fields above and hit Calculate to generate your body composition targets.</p>
+		</div>
+	</div>
+</div>
+
+<!-- Supporting Content cards -->
+<section class="mt-8 grid gap-4 md:grid-cols-3">
+	<div class="app-card">
+		<h3 class="font-bold text-sm text-foreground">Formula & Math</h3>
+		<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{formula}</p>
+	</div>
+	<div class="app-card">
+		<h3 class="font-bold text-sm text-foreground">How to Interpret</h3>
+		<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{interpretation}</p>
+	</div>
+	<div class="app-card">
+		<h3 class="font-bold text-sm text-foreground">Plan Integration</h3>
+		<p class="mt-2 text-xs leading-relaxed text-muted-foreground">
+			Take these estimations back to the main Strategy Finder assessment, or save them in your tracking logs in the local dashboard.
+		</p>
+	</div>
+</section>
+
+<script define:vars={{ mode }}>
+	let currentUnit = 'metric';
+	
+	function r(n, d = 0) { const p = 10 ** d; return Math.round(n * p) / p; }
+	function mifflin(sex, age, h, w) { return 10 * w + 6.25 * h - 5 * age + (sex === 'male' ? 5 : -161); }
+	function bmi(w, h) { return w / ((h / 100) ** 2); }
+	function katch(w, bf) { return 370 + 21.6 * (w * (1 - bf / 100)); }
+	function kgToLb(kg) { return kg * 2.2046226218; }
+	function lbToKg(lb) { return lb / 2.2046226218; }
+	function cmToIn(cm) { return cm / 2.54; }
+	function inToCm(value) { return value * 2.54; }
+	
+	function calculateNavyBodyFat({ sex, waistCm, neckCm, hipCm, heightCm }) {
+		const waistIn = waistCm / 2.54;
+		const neckIn = neckCm / 2.54;
+		const heightIn = heightCm / 2.54;
+		
+		if (sex === 'male') {
+			const diff = waistIn - neckIn;
+			if (diff <= 0 || heightIn <= 0) return 0;
+			return r(86.010 * Math.log10(diff) - 70.041 * Math.log10(heightIn) + 36.76, 1);
+		} else {
+			const hipIn = hipCm / 2.54;
+			const val = waistIn + hipIn - neckIn;
+			if (val <= 0 || heightIn <= 0) return 0;
+			return r(163.205 * Math.log10(val) - 97.684 * Math.log10(heightIn) - 78.387, 1);
+		}
+	}
+	
+	function macros(cal, w, goal) {
+		const protein = r(w * (goal === 'maintain' ? 1.6 : 1.9));
+		const fat = r((cal * 0.28) / 9);
+		const carbs = r(Math.max(0, (cal - protein * 4 - fat * 9) / 4));
+		return { protein, fat, carbs };
+	}
+	
+	function toMetric(values) {
+		if (currentUnit === 'metric') return values;
+		return {
+			...values,
+			h: inToCm(values.h),
+			w: lbToKg(values.w),
+			waist: values.waist ? inToCm(values.waist) : 0,
+			neck: values.neck ? inToCm(values.neck) : 0,
+			hip: values.hip ? inToCm(values.hip) : 0,
+			targetWeight: lbToKg(values.targetWeight),
+		};
+	}
+	
+	function formatWeight(kg, digits = 1) {
+		return currentUnit === 'metric' ? `${r(kg, digits)} kg` : `${r(kgToLb(kg), digits)} lb`;
+	}
+	
+	function formatLength(cm, digits = 1) {
+		return currentUnit === 'metric' ? `${r(cm, digits)} cm` : `${r(cmToIn(cm), digits)} in`;
+	}
+	
+	function makeRows(values) {
+		return `<div class="grid gap-3 sm:grid-cols-3">${values.map(([k, v, width = 64]) => `
+			<div class="result-card">
+				<p class="text-xs font-bold uppercase text-muted-foreground">${k}</p>
+				<p class="mt-1 text-xl font-black text-foreground">${v}</p>
+				<div class="mini-bar mt-3"><span style="width:${width}%"></span></div>
+			</div>
+		`).join('')}</div>`;
+	}
+	
+	function readRawForm(f) {
+		return {
+			sex: f.sex?.value || 'male',
+			age: Number(f.age?.value || 32),
+			h: Number(f.height?.value || 175),
+			w: Number(f.weight?.value || 82),
+			bf: Number(f.bodyFat?.value || 0),
+			waist: Number(f.waist?.value || 0),
+			neck: Number(f.neck?.value || 0),
+			hip: Number(f.hip?.value || 0),
+			activity: Number(f.activity?.value || 1.55),
+			goal: f.goal?.value || 'maintain',
+			targetWeight: Number(f.targetWeight?.value || f.weight?.value || 82),
+			targetBodyFat: Number(f.targetBodyFat?.value || 0),
+		};
+	}
+	
+	function setUnit(unit) {
+		if (unit === currentUnit) return;
+		const f = document.querySelector('#calc-form');
+		if (!f) return;
+		const values = readRawForm(f);
+		if (unit === 'imperial') {
+			if (f.height) f.height.value = r(cmToIn(values.h), 1);
+			if (f.waist) f.waist.value = values.waist ? r(cmToIn(values.waist), 1) : '';
+			if (f.neck) f.neck.value = values.neck ? r(cmToIn(values.neck), 1) : '';
+			if (f.hip) f.hip.value = values.hip ? r(cmToIn(values.hip), 1) : '';
+			if (f.weight) f.weight.value = r(kgToLb(values.w), 1);
+			if (f.targetWeight) f.targetWeight.value = r(kgToLb(values.targetWeight), 1);
+			if (f.height) { f.height.min = 47; f.height.max = 91; }
+			if (f.waist) { f.waist.min = 16; f.waist.max = 87; }
+			if (f.neck) { f.neck.min = 8; f.neck.max = 31; }
+			if (f.hip) { f.hip.min = 16; f.hip.max = 87; }
+			if (f.weight) { f.weight.min = 77; f.weight.max = 551; }
+			if (f.targetWeight) { f.targetWeight.min = 77; f.targetWeight.max = 551; }
+		} else {
+			if (f.height) f.height.value = r(inToCm(values.h), 1);
+			if (f.waist) f.waist.value = values.waist ? r(inToCm(values.waist), 1) : '';
+			if (f.neck) f.neck.value = values.neck ? r(inToCm(values.neck), 1) : '';
+			if (f.hip) f.hip.value = values.hip ? r(inToCm(values.hip), 1) : '';
+			if (f.weight) f.weight.value = r(lbToKg(values.w), 1);
+			if (f.targetWeight) f.targetWeight.value = r(lbToKg(values.targetWeight), 1);
+			if (f.height) { f.height.min = 120; f.height.max = 230; }
+			if (f.waist) { f.waist.min = 40; f.waist.max = 220; }
+			if (f.neck) { f.neck.min = 20; f.neck.max = 80; }
+			if (f.hip) { f.hip.min = 40; f.hip.max = 220; }
+			if (f.weight) { f.weight.min = 35; f.weight.max = 250; }
+			if (f.targetWeight) { f.targetWeight.min = 35; f.targetWeight.max = 250; }
+		}
+		currentUnit = unit;
+		document.querySelectorAll('[data-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-unit') === unit)));
+		document.querySelectorAll('[data-height-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(cm)' : '(in)');
+		document.querySelectorAll('[data-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
+	}
+	
+	document.querySelectorAll('[data-unit]').forEach((button) => button.addEventListener('click', () => setUnit(button.getAttribute('data-unit'))));
+	
+	const sexSelect = document.getElementById('sex');
+	const hipField = document.getElementById('hip-field');
+	function updateHipVisibility() {
+		if (sexSelect?.value === 'female') {
+			hipField?.classList.remove('hidden');
+		} else {
+			hipField?.classList.add('hidden');
+		}
+	}
+	sexSelect?.addEventListener('change', updateHipVisibility);
+	updateHipVisibility();
+
+	function getStepByStepMathHtml(mode, sex, age, h, w, bf, waist, neck, hip, activity, goal, targetCal, maintenance) {
+		let html = '';
+		function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+		if (['bodyfat', 'composition'].includes(mode)) {
+			const waistIn = r(waist / 2.54, 2);
+			const neckIn = r(neck / 2.54, 2);
+			const heightIn = r(h / 2.54, 2);
+			const hipIn = r(hip / 2.54, 2);
+			const computedBf = calculateNavyBodyFat({ sex, waistCm: waist, neckCm: neck, hipCm: hip, heightCm: h });
+			
+			html = `
+				<div class="mt-4 rounded-xl border border-border bg-card p-5 text-xs text-muted-foreground leading-relaxed text-left font-mono">
+					<p class="font-bold text-foreground mb-2 flex items-center gap-1.5 font-sans">
+						<svg class="text-accent shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+						Navy Circumference Body Fat Method Breakdown:
+					</p>
+					<div class="space-y-1.5">
+						<p>1. Convert inputs to inches: Height = ${heightIn} in, Waist = ${waistIn} in, Neck = ${neckIn} in ${sex === 'female' ? `, Hip = ${hipIn} in` : ''}.</p>
+						<p>2. Regression Formula: 
+							${sex === 'male' 
+								? `86.010 * log10(Waist - Neck) - 70.041 * log10(Height) + 36.76` 
+								: `163.205 * log10(Waist + Hip - Neck) - 97.684 * log10(Height) - 78.387`}
+						</p>
+						<p>3. Calculate logarithms: 
+							${sex === 'male'
+								? `log10(${r(waistIn - neckIn, 2)}) = ${r(Math.log10(waistIn - neckIn), 4)}, log10(${heightIn}) = ${r(Math.log10(heightIn), 4)}`
+								: `log10(${r(waistIn + hipIn - neckIn, 2)}) = ${r(Math.log10(waistIn + hipIn - neckIn), 4)}, log10(${heightIn}) = ${r(Math.log10(heightIn), 4)}`}
+						</p>
+						<p>4. Solve equation: 
+							${sex === 'male'
+								? `(86.010 * ${r(Math.log10(waistIn - neckIn), 4)}) - (70.041 * ${r(Math.log10(heightIn), 4)}) + 36.76 = ${computedBf}%`
+								: `(163.205 * ${r(Math.log10(waistIn + hipIn - neckIn), 4)}) - (97.684 * ${r(Math.log10(heightIn), 4)}) - 78.387 = ${computedBf}%`}
+						</p>
+						<p class="text-foreground font-bold mt-2 font-sans">Computed Body Fat Estimate: ${computedBf}%</p>
+					</div>
+				</div>
+			`;
+		} else if (mode === 'ffmi') {
+			const lbm = r(w * (1 - bf / 100), 1);
+			const heightM = r(h / 100, 2);
+			const ffmi = r(lbm / (heightM * heightM), 2);
+			const normalizedFfmi = r(ffmi + 6.1 * (1.8 - heightM), 2);
+			
+			html = `
+				<div class="mt-4 rounded-xl border border-border bg-card p-5 text-xs text-muted-foreground leading-relaxed text-left font-mono">
+					<p class="font-bold text-foreground mb-2 flex items-center gap-1.5 font-sans">
+						<svg class="text-accent shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+						Fat-Free Mass Index (FFMI) Formula Breakdown:
+					</p>
+					<div class="space-y-1.5">
+						<p>1. Lean Body Mass (LBM) = ${w} kg * (1 - ${bf}% / 100) = ${lbm} kg</p>
+						<p>2. Raw FFMI = LBM / (Height in meters)^2 = ${lbm} / (${heightM})^2 = ${ffmi}</p>
+						<p>3. Height Normalization (Adjusted to 1.8m baseline):</p>
+						<p class="pl-4">FFMI_norm = FFMI + 6.1 * (1.8 - Height) = ${ffmi} + 6.1 * (1.8 - ${heightM}) = ${normalizedFfmi}</p>
+						<p class="text-foreground font-bold mt-2 font-sans">Normalized FFMI Index: ${normalizedFfmi}</p>
+					</div>
+				</div>
+			`;
+		} else if (['tdee', 'maintenance', 'bmr'].includes(mode)) {
+			const bmrVal = bf ? katch(w, bf) : mifflin(sex, age, h, w);
+			const bmrFormula = bf 
+				? `Katch-McArdle: 370 + 21.6 * LeanMass = 370 + 21.6 * ${r(w * (1 - bf/100), 1)} = ${r(bmrVal)} kcal`
+				: `Mifflin-St Jeor: 10 * Weight + 6.25 * Height - 5 * Age + ${sex === 'male' ? 5 : -161} = ${r(bmrVal)} kcal`;
+			
+			html = `
+				<div class="mt-4 rounded-xl border border-border bg-card p-5 text-xs text-muted-foreground leading-relaxed text-left font-mono">
+					<p class="font-bold text-foreground mb-2 flex items-center gap-1.5 font-sans">
+						<svg class="text-accent shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+						Energy Balance & TDEE Formula Breakdown:
+					</p>
+					<div class="space-y-1.5">
+						<p>1. Resting Metabolic Rate (BMR):</p>
+						<p class="pl-4">${bmrFormula}</p>
+						<p>2. Daily Maintenance (TDEE) = BMR * Activity Factor:</p>
+						<p class="pl-4">${r(bmrVal)} kcal * ${activity} = ${maintenance} kcal/day</p>
+						<p class="text-foreground font-bold mt-2 font-sans">Total Daily Energy Expenditure (TDEE): ${maintenance} kcal/day</p>
+					</div>
+				</div>
+			`;
+		} else if (['calorie', 'deficit', 'surplus', 'calorie-deficit-calculator', 'calorie-surplus-calculator', 'body-recomposition-calculator'].includes(mode) || mode.includes('calorie')) {
+			const bmrVal = bf ? katch(w, bf) : mifflin(sex, age, h, w);
+			const multiplier = { 'fat-loss': 0.85, maintain: 1, 'lean-bulk': 1.08, recomp: 0.98 }[goal] || 1;
+			
+			html = `
+				<div class="mt-4 rounded-xl border border-border bg-card p-5 text-xs text-muted-foreground leading-relaxed text-left font-mono">
+					<p class="font-bold text-foreground mb-2 flex items-center gap-1.5 font-sans">
+						<svg class="text-accent shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+						Target Caloric Strategy Breakdown:
+					</p>
+					<div class="space-y-1.5">
+						<p>1. Maintenance Calories (TDEE) = ${maintenance} kcal/day</p>
+						<p>2. Strategy Caloric Adjustment Factor: ${multiplier * 100}% of TDEE</p>
+						<p>3. Caloric Target = TDEE * Factor = ${maintenance} * ${multiplier} = ${targetCal} kcal/day</p>
+						<p class="text-foreground font-bold mt-2 font-sans">Daily Intake Target: ${targetCal} kcal/day</p>
+					</div>
+				</div>
+			`;
+		}
+		return html;
+	}
+	
+	document.querySelector('#calc-form')?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		const f = event.currentTarget;
+		const raw = readRawForm(f);
+		const metric = toMetric(raw);
+		const { sex, age, h, w, bf, waist, neck, hip, activity, goal, targetWeight, targetBodyFat } = metric;
+		
+		function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+		
+		let bfVal = bf;
+		if (['bodyfat', 'composition'].includes(mode)) {
+			bfVal = calculateNavyBodyFat({ sex, waistCm: waist, neckCm: neck, hipCm: hip, heightCm: h });
+		}
+		if (mode === 'bodyfat') {
+			localStorage.setItem('bodycompos.estimatedBodyFat', String(bfVal));
+		}
+		
+		const baseBmr = bfVal ? katch(w, bfVal) : mifflin(sex, age, h, w);
+		const maintenance = r(baseBmr * activity);
+		const targetCal = r(maintenance * ({ 'fat-loss': 0.85, maintain: 1, 'lean-bulk': 1.08, recomp: 0.98 }[goal] || 1));
+		const b = r(bmi(w, h), 1);
+		const lean = bfVal ? r(w * (1 - bfVal / 100), 1) : null;
+		const fatMass = bfVal ? r(w - lean, 1) : null;
+		const m = macros(targetCal, w, goal);
+		
+		let rows = [];
+		let snapshotHtml = '';
+		
+		// Configure dynamic rows and visual graphs based on categories
+		if (['tdee', 'maintenance', 'bmr'].includes(mode)) {
+			rows = [
+				['BMR (resting)', `${r(baseBmr)} kcal`, 44],
+				['Maintenance (TDEE)', `${maintenance} kcal`, 76],
+				['Activity factor', activity, 55]
+			];
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Metabolic Summary</p>
+					<div class="mt-4 space-y-3 font-mono">
+						<div>
+							<div class="flex justify-between text-xs font-bold text-foreground"><span>BMR (resting metabolic rate)</span><span>${r(baseBmr)} kcal</span></div>
+							<div class="mini-bar mt-1.5"><span style="width:45%; background:var(--accent)"></span></div>
+						</div>
+						<div>
+							<div class="flex justify-between text-xs font-bold text-foreground"><span>Daily Maintenance (TDEE)</span><span>${maintenance} kcal</span></div>
+							<div class="mini-bar mt-1.5"><span style="width:75%"></span></div>
+						</div>
+					</div>
+				</div>
+			`;
+		}
+		else if (['calorie', 'deficit', 'surplus', 'recomp', 'calorie-deficit-calculator', 'calorie-surplus-calculator', 'body-recomposition-calculator'].includes(mode) || mode.includes('calorie')) {
+			rows = [
+				['Maintenance', `${maintenance} kcal`, 65],
+				['Target Calories', `${targetCal} kcal`, goal === 'fat-loss' ? 52 : 74],
+				['Protein Range', `${m.protein} g`, 68]
+			];
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Energy & Macro Targets</p>
+					<div class="mt-4 space-y-3 font-mono">
+						<div class="flex justify-between text-xs font-bold text-foreground"><span>Starting Calories</span><span>${targetCal} kcal</span></div>
+						<div class="flex justify-between text-xs font-bold text-foreground"><span>Protein Intake</span><span>${m.protein} g</span></div>
+						<div class="flex justify-between text-xs font-bold text-foreground"><span>Fat Intake</span><span>${m.fat} g</span></div>
+					</div>
+				</div>
+			`;
+		}
+		else if (mode === 'protein') {
+			rows = [
+				['Lower range (1.6 g/kg)', `${r(w * 1.6)} g`, 54],
+				['Higher range (2.2 g/kg)', `${r(w * 2.2)} g`, 74],
+				['Target intake', `${r(w * 1.9)} g`, 64]
+			];
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Optimal Protein distribution</p>
+					<div class="mt-4 space-y-2 text-xs leading-relaxed text-muted-foreground font-sans">
+						<p>Recommended intake: <strong>${r(w * 1.6)} - ${r(w * 2.2)} g/day</strong></p>
+						<p>This range supports muscle preservation during deficits and tissue synthesis during controlled surplus bulk phases.</p>
+					</div>
+				</div>
+			`;
+		}
+		else if (mode === 'timeline') {
+			const delta = Math.abs(w - targetWeight);
+			const weekly = goal === 'lean-bulk' ? w * 0.003 : w * 0.006;
+			const weeks = delta / weekly;
+			rows = [
+				['Target Change', formatWeight(delta), 50],
+				['Conservative Pace', `${formatWeight(weekly, 2)}/week`, 42],
+				['Estimated Duration', `${r(weeks, 1)} weeks`, 70]
+			];
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Timeline Forecast</p>
+					<div class="mt-4 space-y-3 font-mono">
+						<div class="flex justify-between text-xs font-bold text-foreground"><span>Current weight</span><span>${formatWeight(w)}</span></div>
+						<div class="flex justify-between text-xs font-bold text-foreground"><span>Target weight</span><span>${formatWeight(targetWeight)}</span></div>
+						<div class="flex justify-between text-xs font-bold text-foreground"><span>Estimated weeks</span><span>${r(weeks, 1)} weeks</span></div>
+					</div>
+				</div>
+			`;
+		}
+		else if (['bodyfat', 'ffmi', 'lbm', 'composition', 'waist-to-height-ratio-calculator', 'whtr', 'bmi', 'ideal'].includes(mode) || mode.includes('composition') || mode.includes('fat') || mode.includes('mass')) {
+			rows = [
+				['BMI scale', b, Math.min(92, b * 2.7)],
+				['Lean Mass', lean ? formatWeight(lean) : 'BF% needed', 68],
+				['Fat Mass', fatMass ? formatWeight(fatMass) : 'BF% needed', 42]
+			];
+			if (['bodyfat', 'composition'].includes(mode)) {
+				rows = [
+					['Body Fat', `${bfVal}%`, clamp(bfVal * 1.6, 10, 95)],
+					['Lean Mass', lean ? formatWeight(lean) : 'N/A', 68],
+					['Fat Mass', fatMass ? formatWeight(fatMass) : 'N/A', 42]
+				];
+			}
+			if (mode === 'ffmi' && lean) {
+				const ffmiVal = r(lean / ((h / 100) ** 2), 2);
+				const normFfmiVal = r(ffmiVal + 6.1 * (1.8 - (h / 100)), 2);
+				rows = [
+					['Raw FFMI', ffmiVal, clamp((ffmiVal - 12) * 6, 10, 95)],
+					['Normalized FFMI', normFfmiVal, clamp((normFfmiVal - 12) * 6, 10, 95)],
+					['Lean Mass', formatWeight(lean), 66]
+				];
+			}
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Body Index Composition</p>
+					<div class="mt-4 space-y-2 text-xs text-muted-foreground font-mono">
+						<div class="flex justify-between font-bold text-foreground"><span>BMI score</span><span>${b}</span></div>
+						${lean ? `<div class="flex justify-between font-bold text-foreground"><span>Lean Mass share</span><span>${formatWeight(lean)} (${r(100 - bfVal, 1)}%)</span></div>` : ''}
+						${fatMass ? `<div class="flex justify-between font-bold text-foreground"><span>Fat Mass share</span><span>${formatWeight(fatMass)} (${bfVal}%)</span></div>` : ''}
+					</div>
+				</div>
+			`;
+		}
+		else if (mode === 'macro') {
+			rows = [
+				['Protein (30%)', `${m.protein} g`, 60],
+				['Fat (28%)', `${m.fat} g`, 40],
+				['Carbohydrates (42%)', `${m.carbs} g`, 76]
+			];
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Macro Split</p>
+					<div class="mt-4 space-y-2 text-xs text-muted-foreground font-mono">
+						<div class="flex justify-between font-bold text-foreground"><span>Protein</span><span>${m.protein} g (${r(m.protein*4)} kcal)</span></div>
+						<div class="flex justify-between font-bold text-foreground"><span>Fats</span><span>${m.fat} g (${r(m.fat*9)} kcal)</span></div>
+						<div class="flex justify-between font-bold text-foreground"><span>Carbohydrates</span><span>${m.carbs} g (${r(m.carbs*4)} kcal)</span></div>
+					</div>
+				</div>
+			`;
+		}
+		else {
+			rows = [
+				['Maintenance', `${maintenance} kcal`, 60],
+				['Target intake', `${targetCal} kcal`, 70],
+				['Protein', `${m.protein} g`, 64]
+			];
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Calculation Details</p>
+					<p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Use this estimate as a starting point. Recalculate if your activity or body weight diverges.</p>
+				</div>
+			`;
+		}
+		
+		const mathHtml = getStepByStepMathHtml(mode, sex, age, h, w, bfVal, waist, neck, hip, activity, goal, targetCal, maintenance);
+		
+		const calcResult = document.querySelector('#calc-result');
+		calcResult.classList.add('has-result');
+		calcResult.innerHTML = `
+			<div class="result-content grid gap-6 lg:grid-cols-[1.2fr_0.8fr] text-left">
+				<div>
+					${makeRows(rows)}
+					${mathHtml}
+					<p class="mt-4 text-xs leading-relaxed text-muted-foreground font-sans">
+						Calculated starting point estimates. Energy output and metabolic speed fluctuate weekly. Reassess after tracking actual trend weight changes.
+					</p>
+					<div class="mt-4 flex flex-wrap gap-3 font-sans">
+						<a class="button-secondary text-sm" href="/assess">Plug into Strategy Finder</a>
+						<a class="button-ghost text-sm" href="/dashboard">Open Local Log</a>
+					</div>
+				</div>
+				${snapshotHtml}
+			</div>
+		`;
+		
+		document.querySelector('#calc-result')?.focus();
+		document.querySelector('#calc-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+	});
+</script>
