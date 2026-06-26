@@ -218,12 +218,12 @@ const assessSchema = {
 			strategyUnit = setUnit(button.getAttribute('data-strategy-unit'), strategyUnit, form);
 		});
 	});
-	
+
 	// Input toggle logic
 	const useNavyCheckbox = document.getElementById('use-navy-bf') as HTMLInputElement;
 	const navyInputsDiv = document.getElementById('navy-inputs');
 	const bodyFatField = document.getElementById('bodyFat')?.closest('.field');
-	
+
 	useNavyCheckbox?.addEventListener('change', () => {
 		if (useNavyCheckbox.checked) {
 			navyInputsDiv?.classList.remove('hidden');
@@ -240,10 +240,10 @@ const assessSchema = {
 		}
 		updateHipVisibility();
 	});
-	
+
 	const sexSelect = document.getElementById('sex') as HTMLSelectElement;
 	const hipField = document.getElementById('hip-field');
-	
+
 	function updateHipVisibility() {
 		const isFemale = sexSelect?.value === 'female';
 		const isNavyChecked = useNavyCheckbox?.checked;
@@ -255,13 +255,13 @@ const assessSchema = {
 			(document.getElementById('hip') as HTMLInputElement).required = false;
 		}
 	}
-	
+
 	sexSelect?.addEventListener('change', updateHipVisibility);
 
 	document.querySelector('#strategy-form')?.addEventListener('submit', (event) => {
 		event.preventDefault();
 		const form = event.currentTarget as HTMLFormElement;
-		
+
 		const rawInput = {
 			sex: form.sex.value,
 			age: Number(form.age.value),
@@ -279,7 +279,7 @@ const assessSchema = {
 			const waistCm = strategyUnit === 'metric' ? Number(form.waist.value) : inToCm(Number(form.waist.value));
 			const neckCm = strategyUnit === 'metric' ? Number(form.neck.value) : inToCm(Number(form.neck.value));
 			const hipCm = strategyUnit === 'metric' ? Number(form.hip.value || 0) : inToCm(Number(form.hip.value || 0));
-			
+
 			rawInput.bodyFat = engineNavyBF({
 				sex: rawInput.sex as 'male' | 'female',
 				waistCm,
@@ -288,12 +288,12 @@ const assessSchema = {
 				heightCm: rawInput.heightCm
 			});
 		}
-		
+
 		const proteinAdequate = rawInput.protein ? rawInput.protein >= rawInput.weightKg * 1.6 : false;
 		const rec = strategyRecommendation({ ...rawInput, proteinAdequate });
 		const bmr = engineMifflin({ sex: rawInput.sex as 'male' | 'female', age: rawInput.age, heightCm: rawInput.heightCm, weightKg: rawInput.weightKg });
 		const maintenance = round(bmr * activityFactors[rawInput.activity as keyof typeof activityFactors]);
-		const target = calorieTarget(maintenance, rawInput.goalBias as any);
+		const target = calorieTarget(maintenance, rec.recommended);
 		const proteinLow = round(rawInput.weightKg * 1.6);
 		const proteinHigh = round(rawInput.weightKg * 2.2);
 		
@@ -314,7 +314,7 @@ const assessSchema = {
 						</div>
 						<span class="badge badge-accent shrink-0 mt-1">${rec.confidence}% Confidence</span>
 					</div>
-					
+
 					<div class="grid gap-3 sm:grid-cols-2">
 						<div class="result-card">
 							<p class="text-xs font-bold uppercase text-muted-foreground">Alternative Strategy</p>
@@ -404,14 +404,14 @@ const assessSchema = {
 							<span id="save-btn-text">Save to local profile</span>
 						</button>
 					</div>
-					
+
 					<p class="text-center text-xs text-muted-foreground">
 						Use as an estimate. Adjust targets only after tracking 2-4 weeks of consistent weight trends.
 					</p>
 					<p class="text-center text-xs font-medium text-warning">Educational estimates — consult a healthcare professional before starting.</p>
 				</div>
 			`;
-			
+
 			const saveBtn = document.getElementById('save-local-btn');
 			saveBtn?.addEventListener('click', () => {
 				const btnText = document.getElementById('save-btn-text');
@@ -426,7 +426,7 @@ const assessSchema = {
 					}, 2500);
 				}
 			});
-			
+
 			outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 			(outputContainer as HTMLElement).focus();
 		}

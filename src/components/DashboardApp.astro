@@ -464,7 +464,7 @@
 
 	// Render Dashboard Data
 	function render() {
-		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
+		const latest = getLatestAssessment();
 		const checkins = getCheckins();
 		const assessments = getAssessments();
 		
@@ -575,11 +575,12 @@
 			const initialGoal = latest.goalWeight || goal;
 
 			const totalSpan = Math.abs(startWeight - initialGoal);
-			const progressSpan = Math.abs(startWeight - currentWeight);
+			const direction = initialGoal >= startWeight ? 1 : -1;
+			const directionalProgress = (currentWeight - startWeight) * direction;
 			
 			let percentage = 0;
 			if (totalSpan > 0.1) {
-				percentage = Math.max(0, Math.min(100, Math.round((progressSpan / totalSpan) * 100)));
+				percentage = Math.max(0, Math.min(100, Math.round((directionalProgress / totalSpan) * 100)));
 			}
 			
 			const circle = document.querySelector('#progress-circle-bar') as SVGCircleElement;
@@ -1107,7 +1108,8 @@
 	document.getElementById('export-data-btn')?.addEventListener('click', () => {
 		const checkins = getCheckins();
 		const assessments = getAssessments();
-		const database = { checkins, assessments };
+		const latestAssessment = getLatestAssessment();
+		const database = { schemaVersion: 1, checkins, assessments, latestAssessment };
 		
 		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(database));
 		const dlAnchorElem = document.createElement('a');
@@ -1125,12 +1127,13 @@
 		reader.onload = (e) => {
 			try {
 				const data = JSON.parse(e.target?.result as string);
-				if (data.checkins) localStorage.setItem('bodycompos.checkins', JSON.stringify(data.checkins));
-				if (data.assessments) localStorage.setItem('bodycompos.assessments', JSON.stringify(data.assessments));
-				if (data.assessments && data.assessments.length > 0) {
-					localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(data.assessments[0]));
-				}
-				alert('Database Profile imported successfully!');
+				const checkins = Array.isArray(data.checkins) ? data.checkins.map(sanitizeCheckin).filter(Boolean) : [];
+				const assessments = Array.isArray(data.assessments) ? data.assessments.map(sanitizeAssessment).filter(Boolean) : [];
+				const latest = sanitizeAssessment(data.latestAssessment) || assessments[0] || null;
+				localStorage.setItem('bodycompos.checkins', JSON.stringify(checkins));
+				localStorage.setItem('bodycompos.assessments', JSON.stringify(assessments));
+				if (latest) localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(latest));
+				alert(`Database profile imported: ${checkins.length} check-ins and ${assessments.length} assessments.`);
 				render();
 			} catch (err) {
 				alert('Error importing JSON file. Verify formatting.');

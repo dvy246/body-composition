@@ -7,11 +7,11 @@ const steps = [
 	['Improve', 'Reassess & adjust'],
 ];
 const features = [
-	'Personalized Strategy', 
+	'Personalized Strategy',
 	'Confidence & Alternative',
-	'Calorie Targets', 
+	'Calorie Targets',
 	'Protein Range',
-	'Estimated Timeline', 
+	'Estimated Timeline',
 	'Progress Tracking',
 ];
 ---
@@ -196,11 +196,11 @@ const features = [
 			strategyUnit = setUnit(button.getAttribute('data-strategy-unit') ?? 'metric', strategyUnit, form);
 		});
 	});
-	
+
 	document.querySelector('#strategy-form')?.addEventListener('submit', (event) => {
 		event.preventDefault();
 		const form = event.currentTarget as HTMLFormElement;
-		
+
 		const rawInput = {
 			sex: form.sex.value as 'male' | 'female',
 			age: Number(form.age.value),
@@ -239,7 +239,7 @@ const features = [
 						</div>
 						<span class="badge badge-accent shrink-0 mt-1">${rec.confidence}%</span>
 					</div>
-					
+
 					<div class="grid gap-2.5 sm:grid-cols-2">
 						<div class="result-card">
 							<p class="text-xs font-bold uppercase text-muted-foreground">Alternative</p>
@@ -269,7 +269,7 @@ const features = [
 					<p class="mt-2 text-xs font-medium text-warning">Educational estimates — consult a healthcare professional before starting.</p>
 				</div>
 			`;
-			
+
 			outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 			(outputContainer as HTMLElement).focus();
 		}
