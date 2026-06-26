@@ -5,9 +5,6 @@
 	<!-- Dashboard Header -->
 	<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-border pb-6">
 		<div>
-			<div class="inline-flex mb-2">
-				<span class="badge badge-accent">Phases 3 & 4 Active</span>
-			</div>
 			<h1 class="text-3xl font-black text-foreground sm:text-4xl">Strategy Workspace</h1>
 			<p class="text-sm text-muted-foreground mt-1">Local-first body composition tracking, linear forecasting, and plateau diagnostics.</p>
 		</div>
@@ -288,6 +285,7 @@
 		goalLabels as engineGoalLabels,
 		paceAndTimeline as enginePaceTimeline,
 		clamp as engineClamp,
+		round,
 	} from '../lib/engines';
 
 	const today = new Date().toISOString().slice(0, 10);
@@ -324,6 +322,11 @@
 		return _assessmentsCache;
 	}
 	function invalidateCache() { _checkinsCache = null; _assessmentsCache = null; }
+	function getLatestAssessment() {
+		const assessments = getAssessments();
+		if (!assessments.length) return null;
+		return assessments[assessments.length - 1];
+	}
 
 	// Tab Management
 	document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -712,7 +715,6 @@
 					form.weight.value = dashboardUnit === 'metric' ? entry.weight : r(kgToLb(entry.weight), 1);
 					form.bodyFat.value = entry.bodyFat || '';
 					form.adherence.value = entry.adherence || 80;
-					form.goalWeight.value = dashboardUnit === 'metric' ? entry.weight : r(kgToLb(entry.weight), 1);
 					const submitBtn = form.querySelector('button[type="submit"]');
 					if (submitBtn) submitBtn.textContent = 'Update Check-In';
 					const tabBtns = document.querySelectorAll('.tab-btn');
