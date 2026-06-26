@@ -286,6 +286,11 @@
 		paceAndTimeline as enginePaceTimeline,
 		clamp as engineClamp,
 		round,
+		kgToLb,
+		lbToKg,
+		sanitizeCheckin,
+		sanitizeAssessment,
+		formatWeight as fmtWeight,
 	} from '../lib/engines';
 
 	const today = new Date().toISOString().slice(0, 10);
@@ -295,13 +300,9 @@
 	let dashboardUnit = 'metric';
 	let editingCheckinIdx = -1;
 
-	// Helper conversions
-	function kgToLb(kg) { return kg * 2.2046226218; }
-	function lbToKg(lb) { return lb / 2.2046226218; }
-	function r(n, d = 1) { const p = 10 ** d; return Math.round(n * p) / p; }
-
+	// Helper conversions (imported from engines.ts)
 	function formatWeight(kg, digits = 1) {
-		return dashboardUnit === 'metric' ? `${r(kg, digits)} kg` : `${r(kgToLb(kg), digits)} lb`;
+		return fmtWeight(kg, dashboardUnit, digits);
 	}
 
 	// Fetch Data Helpers with inline cache
@@ -350,15 +351,15 @@
 		const goal = Number(form.goalWeight.value || 0);
 		
 		if (unit === 'imperial') {
-			if (weight) form.weight.value = String(r(kgToLb(weight), 1));
-			if (goal) form.goalWeight.value = String(r(kgToLb(goal), 1));
+			if (weight) form.weight.value = String(round(kgToLb(weight), 1));
+			if (goal) form.goalWeight.value = String(round(kgToLb(goal), 1));
 			form.weight.min = '77';
 			form.weight.max = '551';
 			form.goalWeight.min = '77';
 			form.goalWeight.max = '551';
 		} else {
-			if (weight) form.weight.value = String(r(lbToKg(weight), 1));
-			if (goal) form.goalWeight.value = String(r(lbToKg(goal), 1));
+			if (weight) form.weight.value = String(round(lbToKg(weight), 1));
+			if (goal) form.goalWeight.value = String(round(lbToKg(goal), 1));
 			form.weight.min = '35';
 			form.weight.max = '250';
 			form.goalWeight.min = '35';
@@ -712,7 +713,7 @@
 					const form = document.querySelector('#checkin-form') as HTMLFormElement;
 					if (!form) return;
 					form.date.value = entry.date;
-					form.weight.value = dashboardUnit === 'metric' ? entry.weight : r(kgToLb(entry.weight), 1);
+					form.weight.value = dashboardUnit === 'metric' ? entry.weight : round(kgToLb(entry.weight), 1);
 					form.bodyFat.value = entry.bodyFat || '';
 					form.adherence.value = entry.adherence || 80;
 					const submitBtn = form.querySelector('button[type="submit"]');
@@ -955,7 +956,7 @@
 				<div class="grid gap-3 sm:grid-cols-2">
 					<div class="field">
 						<label for="reassess-weight">Current Weight <span data-dashboard-weight-unit>(${dashboardUnit === 'metric' ? 'kg' : 'lb'})</span></label>
-						<input id="reassess-weight" type="number" step="0.1" value="${dashboardUnit === 'metric' ? currentWeight : r(kgToLb(currentWeight), 1)}" />
+						<input id="reassess-weight" type="number" step="0.1" value="${dashboardUnit === 'metric' ? currentWeight : round(kgToLb(currentWeight), 1)}" />
 					</div>
 					<div class="field">
 						<label for="reassess-bf">Current Body Fat %</label>

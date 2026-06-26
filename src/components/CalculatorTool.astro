@@ -156,66 +156,35 @@ function fieldClass(key: keyof typeof fieldGroups) {
 </section>
 
 <script define:vars={{ mode }}>
+	import {
+		round as r,
+		mifflin,
+		bmi,
+		katch,
+		kgToLb,
+		lbToKg,
+		cmToIn,
+		inToCm,
+		clamp,
+		calculateNavyBodyFat,
+		strategyMultiplier,
+		macros,
+		idealWeightRange,
+		targetWeightFromBodyFat,
+		whtrCategory,
+		formatWeight as fmtWeight,
+		formatLength as fmtLength,
+	} from '../lib/engines';
+	import { convertFormUnits, updateUnitLabels } from '../lib/units';
+
 	let currentUnit = 'metric';
-	
-	function r(n, d = 0) { const p = 10 ** d; return Math.round(n * p) / p; }
-	function mifflin(sex, age, h, w) { return 10 * w + 6.25 * h - 5 * age + (sex === 'male' ? 5 : -161); }
-	function bmi(w, h) { return w / ((h / 100) ** 2); }
-	function katch(w, bf) { return 370 + 21.6 * (w * (1 - bf / 100)); }
-	function kgToLb(kg) { return kg * 2.2046226218; }
-	function lbToKg(lb) { return lb / 2.2046226218; }
-	function cmToIn(cm) { return cm / 2.54; }
-	function inToCm(value) { return value * 2.54; }
-	
-	function calculateNavyBodyFat({ sex, waistCm, neckCm, hipCm, heightCm }) {
-		const waistIn = waistCm / 2.54;
-		const neckIn = neckCm / 2.54;
-		const heightIn = heightCm / 2.54;
-		
-		if (sex === 'male') {
-			const diff = waistIn - neckIn;
-			if (diff <= 0 || heightIn <= 0) return 0;
-			return r(86.010 * Math.log10(diff) - 70.041 * Math.log10(heightIn) + 36.76, 1);
-		} else {
-			const hipIn = hipCm / 2.54;
-			const val = waistIn + hipIn - neckIn;
-			if (val <= 0 || heightIn <= 0) return 0;
-			return r(163.205 * Math.log10(val) - 97.684 * Math.log10(heightIn) - 78.387, 1);
-		}
-	}
-	
-	function macros(cal, w, goal) {
-		const protein = r(w * (goal === 'maintain' ? 1.6 : 1.9));
-		const fat = r((cal * 0.28) / 9);
-		const carbs = r(Math.max(0, (cal - protein * 4 - fat * 9) / 4));
-		return { protein, fat, carbs };
+
+	function formatWeight(kg, digits = 1) {
+		return fmtWeight(kg, currentUnit, digits);
 	}
 
-	function idealWeightRange(sex, h) {
-		const heightIn = cmToIn(h);
-		const overFiveFeet = Math.max(0, heightIn - 60);
-		const midpoint = sex === 'male' ? 48 + 2.7 * overFiveFeet : 45.5 + 2.2 * overFiveFeet;
-		return { low: midpoint * 0.9, midpoint, high: midpoint * 1.1 };
-	}
-
-	function targetWeightFromBodyFat(w, bf, targetBodyFat) {
-		const leanMass = w * (1 - bf / 100);
-		const targetWeight = leanMass / (1 - targetBodyFat / 100);
-		return { leanMass, targetWeight, change: targetWeight - w };
-	}
-
-	function strategyMultiplier(mode, goal) {
-		if (mode === 'deficit') return 0.85;
-		if (mode === 'surplus' || mode === 'muscle') return 1.08;
-		if (mode === 'recomp') return 0.98;
-		return { 'fat-loss': 0.85, maintain: 1, 'lean-bulk': 1.08, recomp: 0.98 }[goal] || 1;
-	}
-
-	function whtrCategory(value) {
-		if (value < 0.4) return 'Low';
-		if (value <= 0.5) return 'Generally healthy';
-		if (value <= 0.6) return 'Elevated';
-		return 'High';
+	function formatLength(cm, digits = 1) {
+		return fmtLength(cm, currentUnit, digits);
 	}
 	
 	function toMetric(values) {
@@ -274,40 +243,12 @@ function fieldClass(key: keyof typeof fieldGroups) {
 	
 	function setUnit(unit) {
 		if (unit === currentUnit) return;
-		const f = document.querySelector('#calc-form');
+		const f = document.querySelector('#calc-form') as HTMLFormElement | null;
 		if (!f) return;
-		const values = readRawForm(f);
-		if (unit === 'imperial') {
-			if (f.height) f.height.value = r(cmToIn(values.h), 1);
-			if (f.waist) f.waist.value = values.waist ? r(cmToIn(values.waist), 1) : '';
-			if (f.neck) f.neck.value = values.neck ? r(cmToIn(values.neck), 1) : '';
-			if (f.hip) f.hip.value = values.hip ? r(cmToIn(values.hip), 1) : '';
-			if (f.weight) f.weight.value = r(kgToLb(values.w), 1);
-			if (f.targetWeight) f.targetWeight.value = r(kgToLb(values.targetWeight), 1);
-			if (f.height) { f.height.min = 47; f.height.max = 91; }
-			if (f.waist) { f.waist.min = 16; f.waist.max = 87; }
-			if (f.neck) { f.neck.min = 8; f.neck.max = 31; }
-			if (f.hip) { f.hip.min = 16; f.hip.max = 87; }
-			if (f.weight) { f.weight.min = 77; f.weight.max = 551; }
-			if (f.targetWeight) { f.targetWeight.min = 77; f.targetWeight.max = 551; }
-		} else {
-			if (f.height) f.height.value = r(inToCm(values.h), 1);
-			if (f.waist) f.waist.value = values.waist ? r(inToCm(values.waist), 1) : '';
-			if (f.neck) f.neck.value = values.neck ? r(inToCm(values.neck), 1) : '';
-			if (f.hip) f.hip.value = values.hip ? r(inToCm(values.hip), 1) : '';
-			if (f.weight) f.weight.value = r(lbToKg(values.w), 1);
-			if (f.targetWeight) f.targetWeight.value = r(lbToKg(values.targetWeight), 1);
-			if (f.height) { f.height.min = 120; f.height.max = 230; }
-			if (f.waist) { f.waist.min = 40; f.waist.max = 220; }
-			if (f.neck) { f.neck.min = 20; f.neck.max = 80; }
-			if (f.hip) { f.hip.min = 40; f.hip.max = 220; }
-			if (f.weight) { f.weight.min = 35; f.weight.max = 250; }
-			if (f.targetWeight) { f.targetWeight.min = 35; f.targetWeight.max = 250; }
-		}
+		const fields: (keyof typeof import('../lib/units').FormFields)[] = ['height', 'weight', 'waist', 'neck', 'hip', 'targetWeight'];
+		convertFormUnits(f, currentUnit, unit, fields);
 		currentUnit = unit;
-		document.querySelectorAll('[data-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-unit') === unit)));
-		document.querySelectorAll('[data-height-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(cm)' : '(in)');
-		document.querySelectorAll('[data-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
+		updateUnitLabels(unit, { unitBtn: 'data-unit', heightLabel: 'data-height-unit', weightLabel: 'data-weight-unit' });
 	}
 	
 	document.querySelectorAll('[data-unit]').forEach((button) => button.addEventListener('click', () => setUnit(button.getAttribute('data-unit'))));
@@ -337,7 +278,6 @@ function fieldClass(key: keyof typeof fieldGroups) {
 
 	function getStepByStepMathHtml(mode, sex, age, h, w, bf, waist, neck, hip, activity, goal, targetCal, maintenance) {
 		let html = '';
-		function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 		if (['bodyfat', 'composition'].includes(mode)) {
 			const waistIn = r(waist / 2.54, 2);
 			const neckIn = r(neck / 2.54, 2);
@@ -394,7 +334,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				</div>
 			`;
 		} else if (['tdee', 'maintenance', 'bmr'].includes(mode)) {
-			const bmrVal = bf ? katch(w, bf) : mifflin(sex, age, h, w);
+			const bmrVal = bf ? katch(w, bf) : mifflin({ sex, age, heightCm: h, weightKg: w });
 			const bmrFormula = bf 
 				? `Katch-McArdle: 370 + 21.6 * LeanMass = 370 + 21.6 * ${r(w * (1 - bf/100), 1)} = ${r(bmrVal)} kcal`
 				: `Mifflin-St Jeor: 10 * Weight + 6.25 * Height - 5 * Age + ${sex === 'male' ? 5 : -161} = ${r(bmrVal)} kcal`;
@@ -415,7 +355,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				</div>
 			`;
 		} else if (['calorie', 'deficit', 'surplus', 'calorie-deficit-calculator', 'calorie-surplus-calculator', 'body-recomposition-calculator'].includes(mode) || mode.includes('calorie')) {
-			const bmrVal = bf ? katch(w, bf) : mifflin(sex, age, h, w);
+			const bmrVal = bf ? katch(w, bf) : mifflin({ sex, age, heightCm: h, weightKg: w });
 			const multiplier = { 'fat-loss': 0.85, maintain: 1, 'lean-bulk': 1.08, recomp: 0.98 }[goal] || 1;
 			
 			html = `
@@ -442,9 +382,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		const raw = readRawForm(f);
 		const metric = toMetric(raw);
 		const { sex, age, h, w, bf, waist, neck, hip, activity, goal, targetWeight, targetBodyFat } = metric;
-		
-		function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-		
+
 		let bfVal = bf;
 		if (['bodyfat', 'composition'].includes(mode)) {
 			bfVal = calculateNavyBodyFat({ sex, waistCm: waist, neckCm: neck, hipCm: hip, heightCm: h });
@@ -453,7 +391,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 			localStorage.setItem('bodycompos.estimatedBodyFat', String(bfVal));
 		}
 		
-		const baseBmr = bfVal ? katch(w, bfVal) : mifflin(sex, age, h, w);
+		const baseBmr = bfVal ? katch(w, bfVal) : mifflin({ sex, age, heightCm: h, weightKg: w });
 		const maintenance = r(baseBmr * activity);
 		const targetCal = r(maintenance * strategyMultiplier(mode, goal));
 		const b = r(bmi(w, h), 1);

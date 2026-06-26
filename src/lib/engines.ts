@@ -490,3 +490,117 @@ export function safeJsonParse<T>(value: string | null, fallback: T): T {
 		return fallback;
 	}
 }
+
+export type Checkin = {
+	date: string;
+	weight: number;
+	bodyFat: number | null;
+	adherence: number;
+};
+
+export type Assessment = {
+	createdAt: string;
+	sex: Sex;
+	age: number;
+	heightCm: number;
+	weightKg: number;
+	bodyFat: number;
+	waist?: number;
+	activity: string;
+	recommended: Goal;
+	confidence: number;
+	target: number;
+	maintenance: number;
+	proteinLow: number;
+	proteinHigh: number;
+	goalWeight?: number;
+	trainingAge?: string;
+	goalBias?: Goal;
+	protein?: number;
+};
+
+export function sanitizeCheckin(raw: unknown): Checkin | null {
+	if (!raw || typeof raw !== 'object') return null;
+	const r = raw as Record<string, unknown>;
+	const date = typeof r.date === 'string' ? r.date : '';
+	const weight = Number(r.weight);
+	const adherence = Number(r.adherence) || 0;
+	const bodyFat = r.bodyFat != null ? Number(r.bodyFat) : null;
+	if (!date || !weight || isNaN(weight)) return null;
+	return { date, weight, bodyFat: bodyFat && !isNaN(bodyFat) ? bodyFat : null, adherence };
+}
+
+export function sanitizeAssessment(raw: unknown): Assessment | null {
+	if (!raw || typeof raw !== 'object') return null;
+	const r = raw as Record<string, unknown>;
+	const createdAt = typeof r.createdAt === 'string' ? r.createdAt : new Date().toISOString();
+	const sex = r.sex === 'female' ? 'female' : 'male';
+	const age = Number(r.age) || 30;
+	const heightCm = Number(r.heightCm) || 175;
+	const weightKg = Number(r.weightKg) || 80;
+	const bodyFat = Number(r.bodyFat) || 0;
+	const recommended = (r.recommended as Goal) || 'recomp';
+	const confidence = Number(r.confidence) || 70;
+	const target = Number(r.target) || 0;
+	const maintenance = Number(r.maintenance) || 0;
+	const proteinLow = Number(r.proteinLow) || 0;
+	const proteinHigh = Number(r.proteinHigh) || 0;
+	return {
+		createdAt, sex, age, heightCm, weightKg, bodyFat,
+		waist: r.waist ? Number(r.waist) : undefined,
+		activity: typeof r.activity === 'string' ? r.activity : 'moderate',
+		recommended, confidence, target, maintenance, proteinLow, proteinHigh,
+		goalWeight: r.goalWeight ? Number(r.goalWeight) : undefined,
+		trainingAge: typeof r.trainingAge === 'string' ? r.trainingAge : 'intermediate',
+		goalBias: r.goalBias as Goal | undefined,
+		protein: r.protein ? Number(r.protein) : undefined,
+	};
+}
+
+export function formatWeight(kg: number, unit: 'metric' | 'imperial', digits = 1): string {
+	return unit === 'metric' ? `${round(kg, digits)} kg` : `${round(kgToLb(kg), digits)} lb`;
+}
+
+export function formatLength(cm: number, unit: 'metric' | 'imperial', digits = 1): string {
+	return unit === 'metric' ? `${round(cm, digits)} cm` : `${round(cmToIn(cm), digits)} in`;
+}
+
+export function strategyMultiplier(mode: string, goal: string): number {
+	const goalMap: Record<string, number> = {
+		'fat-loss': 0.85,
+		maintain: 1,
+		'lean-bulk': 1.08,
+		recomp: 0.98,
+	};
+	if (mode === 'deficit') return goalMap['fat-loss'] ?? 0.85;
+	if (mode === 'surplus' || mode === 'muscle') return goalMap['lean-bulk'] ?? 1.08;
+	if (mode === 'recomp') return goalMap.recomp;
+	return goalMap[goal] ?? 1;
+}
+
+export function macros(calories: number, weightKg: number, goal: string) {
+	const protein = round(weightKg * (goal === 'maintain' ? 1.6 : 1.9));
+	const fat = round((calories * 0.28) / 9);
+	const carbs = round(Math.max(0, (calories - protein * 4 - fat * 9) / 4));
+	return { protein, fat, carbs };
+}
+
+export function idealWeightRange(sex: Sex, heightCm: number) {
+	const heightIn = cmToIn(heightCm);
+	const overFiveFeet = Math.max(0, heightIn - 60);
+	const midpoint = sex === 'male' ? 48 + 2.7 * overFiveFeet : 45.5 + 2.2 * overFiveFeet;
+	return { low: midpoint * 0.9, midpoint, high: midpoint * 1.1 };
+}
+
+export function targetWeightFromBodyFat(weightKg: number, bodyFat: number, targetBodyFat: number) {
+	const leanMass = weightKg * (1 - bodyFat / 100);
+	const targetWeight = leanMass / (1 - targetBodyFat / 100);
+	return { leanMass, targetWeight, change: targetWeight - weightKg };
+}
+
+export function whtrCategory(value: number): string {
+	if (value < 0.4) return 'Low';
+	if (value <= 0.5) return 'Generally healthy';
+	if (value <= 0.6) return 'Elevated';
+	return 'High';
+}
