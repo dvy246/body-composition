@@ -223,26 +223,30 @@ const assessSchema = {
 			}
 		}
 	})();
-	
+
 	function round(n: number, d = 0) { const p = 10 ** d; return Math.round(n * p) / p; }
 	function clamp(n: number, min: number, max: number) { return Math.max(min, Math.min(max, n)); }
+	function safeJsonParse(value: string | null, fallback: any) {
+		try { return value ? JSON.parse(value) : fallback; } catch { return fallback; }
+	}
+
 	function kgToLb(kg: number) { return kg * 2.2046226218; }
-	
+
 	function lbToKg(lb: number) { return lb / 2.2046226218; }
 	function cmToIn(cm: number) { return cm / 2.54; }
 	function inToCm(value: number) { return value * 2.54; }
-	
+
 	function setStrategyUnit(unit) {
 		if (unit === strategyUnit) return;
 		const form = document.querySelector('#strategy-form') as HTMLFormElement;
 		if (!form) return;
-		
+
 		const height = Number(form.height.value);
 		const weight = Number(form.weight.value);
 		const waist = Number(form.waist.value);
 		const neck = Number(form.neck.value);
 		const hip = Number(form.hip.value);
-		
+
 		if (unit === 'imperial') {
 			form.height.value = String(round(cmToIn(height), 1));
 			form.weight.value = String(round(kgToLb(weight), 1));
@@ -276,22 +280,22 @@ const assessSchema = {
 			form.hip.min = '40';
 			form.hip.max = '220';
 		}
-		
+
 		strategyUnit = unit;
 		document.querySelectorAll('[data-strategy-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-strategy-unit') === unit)));
 		document.querySelectorAll('[data-strategy-height-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(cm)' : '(in)');
 		document.querySelectorAll('[data-strategy-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
 	}
-	
+
 	document.querySelectorAll('[data-strategy-unit]').forEach((button) => {
 		button.addEventListener('click', () => setStrategyUnit(button.getAttribute('data-strategy-unit')));
 	});
-	
+
 	// Input toggle logic
 	const useNavyCheckbox = document.getElementById('use-navy-bf') as HTMLInputElement;
 	const navyInputsDiv = document.getElementById('navy-inputs');
 	const bodyFatField = document.getElementById('bodyFat')?.closest('.field');
-	
+
 	useNavyCheckbox?.addEventListener('change', () => {
 		if (useNavyCheckbox.checked) {
 			navyInputsDiv?.classList.remove('hidden');
@@ -308,10 +312,10 @@ const assessSchema = {
 		}
 		updateHipVisibility();
 	});
-	
+
 	const sexSelect = document.getElementById('sex') as HTMLSelectElement;
 	const hipField = document.getElementById('hip-field');
-	
+
 	function updateHipVisibility() {
 		const isFemale = sexSelect?.value === 'female';
 		const isNavyChecked = useNavyCheckbox?.checked;
@@ -323,13 +327,13 @@ const assessSchema = {
 			(document.getElementById('hip') as HTMLInputElement).required = false;
 		}
 	}
-	
+
 	sexSelect?.addEventListener('change', updateHipVisibility);
 
 	document.querySelector('#strategy-form')?.addEventListener('submit', (event) => {
 		event.preventDefault();
 		const form = event.currentTarget as HTMLFormElement;
-		
+
 		const rawInput = {
 			sex: form.sex.value,
 			age: Number(form.age.value),
@@ -347,7 +351,7 @@ const assessSchema = {
 			const waistCm = strategyUnit === 'metric' ? Number(form.waist.value) : inToCm(Number(form.waist.value));
 			const neckCm = strategyUnit === 'metric' ? Number(form.neck.value) : inToCm(Number(form.neck.value));
 			const hipCm = strategyUnit === 'metric' ? Number(form.hip.value || 0) : inToCm(Number(form.hip.value || 0));
-			
+
 			rawInput.bodyFat = engineNavyBF({
 				sex: rawInput.sex as 'male' | 'female',
 				waistCm,
@@ -356,33 +360,33 @@ const assessSchema = {
 				heightCm: rawInput.heightCm
 			});
 		}
-		
+
 		const proteinAdequate = rawInput.protein ? rawInput.protein >= rawInput.weightKg * 1.6 : false;
 		const rec = strategyRecommendation({ ...rawInput, proteinAdequate });
 		const bmr = engineMifflin({ sex: rawInput.sex as 'male' | 'female', age: rawInput.age, heightCm: rawInput.heightCm, weightKg: rawInput.weightKg });
 		const maintenance = round(bmr * activityFactors[rawInput.activity as keyof typeof activityFactors]);
-		const target = calorieTarget(maintenance, rawInput.goalBias as any);
+		const target = calorieTarget(maintenance, rec.recommended);
 		const proteinLow = round(rawInput.weightKg * 1.6);
 		const proteinHigh = round(rawInput.weightKg * 2.2);
-		
-		const saved = { ...rawInput, proteinAdequate, ...rec, maintenance, target, proteinLow, proteinHigh, createdAt: new Date().toISOString() };
+
+		const saved = { ...rawInput, proteinAdequate, ...rec, maintenance, target, targetBasis: 'recommended', proteinLow, proteinHigh, createdAt: new Date().toISOString() };
 		localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(saved));
 		localStorage.removeItem('bodycompos.estimatedBodyFat');
-		
-		const history = JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]');
+
+		const history = safeJsonParse(localStorage.getItem('bodycompos.assessments'), []);
 		history.unshift(saved);
 		localStorage.setItem('bodycompos.assessments', JSON.stringify(history.slice(0, 12)));
-		
+
 		let paceText = 'Flat Weight';
 		let timelineText = 'Ongoing';
 		const rDecay = 0.99;
-		
+
 		if (rec.recommended === 'fat-loss') {
 			const pace = -rawInput.weightKg * 0.0075;
 			const targetWeightChange = -rawInput.weightKg * 0.08;
 			const term = (targetWeightChange * (1 - rDecay)) / pace;
 			const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 16;
-			
+
 			const val = strategyUnit === 'metric' ? `${round(Math.abs(pace), 2)} kg` : `${round(kgToLb(Math.abs(pace)), 2)} lb`;
 			paceText = `Lose ~${val}/week`;
 			timelineText = `~${round(etaWeeks, 1)} weeks to reach 8% reduction`;
@@ -391,7 +395,7 @@ const assessSchema = {
 			const targetWeightChange = rawInput.weightKg * 0.04;
 			const term = (targetWeightChange * (1 - rDecay)) / pace;
 			const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 24;
-			
+
 			const val = strategyUnit === 'metric' ? `${round(pace, 2)} kg` : `${round(kgToLb(pace), 2)} lb`;
 			paceText = `Gain ~${val}/week`;
 			timelineText = `~${round(etaWeeks, 1)} weeks to build 4% lean mass`;
@@ -400,7 +404,7 @@ const assessSchema = {
 			const targetWeightChange = rawInput.weightKg * 0.06;
 			const term = (targetWeightChange * (1 - rDecay)) / pace;
 			const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 16;
-			
+
 			const val = strategyUnit === 'metric' ? `${round(pace, 2)} kg` : `${round(kgToLb(pace), 2)} lb`;
 			paceText = `Gain ~${val}/week`;
 			timelineText = `~${round(etaWeeks, 1)} weeks to target weight`;
@@ -408,7 +412,7 @@ const assessSchema = {
 			paceText = 'Parity (Flat scale)';
 			timelineText = '12 - 16 weeks (recommended phase block)';
 		}
-		
+
 		const outputContainer = document.querySelector('#strategy-result');
 		if (outputContainer) {
 			outputContainer.classList.add('has-result');
@@ -421,7 +425,7 @@ const assessSchema = {
 						</div>
 						<span class="badge badge-accent shrink-0 mt-1">${rec.confidence}% Confidence</span>
 					</div>
-					
+
 					<div class="grid gap-3 sm:grid-cols-2">
 						<div class="result-card">
 							<p class="text-[10px] font-bold uppercase text-muted-foreground">Alternative Strategy</p>
@@ -511,13 +515,13 @@ const assessSchema = {
 							<span id="save-btn-text">Save to local profile</span>
 						</button>
 					</div>
-					
+
 					<p class="text-center text-xs text-muted-foreground">
 						Use as an estimate. Adjust targets only after tracking 2-4 weeks of consistent weight trends.
 					</p>
 				</div>
 			`;
-			
+
 			const saveBtn = document.getElementById('save-local-btn');
 			saveBtn?.addEventListener('click', () => {
 				const btnText = document.getElementById('save-btn-text');
@@ -532,7 +536,7 @@ const assessSchema = {
 					}, 2500);
 				}
 			});
-			
+
 			outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 			(outputContainer as HTMLElement).focus();
 		}

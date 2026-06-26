@@ -7,11 +7,11 @@ const steps = [
 	['Improve', 'Reassess & adjust'],
 ];
 const features = [
-	'Personalized Strategy', 
+	'Personalized Strategy',
 	'Confidence & Alternative',
-	'Calorie Targets', 
+	'Calorie Targets',
 	'Protein Range',
-	'Estimated Timeline', 
+	'Estimated Timeline',
 	'Progress Tracking',
 ];
 ---
@@ -241,20 +241,24 @@ const features = [
 			}
 		}
 	})();
-	
+
+	function safeJsonParse(value: string | null, fallback: any) {
+		try { return value ? JSON.parse(value) : fallback; } catch { return fallback; }
+	}
+
 	function kgToLb(kg: number) { return kg * 2.2046226218; }
 	function lbToKg(lb: number) { return lb / 2.2046226218; }
 	function cmToIn(cm: number) { return cm / 2.54; }
 	function inToCm(value: number) { return value * 2.54; }
-	
+
 	function setStrategyUnit(unit: string) {
 		if (unit === strategyUnit) return;
 		const form = document.querySelector('#strategy-form') as HTMLFormElement;
 		if (!form) return;
-		
+
 		const height = Number(form.height.value);
 		const weight = Number(form.weight.value);
-		
+
 		if (unit === 'imperial') {
 			form.height.value = String(round(cmToIn(height), 1));
 			form.weight.value = String(round(kgToLb(weight), 1));
@@ -270,21 +274,21 @@ const features = [
 			form.weight.min = '35';
 			form.weight.max = '250';
 		}
-		
+
 		strategyUnit = unit;
 		document.querySelectorAll('[data-strategy-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-strategy-unit') === unit)));
 		document.querySelectorAll('[data-strategy-height-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(cm)' : '(in)');
 		document.querySelectorAll('[data-strategy-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
 	}
-	
+
 	document.querySelectorAll('[data-strategy-unit]').forEach((button) => {
 		button.addEventListener('click', () => setStrategyUnit(button.getAttribute('data-strategy-unit') ?? 'metric'));
 	});
-	
+
 	document.querySelector('#strategy-form')?.addEventListener('submit', (event) => {
 		event.preventDefault();
 		const form = event.currentTarget as HTMLFormElement;
-		
+
 		const rawInput = {
 			sex: form.sex.value as 'male' | 'female',
 			age: Number(form.age.value),
@@ -304,20 +308,20 @@ const features = [
 		const target = calorieTarget(maintenance, rec.recommended);
 		const proteinLow = round(rawInput.weightKg * 1.6);
 		const proteinHigh = round(rawInput.weightKg * 2.2);
-		
-		const saved = { ...rawInput, proteinAdequate, ...rec, maintenance, target, proteinLow, proteinHigh, createdAt: new Date().toISOString() };
+
+		const saved = { ...rawInput, proteinAdequate, ...rec, maintenance, target, targetBasis: 'recommended', proteinLow, proteinHigh, createdAt: new Date().toISOString() };
 		localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(saved));
 		localStorage.removeItem('bodycompos.estimatedBodyFat');
-		
-		const history = JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]');
+
+		const history = safeJsonParse(localStorage.getItem('bodycompos.assessments'), []);
 		history.unshift(saved);
 		localStorage.setItem('bodycompos.assessments', JSON.stringify(history.slice(0, 12)));
-		
+
 		// Compute pace text — respects unit toggle for display
 		const rDecay = 0.99;
 		let paceText = 'Flat Weight';
 		let timelineText = 'Ongoing';
-		
+
 		if (rec.recommended === 'fat-loss') {
 			const pace = rawInput.weightKg * 0.0075;
 			const targetWC = rawInput.weightKg * 0.08;
@@ -346,7 +350,7 @@ const features = [
 			paceText = 'Parity (Flat scale)';
 			timelineText = '12 - 16 weeks (recommended phase block)';
 		}
-		
+
 		const outputContainer = document.querySelector('#strategy-result');
 		if (outputContainer) {
 			outputContainer.classList.add('has-result');
@@ -359,7 +363,7 @@ const features = [
 						</div>
 						<span class="badge badge-accent shrink-0 mt-1">${rec.confidence}%</span>
 					</div>
-					
+
 					<div class="grid gap-2.5 sm:grid-cols-2">
 						<div class="result-card">
 							<p class="text-xs font-bold uppercase text-muted-foreground">Alternative</p>
@@ -388,7 +392,7 @@ const features = [
 					</div>
 				</div>
 			`;
-			
+
 			outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 			(outputContainer as HTMLElement).focus();
 		}

@@ -262,10 +262,63 @@
 		return dashboardUnit === 'metric' ? `${r(kg, digits)} kg` : `${r(kgToLb(kg), digits)} lb`;
 	}
 
-	// Fetch Data Helpers
-	function getCheckins() { return JSON.parse(localStorage.getItem('bodycompos.checkins') || '[]'); }
-	function setCheckins(items) { localStorage.setItem('bodycompos.checkins', JSON.stringify(items)); }
-	function getAssessments() { return JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]'); }
+	// Safe local data helpers
+	function safeJsonParse(value, fallback) {
+		try { return value ? JSON.parse(value) : fallback; } catch { return fallback; }
+	}
+	function finiteNumber(value, min, max, fallback = null) {
+		const n = Number(value);
+		return Number.isFinite(n) && n >= min && n <= max ? n : fallback;
+	}
+	function isIsoDate(value) {
+		return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value) && !Number.isNaN(new Date(value).getTime());
+	}
+	function sanitizeCheckin(item) {
+		if (!item || !isIsoDate(item.date)) return null;
+		const weight = finiteNumber(item.weight, 35, 250);
+		const bodyFat = item.bodyFat == null || item.bodyFat === '' ? null : finiteNumber(item.bodyFat, 3, 60);
+		const adherence = finiteNumber(item.adherence, 0, 100, 0);
+		if (weight == null || adherence == null || bodyFat === undefined) return null;
+		return { date: item.date.slice(0, 10), weight, bodyFat, adherence };
+	}
+	function sanitizeAssessment(item) {
+		if (!item || !isIsoDate(item.createdAt)) return null;
+		const sex = item.sex === 'female' ? 'female' : item.sex === 'male' ? 'male' : null;
+		const recommended = ['fat-loss', 'lean-bulk', 'aggressive-bulk', 'recomp', 'maintain'].includes(item.recommended) ? item.recommended : null;
+		if (!sex || !recommended) return null;
+		const clean = {
+			sex,
+			age: finiteNumber(item.age, 18, 90),
+			heightCm: finiteNumber(item.heightCm, 120, 230),
+			weightKg: finiteNumber(item.weightKg, 35, 250),
+			bodyFat: finiteNumber(item.bodyFat, 3, 60),
+			activity: item.activity || 'moderate',
+			trainingAge: item.trainingAge || 'intermediate',
+			goalBias: item.goalBias || recommended,
+			proteinAdequate: Boolean(item.proteinAdequate),
+			recommended,
+			confidence: finiteNumber(item.confidence, 0, 100, 0),
+			alternative: item.alternative || 'maintain',
+			alternativeConfidence: finiteNumber(item.alternativeConfidence, 0, 100, 0),
+			maintenance: finiteNumber(item.maintenance, 800, 8000),
+			target: finiteNumber(item.target, 800, 8000),
+			targetBasis: item.targetBasis || 'recommended',
+			proteinLow: finiteNumber(item.proteinLow, 20, 400),
+			proteinHigh: finiteNumber(item.proteinHigh, 20, 450),
+			createdAt: item.createdAt,
+		};
+		return Object.values(clean).some((value) => value === null) ? null : clean;
+	}
+	function getCheckins() {
+		return safeJsonParse(localStorage.getItem('bodycompos.checkins'), []).map(sanitizeCheckin).filter(Boolean);
+	}
+	function setCheckins(items) { localStorage.setItem('bodycompos.checkins', JSON.stringify(items.map(sanitizeCheckin).filter(Boolean))); }
+	function getAssessments() {
+		return safeJsonParse(localStorage.getItem('bodycompos.assessments'), []).map(sanitizeAssessment).filter(Boolean);
+	}
+	function getLatestAssessment() {
+		return sanitizeAssessment(safeJsonParse(localStorage.getItem('bodycompos.latestAssessment'), null));
+	}
 
 	// Tab Management
 	document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -406,7 +459,7 @@
 
 	// Render Dashboard Data
 	function render() {
-		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
+		const latest = getLatestAssessment();
 		const checkins = getCheckins();
 		const assessments = getAssessments();
 		
@@ -517,11 +570,12 @@
 			const initialGoal = latest.goalWeight || goal;
 
 			const totalSpan = Math.abs(startWeight - initialGoal);
-			const progressSpan = Math.abs(startWeight - currentWeight);
+			const direction = initialGoal >= startWeight ? 1 : -1;
+			const directionalProgress = (currentWeight - startWeight) * direction;
 			
 			let percentage = 0;
 			if (totalSpan > 0.1) {
-				percentage = Math.max(0, Math.min(100, Math.round((progressSpan / totalSpan) * 100)));
+				percentage = Math.max(0, Math.min(100, Math.round((directionalProgress / totalSpan) * 100)));
 			}
 			
 			const circle = document.querySelector('#progress-circle-bar') as SVGCircleElement;
@@ -742,7 +796,8 @@
 	document.getElementById('export-data-btn')?.addEventListener('click', () => {
 		const checkins = getCheckins();
 		const assessments = getAssessments();
-		const database = { checkins, assessments };
+		const latestAssessment = getLatestAssessment();
+		const database = { schemaVersion: 1, checkins, assessments, latestAssessment };
 		
 		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(database));
 		const dlAnchorElem = document.createElement('a');
@@ -760,12 +815,13 @@
 		reader.onload = (e) => {
 			try {
 				const data = JSON.parse(e.target?.result as string);
-				if (data.checkins) localStorage.setItem('bodycompos.checkins', JSON.stringify(data.checkins));
-				if (data.assessments) localStorage.setItem('bodycompos.assessments', JSON.stringify(data.assessments));
-				if (data.assessments && data.assessments.length > 0) {
-					localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(data.assessments[0]));
-				}
-				alert('Database Profile imported successfully!');
+				const checkins = Array.isArray(data.checkins) ? data.checkins.map(sanitizeCheckin).filter(Boolean) : [];
+				const assessments = Array.isArray(data.assessments) ? data.assessments.map(sanitizeAssessment).filter(Boolean) : [];
+				const latest = sanitizeAssessment(data.latestAssessment) || assessments[0] || null;
+				localStorage.setItem('bodycompos.checkins', JSON.stringify(checkins));
+				localStorage.setItem('bodycompos.assessments', JSON.stringify(assessments));
+				if (latest) localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(latest));
+				alert(`Database profile imported: ${checkins.length} check-ins and ${assessments.length} assessments.`);
 				render();
 			} catch (err) {
 				alert('Error importing JSON file. Verify formatting.');

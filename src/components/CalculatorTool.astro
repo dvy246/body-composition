@@ -12,7 +12,7 @@ const { mode, title, description, primaryInputs = [], formula = 'Uses the standa
 
 // Map fields to modes to control display
 const fieldGroups = {
-	sex: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition'],
+	sex: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition', 'ideal'],
 	age: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition'],
 	height: ['tdee', 'maintenance', 'bodyfat', 'ffmi', 'ideal', 'bmi', 'whtr', 'composition', 'bmr'],
 	weight: ['tdee', 'calorie', 'protein', 'timeline', 'bodyfat', 'ffmi', 'lbm', 'macro', 'maintenance', 'bmi', 'composition', 'deficit', 'surplus', 'target', 'muscle', 'recomp', 'bmr'],
@@ -189,6 +189,33 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		const fat = r((cal * 0.28) / 9);
 		const carbs = r(Math.max(0, (cal - protein * 4 - fat * 9) / 4));
 		return { protein, fat, carbs };
+	}
+
+	function idealWeightRange(sex, h) {
+		const heightIn = cmToIn(h);
+		const overFiveFeet = Math.max(0, heightIn - 60);
+		const midpoint = sex === 'male' ? 48 + 2.7 * overFiveFeet : 45.5 + 2.2 * overFiveFeet;
+		return { low: midpoint * 0.9, midpoint, high: midpoint * 1.1 };
+	}
+
+	function targetWeightFromBodyFat(w, bf, targetBodyFat) {
+		const leanMass = w * (1 - bf / 100);
+		const targetWeight = leanMass / (1 - targetBodyFat / 100);
+		return { leanMass, targetWeight, change: targetWeight - w };
+	}
+
+	function strategyMultiplier(mode, goal) {
+		if (mode === 'deficit') return 0.85;
+		if (mode === 'surplus' || mode === 'muscle') return 1.08;
+		if (mode === 'recomp') return 0.98;
+		return { 'fat-loss': 0.85, maintain: 1, 'lean-bulk': 1.08, recomp: 0.98 }[goal] || 1;
+	}
+
+	function whtrCategory(value) {
+		if (value < 0.4) return 'Low';
+		if (value <= 0.5) return 'Generally healthy';
+		if (value <= 0.6) return 'Elevated';
+		return 'High';
 	}
 	
 	function toMetric(values) {
@@ -411,7 +438,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		
 		const baseBmr = bfVal ? katch(w, bfVal) : mifflin(sex, age, h, w);
 		const maintenance = r(baseBmr * activity);
-		const targetCal = r(maintenance * ({ 'fat-loss': 0.85, maintain: 1, 'lean-bulk': 1.08, recomp: 0.98 }[goal] || 1));
+		const targetCal = r(maintenance * strategyMultiplier(mode, goal));
 		const b = r(bmi(w, h), 1);
 		const lean = bfVal ? r(w * (1 - bfVal / 100), 1) : null;
 		const fatMass = bfVal ? r(w - lean, 1) : null;
@@ -422,7 +449,11 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		
 		// Configure dynamic rows and visual graphs based on categories
 		if (['tdee', 'maintenance', 'bmr'].includes(mode)) {
-			rows = [
+			rows = mode === 'bmr' ? [
+				['BMR (resting)', `${r(baseBmr)} kcal`, 64],
+				['Body weight', formatWeight(w), 52],
+				['Formula basis', bfVal ? 'Katch-McArdle' : 'Mifflin-St Jeor', 58]
+			] : [
 				['BMR (resting)', `${r(baseBmr)} kcal`, 44],
 				['Maintenance (TDEE)', `${maintenance} kcal`, 76],
 				['Activity factor', activity, 55]
@@ -443,11 +474,11 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				</div>
 			`;
 		}
-		else if (['calorie', 'deficit', 'surplus', 'recomp', 'calorie-deficit-calculator', 'calorie-surplus-calculator', 'body-recomposition-calculator'].includes(mode) || mode.includes('calorie')) {
+		else if (['calorie', 'deficit', 'surplus', 'recomp', 'muscle'].includes(mode) || mode.includes('calorie')) {
 			rows = [
 				['Maintenance', `${maintenance} kcal`, 65],
-				['Target Calories', `${targetCal} kcal`, goal === 'fat-loss' ? 52 : 74],
-				['Protein Range', `${m.protein} g`, 68]
+				[mode === 'deficit' ? 'Deficit Target' : mode === 'surplus' ? 'Surplus Target' : mode === 'recomp' ? 'Recomp Target' : mode === 'muscle' ? 'Lean Gain Target' : 'Target Calories', `${targetCal} kcal`, strategyMultiplier(mode, goal) < 1 ? 52 : 74],
+				['Protein Target', `${m.protein} g`, 68]
 			];
 			snapshotHtml = `
 				<div class="result-card">
@@ -496,7 +527,34 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				</div>
 			`;
 		}
-		else if (['bodyfat', 'ffmi', 'lbm', 'composition', 'waist-to-height-ratio-calculator', 'whtr', 'bmi', 'ideal'].includes(mode) || mode.includes('composition') || mode.includes('fat') || mode.includes('mass')) {
+		else if (mode === 'ideal') {
+			const ideal = idealWeightRange(sex, h);
+			rows = [
+				['Low range', formatWeight(ideal.low), 44],
+				['Midpoint', formatWeight(ideal.midpoint), 60],
+				['High range', formatWeight(ideal.high), 76]
+			];
+			snapshotHtml = `<div class="result-card"><p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Ideal Weight Context</p><p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Uses a Hamwi-style height estimate with a ±10% practical range. Body composition and training goals can justify weights outside this range.</p></div>`;
+		}
+		else if (mode === 'whtr') {
+			const ratio = waist / h;
+			rows = [
+				['Waist-to-height', r(ratio, 2), clamp(ratio * 120, 10, 95)],
+				['Waist', formatLength(waist), 52],
+				['Category', whtrCategory(ratio), ratio <= 0.5 ? 70 : 45]
+			];
+			snapshotHtml = `<div class="result-card"><p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Central Adiposity Screen</p><p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Waist-to-height ratio is a screening estimate. A common public-health target is keeping waist circumference below roughly half of height.</p></div>`;
+		}
+		else if (mode === 'target') {
+			const target = targetWeightFromBodyFat(w, bfVal, targetBodyFat);
+			rows = [
+				['Target Weight', formatWeight(target.targetWeight), 64],
+				['Required Change', `${target.change >= 0 ? '+' : ''}${formatWeight(target.change)}`, 48],
+				['Lean Mass Held', formatWeight(target.leanMass), 68]
+			];
+			snapshotHtml = `<div class="result-card"><p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Target Composition Model</p><p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Assumes lean mass is maintained while fat mass changes toward the selected target body fat percentage.</p></div>`;
+		}
+		else if (['bodyfat', 'ffmi', 'lbm', 'composition', 'bmi'].includes(mode) || mode.includes('composition') || mode.includes('fat') || mode.includes('mass')) {
 			rows = [
 				['BMI scale', b, Math.min(92, b * 2.7)],
 				['Lean Mass', lean ? formatWeight(lean) : 'BF% needed', 68],

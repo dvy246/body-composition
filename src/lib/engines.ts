@@ -55,6 +55,7 @@ export function calorieTarget(maintenance: number, goal: Goal) {
 
 export function strategyRecommendation(input: {
 	bodyFat: number;
+	sex?: Sex;
 	trainingAge: 'beginner' | 'intermediate' | 'advanced';
 	goalBias: Goal;
 	proteinAdequate?: boolean;
@@ -68,16 +69,21 @@ export function strategyRecommendation(input: {
 	};
 
 	const bf = input.bodyFat;
-	if (bf >= 28) scores['fat-loss'] += 28;
-	if (bf >= 20 && bf < 28) scores.recomp += 18;
-	if (bf >= 12 && bf < 20) scores['lean-bulk'] += 14;
-	if (bf < 12) scores['lean-bulk'] += 12;
+	const sex = input.sex || 'male';
+	const thresholds = sex === 'female'
+		? { high: 24, midLow: 18, midHigh: 24, leanLow: 16, leanHigh: 18 }
+		: { high: 20, midLow: 15, midHigh: 20, leanLow: 10, leanHigh: 15 };
+
+	if (bf >= thresholds.high) scores['fat-loss'] += 28;
+	if (bf >= thresholds.midLow && bf < thresholds.midHigh) scores.recomp += 18;
+	if (bf >= thresholds.leanLow && bf < thresholds.leanHigh) scores['lean-bulk'] += 14;
+	if (bf < thresholds.leanLow) scores['lean-bulk'] += 12;
 	if (input.trainingAge === 'beginner') scores.recomp += 20;
 	if (input.trainingAge === 'intermediate') scores['lean-bulk'] += 8;
 	if (input.trainingAge === 'advanced') scores.maintain += 6;
 	if (input.proteinAdequate) scores.recomp += 8;
 	scores[input.goalBias] += 22;
-	if (input.goalBias === 'aggressive-bulk' && bf > 20) scores['aggressive-bulk'] -= 12;
+	if (input.goalBias === 'aggressive-bulk' && bf > thresholds.midHigh) scores['aggressive-bulk'] -= 12;
 
 	const ranked = Object.entries(scores).sort((a, b) => b[1] - a[1]) as [Goal, number][];
 	const totalTop = ranked[0][1] + ranked[1][1];
@@ -87,7 +93,7 @@ export function strategyRecommendation(input: {
 		alternative: ranked[1][0],
 		alternativeConfidence: clamp(round((ranked[1][1] / totalTop) * 100), 8, 48),
 		reasons: [
-			`Estimated body fat: ${bf}%`,
+			`Estimated body fat: ${bf}% (${sex})`,
 			`Training age: ${input.trainingAge}`,
 			`Goal preference: ${labelGoal(input.goalBias)}`,
 			input.proteinAdequate ? 'Protein appears adequate for strategy support' : 'Protein adequacy was not confirmed',
@@ -371,6 +377,7 @@ export type ForecastResult = {
 	etaWeeks: number | null;
 	predictedCompletionDate: string | null;
 	predictions: { date: string; weight: number; isProjected: boolean }[];
+	status: string;
 };
 
 export function forecastProgress(checkins: any[], goalWeight: number): ForecastResult {
@@ -382,7 +389,7 @@ export function forecastProgress(checkins: any[], goalWeight: number): ForecastR
 	}));
 
 	if (sorted.length < 2) {
-		return { pacePerWeek: 0, etaWeeks: null, predictedCompletionDate: null, predictions };
+		return { pacePerWeek: 0, etaWeeks: null, predictedCompletionDate: null, predictions, status: 'Need more data' };
 	}
 
 	const first = sorted[0];
@@ -429,11 +436,14 @@ export function forecastProgress(checkins: any[], goalWeight: number): ForecastR
 		}
 	}
 
+	const status = movingToward ? 'On track' : 'Needs trend direction';
+
 	return {
 		pacePerWeek: round(pacePerWeek, 2),
 		etaWeeks: etaWeeks ? round(etaWeeks, 1) : null,
 		predictedCompletionDate,
-		predictions
+		predictions,
+		status
 	};
 }
 
@@ -464,4 +474,14 @@ export function calculateFFMI(weightKg: number, heightCm: number, bodyFat: numbe
 		ffmi: round(ffmi, 2),
 		normalizedFfmi: round(normalizedFfmi, 2)
 	};
+}
+
+
+export function safeJsonParse<T>(value: string | null, fallback: T): T {
+	if (!value) return fallback;
+	try {
+		return JSON.parse(value) as T;
+	} catch {
+		return fallback;
+	}
 }
