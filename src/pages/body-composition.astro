@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { DOMAIN, calculators, calculatorCategories, absoluteUrl, articleSchema } from '../data/site';
+
+const title = 'Body Composition - Complete Strategy Resource | BodyCompOS';
+const description = 'Your complete body composition strategy resource. Learn how to cut, bulk, recomp, or maintain with evidence-based guides, calculators, and tools for tracking progress.';
+const canonical = `${DOMAIN}/body-composition`;
+
+const guideLinks = [
+	{ href: '/guides/should-i-cut-or-bulk', title: 'Should I Cut or Bulk?', desc: 'Decision matrix using body fat thresholds, training age, and metabolic signals.', icon: '⚖️' },
+	{ href: '/guides/body-recomposition', title: 'Body Recomposition Guide', desc: 'Build muscle and lose fat simultaneously — who qualifies and how to approach it.', icon: '🔄' },
+	{ href: '/guides/protein-nutrition', title: 'Protein for Body Composition', desc: 'ISSN guidelines for protein intake by goal, timing, and food sources.', icon: '🥩' },
+	{ href: '/guides/body-fat-percentage', title: 'Body Fat Percentage Guide', desc: 'How to estimate body fat using Navy Method, calipers, DEXA, and visual scales.', icon: '📊' },
+	{ href: '/guides/maintenance-calories', title: 'Maintenance Calories Guide', desc: 'TDEE formulas, activity multipliers, metabolic adaptation, and verification.', icon: '⚡' },
+];
+
+const pillarSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description,
+	datePublished: '2026-06-26',
+	dateModified: '2026-06-26',
+	author: { '@type': 'Person', name: 'BodyCompOS Editorial Board', url: `${DOMAIN}/about` },
+	publisher: { '@type': 'Organization', name: 'BodyCompOS', logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon.svg` } },
+	hasPart: [
+		...guideLinks.map(g => ({ '@type': 'Article', headline: g.title, description: g.desc, url: `${DOMAIN}${g.href}` })),
+		...calculators.map(c => ({ '@type': 'SoftwareApplication', name: c.title, description: c.description, url: `${DOMAIN}/calculators/${c.slug}` })),
+	],
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={[pillarSchema]}>
+	<section class="site-container py-10 sm:py-14">
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<span class="text-foreground">Body Composition</span>
+		</nav>
+
+		<!-- Hero -->
+		<div class="max-w-3xl">
+			<p class="eyebrow">Complete Resource</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Body Composition<br />
+				<span class="text-accent">Strategy Resource Center</span>
+			</h1>
+			<p class="mt-5 text-lg leading-relaxed text-muted-foreground max-w-2xl">
+				Everything you need to assess your current body composition, choose the right strategy,
+				set calorie and protein targets, track progress, and know when to adjust. All tools are
+				evidence-based, free, and private — no account required.
+			</p>
+		</div>
+
+		<!-- Quick-start cards -->
+		<div class="mt-10 grid gap-4 sm:grid-cols-3">
+			<div class="app-card text-center">
+				<span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent mx-auto">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				</span>
+				<h2 class="mt-3 text-sm font-bold text-foreground">Assess</h2>
+				<p class="mt-1.5 text-xs text-muted-foreground leading-relaxed">Estimate your body fat and get a personalized strategy recommendation.</p>
+				<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Start Assessment</a>
+			</div>
+			<div class="app-card text-center">
+				<span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent mx-auto">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+				</span>
+				<h2 class="mt-3 text-sm font-bold text-foreground">Calculate</h2>
+				<p class="mt-1.5 text-xs text-muted-foreground leading-relaxed">Set calorie, protein, and macro targets using peer-reviewed formulas.</p>
+				<a href="/calculators" class="button-primary w-full text-center text-xs mt-4 block">Browse Calculators</a>
+			</div>
+			<div class="app-card text-center">
+				<span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent mx-auto">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg>
+				</span>
+				<h2 class="mt-3 text-sm font-bold text-foreground">Track</h2>
+				<p class="mt-1.5 text-xs text-muted-foreground leading-relaxed">Log check-ins, forecast progress, and detect plateaus locally.</p>
+				<a href="/dashboard" class="button-primary w-full text-center text-xs mt-4 block">Open Dashboard</a>
+			</div>
+		</div>
+
+		<!-- Guides Section -->
+		<section class="mt-16 border-t border-border pt-12">
+			<h2 class="text-2xl font-black text-foreground sm:text-3xl">Strategy Guides</h2>
+			<p class="mt-2 text-sm text-muted-foreground max-w-xl">In-depth evidence-based guides covering every body composition strategy.</p>
+			<div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				{guideLinks.map((g) => (
+					<a href={g.href} class="app-card group hover:border-accent/50 transition-all duration-200">
+						<div class="text-2xl mb-3" aria-hidden="true">{g.icon}</div>
+						<h3 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">{g.title}</h3>
+						<p class="mt-2 text-xs text-muted-foreground leading-relaxed">{g.desc}</p>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<!-- Calculators Section -->
+		<section class="mt-16 border-t border-border pt-12">
+			<h2 class="text-2xl font-black text-foreground sm:text-3xl">Calculators by Category</h2>
+			<p class="mt-2 text-sm text-muted-foreground max-w-xl">Supporting tools for every step of the strategy process.</p>
+			<div class="mt-8 space-y-10">
+				{calculatorCategories.map((cat) => (
+					<div>
+						<h3 class="text-base font-bold text-foreground">{cat.title}</h3>
+						<p class="text-xs text-muted-foreground mt-1">{cat.description}</p>
+						<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+							{cat.slugs.map((slug) => {
+								const calc = calculators.find((c) => c.slug === slug);
+								if (!calc) return null;
+								return (
+									<a href={`/calculators/${calc.slug}`} class="app-card block group">
+										<div class="flex justify-between items-start">
+											<h4 class="font-bold text-xs text-foreground group-hover:text-accent transition-colors">{calc.title}</h4>
+											<svg class="text-muted-foreground group-hover:text-accent shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+										</div>
+										<p class="mt-1.5 text-xs text-muted-foreground leading-relaxed">{calc.description}</p>
+									</a>
+								);
+							})}
+						</div>
+					</div>
+				))}
+			</div>
+			<div class="mt-8 text-center">
+				<a href="/calculators" class="button-secondary text-sm">View All {calculators.length} Calculators</a>
+			</div>
+		</section>
+
+		<!-- Comparisons Section -->
+		<section class="mt-16 border-t border-border pt-12">
+			<h2 class="text-2xl font-black text-foreground sm:text-3xl">Strategy Comparisons</h2>
+			<p class="mt-2 text-sm text-muted-foreground max-w-xl">Side-by-side comparisons to help you choose between approaches.</p>
+			<div class="mt-8 grid gap-4 sm:grid-cols-3">
+				<a href="/compare/cut-vs-recomp" class="app-card group hover:border-accent/50 transition-all duration-200">
+					<h3 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">Cut vs Recomp</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Compare fat loss vs recomposition — pace, muscle retention, and who each suits best.</p>
+				</a>
+				<a href="/compare/lean-bulk-vs-aggressive-bulk" class="app-card group hover:border-accent/50 transition-all duration-200">
+					<h3 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">Lean Bulk vs Aggressive Bulk</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Controlled surplus vs faster weight gain — fat spillover, timeline, and metabolic impact.</p>
+				</a>
+				<a href="/compare/bmi-vs-body-fat-percentage" class="app-card group hover:border-accent/50 transition-all duration-200">
+					<h3 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">BMI vs Body Fat %</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Why BMI is a screening metric and body fat percentage gives real composition insight.</p>
+				</a>
+			</div>
+		</section>
+
+		<!-- CTA -->
+		<section class="mt-16 border-t border-border pt-12">
+			<div class="rounded-2xl border border-border bg-accent/5 p-8 text-center">
+				<h2 class="text-2xl font-black text-foreground">Ready to Build Your Strategy?</h2>
+				<p class="mt-3 text-sm text-muted-foreground max-w-lg mx-auto">The Strategy Finder combines your stats with evidence-based logic to recommend the right path forward.</p>
+				<div class="mt-6 flex flex-wrap justify-center gap-3">
+					<a href="/assess" class="button-primary">Run Strategy Finder</a>
+					<a href="/body-composition-strategy-guide" class="button-secondary">Read the Full Guide</a>
+				</div>
+			</div>
+		</section>
+	</section>
+</Layout>
