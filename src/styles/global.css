@@ -532,3 +532,90 @@ a {
 	border-radius: 0.65rem;
 	background: color-mix(in srgb, var(--muted) 60%, transparent);
 }
+
+/* ─── Cookie Consent Banner ─────────────────────────────── */
+.cookie-banner {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	padding: 0.875rem 1rem;
+	background: var(--card);
+	border-top: 1px solid var(--border);
+	box-shadow: 0 -4px 24px rgb(0 0 0 / 0.12);
+	animation: slideUpFade 0.3s ease-out both;
+}
+.cookie-banner__inner {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+.cookie-banner__text {
+	font-size: 0.8125rem;
+	color: var(--muted-foreground);
+	line-height: 1.5;
+}
+.cookie-banner__link {
+	color: var(--accent);
+	text-decoration: underline;
+	margin-left: 0.25rem;
+}
+.cookie-banner__actions {
+	display: flex;
+	gap: 0.5rem;
+	flex-shrink: 0;
+}
+.cookie-banner__btn {
+	padding: 0.375rem 0.875rem;
+	border-radius: 0.5rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	cursor: pointer;
+	border: 1px solid var(--border);
+	transition: all 0.15s ease;
+}
+.cookie-banner__btn--accept {
+	background: var(--accent);
+	color: var(--accent-foreground);
+	border-color: var(--accent);
+}
+.cookie-banner__btn--accept:hover {
+	opacity: 0.88;
+}
+.cookie-banner__btn--decline {
+	background: transparent;
+	color: var(--muted-foreground);
+}
+.cookie-banner__btn--decline:hover {
+	background: var(--muted);
+	color: var(--foreground);
+}
+
+@keyframes slideUpFade {
+	from { transform: translateY(100%); opacity: 0; }
+	to { transform: translateY(0); opacity: 1; }
+}
+
+/* ─── Print Styles ──────────────────────────────────────── */
+@media print {
+	header, footer, .cookie-banner, nav[aria-label="Breadcrumb"],
+	.button-primary, .button-secondary, #mobile-menu-toggle {
+		display: none !important;
+	}
+	body {
+		background: white;
+		color: black;
+		font-size: 11pt;
+	}
+	.site-container {
+		max-width: 100%;
+		padding: 0;
+	}
+	h1, h2, h3 { color: black; }
+	a { color: black; text-decoration: underline; }
+}

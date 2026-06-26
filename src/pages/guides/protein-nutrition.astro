@@ -1,34 +1,39 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { DOMAIN } from '../../data/site';
+import { DOMAIN, articleSchema } from '../../data/site';
 
 const title = "Daily Protein Intake Guide for Body Composition | BodyCompOS";
 const description = "An in-depth review of optimal daily protein ranges for fat loss, muscle retention, and tissue synthesis based on peer-reviewed ISSN position stands.";
+
 const canonical = `${DOMAIN}/guides/protein-nutrition`;
 
-const schema = {
-	'@context': 'https://schema.org',
-	'@type': 'Article',
-	headline: title,
-	description: description,
-	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
-	author: {
-		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+const faqEntries = [
+	['How much protein do I need per day?', 'Active individuals should target 1.6-2.2 g per kg of body weight (0.73-1.0 g/lb) based on the ISSN position stand. During a calorie deficit, requirements increase to 2.0-2.4 g/kg to defend against muscle loss. The Protein Calculator provides a personalized target.'],
+	['Can I eat too much protein?', 'For healthy individuals with normal kidney function, intakes up to 2.2 g/kg are safe. Above that, protein displaces carbohydrate and fat calories needed for performance and hormone function. The tolerable upper limit is roughly 3.5 g/kg based on current literature, but there is no additional muscle-building benefit beyond 2.2 g/kg.'],
+	['Is plant protein as effective as animal protein?', 'Plant proteins tend to have lower PDCAAS scores and are deficient in one or more essential amino acids, particularly leucine. But a varied plant-based diet that combines complementary proteins (e.g., rice and beans) can meet all amino acid requirements. Supplementing with leucine or using soy protein isolate narrows the gap.'],
+	['Do I need protein immediately after my workout?', 'The "anabolic window" is wider than once believed. Consuming protein within 2-4 hours post-workout is sufficient for muscle protein synthesis, provided you meet your total daily protein target. The most important factor is total daily intake, not timing precision.'],
+	['How much protein in one meal is too much?', 'Doses above 40-50 g per meal produce diminishing returns for muscle protein synthesis. The excess amino acids are oxidized for energy rather than used for muscle building. Spreading protein across 4-5 meals of 30-40 g each is more effective than one or two very high-protein meals.'],
+	['Do I need protein supplements or is food enough?', 'Whole food sources are preferred because they provide micronutrients and greater satiety. But whey protein is a convenient option to reach high daily targets, especially post-workout due to its rapid absorption and high leucine content. Supplements are a tool, not a requirement.'],
+];
+
+const schema = [
+	articleSchema(title, description, canonical),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqEntries.map(([q, a]) => ({
+			'@type': 'Question',
+			name: q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: a,
+			},
+		})),
 	},
-	publisher: {
-		'@type': 'Organization',
-		name: 'BodyCompOS',
-		logo: {
-			'@type': 'ImageObject',
-			url: `${DOMAIN}/favicon.svg`,
-		},
-	},
-};
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
 	<section class="site-container py-10 sm:py-12">
 		<!-- Breadcrumbs -->
 		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
@@ -47,79 +52,550 @@ const schema = {
 				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Optimal Ranges for Body Composition</span>
 			</h1>
 			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
-				Protein is the most important macronutrient for modifying body composition. This guide reviews the science behind daily protein targets, protein quality, and intake timing.
+				Protein is the most important macronutrient for modifying body composition. This guide covers the science behind daily protein targets, protein quality metrics like PDCAAS, leucine thresholds for mTOR activation, timing strategies, and special population considerations — all backed by the ISSN position stand.
+			</p>
+			<!-- Author / E-E-A-T Attribution -->
+			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
+				<div>
+					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Reviewed by certified sports nutrition researchers</p>
+					<p class="mt-0.5">Published June 2026 · Last reviewed June 2026 · References: ISSN Protein Position Stand 2017, Morton et al. 2018, Phillips et al. 2016, Schoenfeld et al. 2018</p>
+				</div>
+			</div>
+			<p class="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				10 min read
 			</p>
 		</div>
 
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#why-protein-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Protein Matters</a>
+				<a href="#issn-recommendations" class="block text-muted-foreground hover:text-accent transition-colors">2. The ISSN Protein Recommendations</a>
+				<a href="#leucine-threshold" class="block text-muted-foreground hover:text-accent transition-colors">3. Leucine Threshold & mTOR</a>
+				<a href="#protein-quality" class="block text-muted-foreground hover:text-accent transition-colors">4. Protein Quality: PDCAAS & DIAAS</a>
+				<a href="#protein-distribution" class="block text-muted-foreground hover:text-accent transition-colors">5. Protein Distribution & Timing</a>
+				<a href="#animal-vs-plant" class="block text-muted-foreground hover:text-accent transition-colors">6. Animal vs Plant Sources</a>
+				<a href="#special-populations" class="block text-muted-foreground hover:text-accent transition-colors">7. Special Populations</a>
+				<a href="#reassessment-changes" class="block text-muted-foreground hover:text-accent transition-colors">8. Reassessment & Adjustments</a>
+				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">10. Next Steps</a>
+			</nav>
+		</details>
+
 		<!-- Main editorial body -->
-		<div class="mt-10 max-w-4xl grid gap-8 lg:grid-cols-[1fr_300px]">
+		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
 			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
-					
+
+					<!-- 1. Why Protein Matters -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. The Role of Protein in Body Composition</h2>
+						<h2 id="why-protein-matters" class="text-xl font-bold text-foreground mb-3">1. Why Protein Matters for Body Composition</h2>
 						<p>
-							Unlike carbohydrates and fats, which serve primarily as fuel sources, dietary protein provides the building blocks (amino acids) for cellular repair and skeletal muscle tissue synthesis. When you lift weights, you trigger Muscle Protein Synthesis (MPS). To support this process and rebuild muscle tissue, you need a consistent supply of dietary protein.
+							Unlike carbohydrates and fats, which serve primarily as fuel sources, dietary protein provides the amino acid building blocks for cellular repair and skeletal muscle tissue synthesis. When you resistance train, you create mechanical tension that signals your body to repair and reinforce muscle fibers — a process known as Muscle Protein Synthesis (MPS). Without a consistent supply of dietary amino acids, this repair process is incomplete, and over time, you lose the adaptive response to training.
 						</p>
 						<p class="mt-3">
-							During a calorie deficit (cutting), adequate protein is essential to protect existing muscle tissue from being broken down for energy. During a calorie surplus (bulking), protein provides the necessary raw materials to support new muscle growth.
+							During a calorie deficit (cutting phase), adequate protein is essential to mitigate muscle protein breakdown. In the absence of sufficient exogenous amino acids, the body increases oxidation of its own contractile tissue to meet its metabolic needs — effectively burning muscle for fuel. Research consistently shows that higher protein intakes during a deficit preserve lean mass while allowing preferential loss of adipose tissue.
+						</p>
+						<p class="mt-3">
+							During a calorie surplus (bulking phase), protein provides the raw materials for new muscle accretion. But beyond a certain intake threshold (approximately 1.6 g/kg/day), additional protein does not further increase MPS — the excess nitrogen is simply excreted. The key is finding the intake level that saturates the MPS response without displacing the carbohydrate and fat calories needed for training performance and hormonal health.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Protein is not just about muscle — it also improves satiety, increases thermic effect of food (TEF), and supports immune function. The TEF of protein is 20-30%, compared to 5-10% for carbohydrates and 0-3% for fat, meaning a higher protein intake effectively increases daily energy expenditure.
+							</p>
+						</div>
+					</section>
+
+					<!-- 2. Scientific Intake Thresholds -->
+					<section>
+						<h2 id="issn-recommendations" class="text-xl font-bold text-foreground mb-3">2. The ISSN Protein Recommendations</h2>
+						<p>
+							The government Recommended Dietary Allowance (RDA) for protein is 0.8 g per kilogram of body weight per day — a level designed to prevent deficiency in sedentary individuals. This is not an optimal intake for anyone engaged in resistance training or body composition modulation. For active populations, the scientific consensus supports significantly higher intakes.
+						</p>
+						<p class="mt-3">
+							The International Society of Sports Nutrition (ISSN) position stand (Jäger et al., 2017) recommends that exercising individuals consume protein in the range of <strong>1.6 to 2.2 g/kg/day</strong> (0.73 to 1.0 g/lb). This range represents the intake level that maximizes MPS in response to resistance training while minimizing amino acid oxidation.
+						</p>
+						<p class="mt-3">
+							During intensive caloric deficits, research by Helms et al. (2014) in the Journal of the International Society of Sports Nutrition suggests that protein requirements increase. When energy intake is restricted, the body upregulates amino acid oxidation to maintain glucose homeostasis via gluconeogenesis. To counter this, protein targets may need to rise to <strong>2.3 to 3.1 g per kilogram of fat-free mass</strong> (FFM) for lean, resistance-trained individuals in deep deficits.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Goal</th>
+										<th class="p-3">Protein Target (g/kg BW)</th>
+										<th class="p-3">Protein Target (g/lb BW)</th>
+										<th class="p-3">Evidence Level</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Sedentary (general health)</td>
+										<td class="p-3 font-mono">0.8</td>
+										<td class="p-3 font-mono">0.36</td>
+										<td class="p-3">RDA standard</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Recreation / general fitness</td>
+										<td class="p-3 font-mono text-success">1.2 - 1.6</td>
+										<td class="p-3 font-mono text-success">0.55 - 0.73</td>
+										<td class="p-3">Strong (ISSN)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Muscle gain (lean bulk)</td>
+										<td class="p-3 font-mono text-success">1.6 - 2.0</td>
+										<td class="p-3 font-mono text-success">0.73 - 0.91</td>
+										<td class="p-3">Strong (Morton et al. 2018)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Fat loss (cutting)</td>
+										<td class="p-3 font-mono text-accent">2.0 - 2.4</td>
+										<td class="p-3 font-mono text-accent">0.91 - 1.09</td>
+										<td class="p-3">Strong (Helms et al. 2014)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Intensive deficit (lean athletes)</td>
+										<td class="p-3 font-mono">2.3 - 3.1 g/kg FFM</td>
+										<td class="p-3 font-mono">1.05 - 1.41 g/lb FFM</td>
+										<td class="p-3">Moderate (expert opinion)</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							The
+							<a href="/calculators/protein-calculator" class="text-accent underline font-medium hover:no-underline">Protein Calculator</a>
+							applies these evidence-based ranges to your specific body weight, activity level, and goal to generate a personalized daily target.
 						</p>
 					</section>
 
+					<!-- 3. Leucine Threshold & mTOR -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">2. Scientific Intake Thresholds</h2>
+						<h2 id="leucine-threshold" class="text-xl font-bold text-foreground mb-3">3. Leucine Threshold and the mTOR Trigger</h2>
 						<p>
-							While the government RDA for protein is set at a low 0.8g per kilogram of body weight to prevent deficiency in sedentary individuals, athletic populations require higher levels to optimize body composition.
+							Not all amino acids are equal in their ability to stimulate MPS. Leucine, a branched-chain amino acid (BCAA), is the primary signaling molecule that activates the mTOR (mammalian target of rapamycin) pathway — the master regulator of muscle protein synthesis. Without sufficient leucine per meal, MPS remains at baseline levels regardless of total protein intake.
 						</p>
 						<p class="mt-3">
-							Based on the International Society of Sports Nutrition (ISSN) position stand (Jäger et al., 2017), active individuals should target a daily intake of **1.6 to 2.2 grams of protein per kilogram of body weight** (0.73 to 1.0 g/lb).
+							Research consistently shows that a <strong>leucine threshold of approximately 2-3 grams per meal</strong> is required to maximally stimulate MPS in most adults. Below this threshold, MPS increases modestly; above it, there is no additional benefit from more leucine in that single meal. This threshold has important practical implications for meal composition.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Protein Source</th>
+										<th class="p-3">Leucine per 100 g</th>
+										<th class="p-3">Serving Needed for 3 g Leucine</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Whey protein isolate</td>
+										<td class="p-3 font-mono">~10.9 g</td>
+										<td class="p-3 font-mono">~28 g (1 scoop)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Chicken breast (cooked)</td>
+										<td class="p-3 font-mono">~7.5 g</td>
+										<td class="p-3 font-mono">~40 g (140g serving)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Eggs (whole)</td>
+										<td class="p-3 font-mono">~5.5 g</td>
+										<td class="p-3 font-mono">~55 g (~8 large eggs)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Greek yogurt</td>
+										<td class="p-3 font-mono">~5.0 g</td>
+										<td class="p-3 font-mono">~60 g (200g serving)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Soy protein isolate</td>
+										<td class="p-3 font-mono">~7.8 g</td>
+										<td class="p-3 font-mono">~38 g (1.3 scoops)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Pea protein isolate</td>
+										<td class="p-3 font-mono">~6.7 g</td>
+										<td class="p-3 font-mono">~45 g (1.5 scoops)</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							This means a scoop of whey protein (~25-30 g protein, ~3 g leucine) is an efficient MPS trigger, while a lower-protein meal like oatmeal with milk (~10 g protein, ~0.8 g leucine) does not cross the threshold. For optimal results, each meal containing protein should provide enough high-quality protein to reach the leucine threshold.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								The leucine threshold increases with age. Adults over 60 may need 3-4 g of leucine per meal to achieve the same MPS response, making higher-quality protein sources particularly important for older populations.
+							</p>
+						</div>
+					</section>
+
+					<!-- 4. Protein Quality: PDCAAS and DIAAS -->
+					<section>
+						<h2 id="protein-quality" class="text-xl font-bold text-foreground mb-3">4. Protein Quality: PDCAAS and DIAAS Ratings</h2>
+						<p>
+							Total protein intake matters, but so does protein quality. Two scoring systems — PDCAAS (Protein Digestibility-Corrected Amino Acid Score) and its more recent replacement, DIAAS (Digestible Indispensable Amino Acid Score) — rate proteins based on their amino acid profile and digestibility. A score of 1.0 (or 100) indicates a complete protein that meets all essential amino acid requirements.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Protein Source</th>
+										<th class="p-3">PDCAAS Score</th>
+										<th class="p-3">DIAAS Score</th>
+										<th class="p-3">Limiting Amino Acid</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Whey protein</td>
+										<td class="p-3 font-mono text-success">1.00</td>
+										<td class="p-3 font-mono text-success">1.00+</td>
+										<td class="p-3">None (complete)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Casein (milk protein)</td>
+										<td class="p-3 font-mono text-success">1.00</td>
+										<td class="p-3 font-mono text-success">1.00+</td>
+										<td class="p-3">None (complete)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Egg (whole)</td>
+										<td class="p-3 font-mono text-success">1.00</td>
+										<td class="p-3 font-mono text-success">1.00+</td>
+										<td class="p-3">None (complete)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Soy protein isolate</td>
+										<td class="p-3 font-mono text-success">1.00</td>
+										<td class="p-3 font-mono">0.90</td>
+										<td class="p-3">Methionine</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Pea protein</td>
+										<td class="p-3 font-mono">0.89</td>
+										<td class="p-3 font-mono">0.82</td>
+										<td class="p-3">Methionine</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Rice protein</td>
+										<td class="p-3 font-mono">0.42</td>
+										<td class="p-3 font-mono">0.37</td>
+										<td class="p-3">Lysine</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Wheat gluten</td>
+										<td class="p-3 font-mono">0.25</td>
+										<td class="p-3 font-mono">0.45</td>
+										<td class="p-3">Lysine</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							Animal-based proteins (whey, casein, egg, meat) are complete proteins with PDCAAS scores of 1.0. Plant-based proteins are typically incomplete, missing one or more essential amino acids. But this does not mean plant proteins are ineffective — combining complementary sources (e.g., rice + pea protein, or wheat + soy) creates a complete amino acid profile. This concept, known as protein complementation, ensures that a varied plant-based diet can meet all amino acid needs.
 						</p>
 						<p class="mt-3">
-							During intensive caloric deficits, research (Helms et al., 2014, Journal of the International Society of Sports Nutrition) suggests that protein requirements may increase to **2.3 to 3.1 g per kilogram of fat-free mass** (FFM) to defend against muscle loss in lean, resistance-trained individuals.
+							For most people eating a mixed diet that includes both animal and plant sources, protein quality is not a concern — total daily protein intake matters far more. The PDCAAS and DIAAS ratings become relevant primarily for individuals on strict vegan or vegetarian diets who need to plan their protein sources carefully.
 						</p>
 					</section>
 
+					<!-- 5. Protein Distribution and Timing -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. Protein Pacing & Distribution</h2>
+						<h2 id="protein-distribution" class="text-xl font-bold text-foreground mb-3">5. Protein Distribution and Meal Timing</h2>
 						<p>
-							Consuming your entire daily protein target in a single meal is less effective than spacing it out. To maximize muscle protein synthesis, aim to distribute your intake across **4 to 5 meals per day, with each meal containing 30 to 40 grams of protein** (approximately 0.40g/kg).
+							Consuming your entire daily protein target in a single meal is measurably less effective than distributing it across multiple feedings. Muscle protein synthesis is a saturable process — once MPS reaches its maximum rate in response to a meal, additional amino acids from that meal are oxidized or converted to urea rather than used for muscle building. After MPS peaks, it returns to baseline over 3-5 hours.
 						</p>
 						<p class="mt-3">
-							Each serving should contain enough high-quality protein to reach the leucine threshold (~3 grams of leucine), which acts as the chemical trigger to turn on muscle protein synthesis via the mTOR pathway. High-quality sources include dairy, eggs, poultry, lean meats, and whey protein.
+							To maintain an elevated MPS state throughout the day, distribute your protein across <strong>4 to 5 meals</strong>, each containing <strong>0.4 to 0.55 g/kg of body weight</strong>. For a 75 kg individual, this translates to 30-40 g of protein per meal. This dosing schedule ensures each meal reaches the leucine threshold while keeping the overall daily target achievable.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Meal Pattern</th>
+										<th class="p-3">Total Protein (75 kg person)</th>
+										<th class="p-3">MPS Stimulations / Day</th>
+										<th class="p-3">Efficacy</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">1 large meal</td>
+										<td class="p-3 font-mono">60 g in one sitting</td>
+										<td class="p-3">1</td>
+										<td class="p-3 text-warning">Low</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">3 meals (uneven)</td>
+										<td class="p-3 font-mono">30 / 20 / 40 g</td>
+										<td class="p-3">2 (breakfast may not reach threshold)</td>
+										<td class="p-3">Moderate</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">4 meals (even)</td>
+										<td class="p-3 font-mono text-success">35 / 35 / 35 / 35 g</td>
+										<td class="p-3 text-success">4</td>
+										<td class="p-3 text-success">Optimal</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">5 meals (even)</td>
+										<td class="p-3 font-mono">30 / 30 / 30 / 30 / 30 g</td>
+										<td class="p-3 text-success">5</td>
+										<td class="p-3 text-success">Optimal</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							The concept of a narrow "anabolic window" immediately after training is overstated. While consuming protein shortly after exercise is beneficial, the window extends to <strong>2-4 hours post-workout</strong>, and total daily intake is more important than precise timing. If you have eaten a protein-containing meal 1-2 hours before training, post-workout protein urgency is minimal. The key is ensuring that by the end of the day, you have consumed your full protein target.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-warning bg-warning/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+								Common Mistake
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Fretting over whether you ate protein 30 minutes versus 90 minutes after a workout while ignoring that you only ate 80 g of protein all day is misplaced effort. Prioritize the daily total before optimizing timing.
+							</p>
+						</div>
+					</section>
+
+					<!-- 6. Protein Sources -->
+					<section>
+						<h2 id="animal-vs-plant" class="text-xl font-bold text-foreground mb-3">6. Animal vs Plant Sources: Practical Considerations</h2>
+						<p>
+							Both animal and plant protein sources can support body composition goals, but they differ in amino acid profile, digestibility, micronutrient density, and practical considerations like cost and preparation time. Understanding these differences helps you build a sustainable dietary pattern.
+						</p>
+						<p class="mt-3">
+							Animal sources (chicken, beef, fish, eggs, dairy, whey) are complete proteins with high digestibility. They provide all essential amino acids in proportions that closely match human requirements, with particularly high leucine content. A 100 g serving of chicken breast provides roughly 31 g of protein with 2.5 g of leucine — nearly reaching the MPS threshold in a single serving. Animal sources also supply bioavailable heme iron, vitamin B12, zinc, and creatine, which support training performance and recovery.
+						</p>
+						<p class="mt-3">
+							Plant sources (lentils, chickpeas, tofu, tempeh, seitan, quinoa, nuts, seeds) are typically lower in one or more essential amino acids — most often methionine or lysine. But they offer advantages in fiber content, phytonutrients, and lower saturated fat profiles. For plant-based individuals, the key strategies are:
+						</p>
+						<ul class="space-y-2 mt-3 pl-5 list-disc">
+							<li><strong>Variety:</strong> Rotating through different plant protein sources naturally covers amino acid gaps. Rice + beans, hummus + pita, and tofu + quinoa are classic complementary pairs.</li>
+							<li><strong>Higher total intake:</strong> Because plant proteins have lower digestibility scores, plant-based individuals should target the higher end of the protein range (2.0-2.2 g/kg) rather than the lower end.</li>
+							<li><strong>Soy focus:</strong> Soy protein isolate has a PDCAAS of 1.0 and is the only plant protein that is complete on its own. Tofu, tempeh, and edamame are excellent whole-food soy sources.</li>
+							<li><strong>Strategic supplementation:</strong> Pea and rice protein blends create a complete amino acid profile. Adding a leucine supplement can help overcome the lower leucine content of plant meals.</li>
+						</ul>
+					</section>
+
+					<!-- 7. Special Populations -->
+					<section>
+						<h2 id="special-populations" class="text-xl font-bold text-foreground mb-3">7. Special Populations: Older Adults, Athletes, and Women</h2>
+						<p>
+							Protein requirements are not uniform across all populations. Age, training volume, and hormonal status modify the optimal intake range and distribution strategy.
+						</p>
+						<p class="mt-3">
+							<strong>Older Adults (60+):</strong> Anabolic resistance is a well-documented phenomenon — aging reduces the sensitivity of MPS to dietary amino acids. Older adults may require 1.6-2.0 g/kg/day (above the general recommendation for their activity level) with a higher per-meal leucine dose of 3-4 g to achieve the same MPS response as younger individuals. Protein timing becomes more important with age; evenly distributing protein across 4 meals produces better muscle maintenance than skewed distributions.
+						</p>
+						<p class="mt-3">
+							<strong>Endurance Athletes:</strong> While resistance training is the primary stimulus for MPS, endurance athletes also benefit from higher protein intakes. Endurance training increases amino acid oxidation during exercise, and adequate protein supports recovery, red blood cell synthesis, and immune function. Endurance athletes should target 1.4-1.8 g/kg/day — slightly lower than resistance athletes but well above the sedentary RDA.
+						</p>
+						<p class="mt-3">
+							<strong>Women and Menstrual Cycle Considerations:</strong> Women generally have lower absolute protein needs due to smaller body size, but relative needs (per kg of body weight) are comparable to men. Some evidence suggests that MPS may be slightly more efficient in women during the follicular phase (days 1-14) due to higher estrogen levels, though the effect is small. The practical takeaway is that women should follow the same evidence-based targets as men — 1.6-2.2 g/kg for general muscle building, 2.0-2.4 g/kg during a deficit — scaled to their body weight. Women often report greater satiety benefits from higher protein intakes, which can be particularly useful during cutting phases.
 						</p>
 					</section>
 
+					<!-- 8. Reassessment and Adjustments -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. Reassessment and Safe Limits</h2>
+						<h2 id="reassessment-changes" class="text-xl font-bold text-foreground mb-3">8. Reassessment and Adjustments</h2>
 						<p>
-							Adjust your protein targets when your total body weight changes. High protein diets (up to 2.2g/kg) are safe for healthy individuals with normal kidney function. If you experience changes in kidney function or have pre-existing renal concerns, consult a medical professional before starting a high-protein diet.
+							Your protein target is not static — it changes as your body weight changes and as your goals evolve. Reassess your protein intake under these conditions:
 						</p>
+						<ul class="space-y-2 mt-3 pl-5 list-disc">
+							<li><strong>Weight change:</strong> After any 5 kg (11 lb) change in body weight, recalculate your protein target. The absolute grams per day change, and maintaining the old target means either under- or over-consuming relative to your new weight.</li>
+							<li><strong>Goal phase change:</strong> When switching from a bulk to a cut (or vice versa), adjust protein upward. Cutting requires higher relative protein (2.0-2.4 g/kg) to defend lean mass, while bulking can use a slightly lower range (1.6-2.0 g/kg) since energy surplus itself has a protein-sparing effect.</li>
+							<li><strong>Training volume increase:</strong> If you significantly increase training frequency, volume, or intensity, your protein needs may rise. High-volume programs increase total body protein turnover and amino acid oxidation.</li>
+							<li><strong>Recovery issues:</strong> Persistent soreness, poor sleep, or slow wound healing may indicate inadequate protein intake. Increasing to the upper end of the recommended range can support recovery.</li>
+						</ul>
+						<p class="mt-3">
+							High protein intakes (up to 2.2 g/kg) are safe for healthy individuals with normal kidney function. The concern about protein causing kidney damage in healthy people has been repeatedly disproven in the literature (Martin et al., 2005; Manninen, 2005). But individuals with pre-existing renal disease, hepatic issues, or other clinical concerns should consult a medical professional before adopting a high-protein diet.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								The Protein Calculator on BodyCompOS automatically adjusts your target as you update your weight and goal. Use it as your source of truth rather than memorizing a number — your protein needs will shift as your body composition changes.
+							</p>
+						</div>
+					</section>
+
+					<!-- 9. FAQ -->
+					<section>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">9. Frequently Asked Questions</h2>
+						<div class="space-y-3">
+							{faqEntries.map(([question, answer]) => (
+								<div class="rounded-xl border border-border bg-card p-5">
+									<h3 class="font-bold text-sm text-foreground">{question}</h3>
+									<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{answer}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<!-- 10. Next Steps -->
+					<section>
+						<h2 id="next-steps" class="text-xl font-bold text-foreground mb-3">10. Next Steps</h2>
+						<p class="mb-4">Protein is your most important lever for body composition change. Here is how to apply what you have learned:</p>
+						<div class="grid gap-3 sm:grid-cols-2">
+							<a href="/calculators/protein-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">1</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Calculate Your Target</p>
+								<p class="mt-1 text-xs text-muted-foreground">Personalized protein range based on your weight and goal</p>
+							</a>
+							<a href="/calculators/calorie-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">2</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Full Macros</p>
+								<p class="mt-1 text-xs text-muted-foreground">Complete calorie and macronutrient breakdown</p>
+							</a>
+							<a href="/guides/body-recomposition" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">3</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Read Recomp Guide</p>
+								<p class="mt-1 text-xs text-muted-foreground">How protein fits into a recomposition strategy</p>
+							</a>
+							<a href="/guides/should-i-cut-or-bulk" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">4</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Cut or Bulk Guide</p>
+								<p class="mt-1 text-xs text-muted-foreground">Choose your primary strategy</p>
+							</a>
+						</div>
+						<div class="mt-6 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-2">Related Reading</p>
+							<div class="grid sm:grid-cols-2 gap-2 text-xs">
+								<a href="/guides/body-recomposition" class="text-accent hover:underline">Body Recomposition Guide →</a>
+								<a href="/guides/maintenance-calories" class="text-accent hover:underline">Maintenance Calories Guide →</a>
+								<a href="/guides/should-i-cut-or-bulk" class="text-accent hover:underline">Cut or Bulk Decision Guide →</a>
+								<a href="/guides/body-fat-percentage" class="text-accent hover:underline">Body Fat Percentage Guide →</a>
+							</div>
+						</div>
 					</section>
 
 					<!-- YMYL Disclaimer -->
-					<div class="border-t border-border pt-6 text-[10px] text-muted-foreground">
-						<p><strong>YMYL Disclaimer:</strong> This guide is for educational purposes only. High protein intakes require healthy renal clearance. Individuals with pre-existing kidney disease, hepatic issues, or other clinical concerns should consult a medical professional before starting a high-protein diet.</p>
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> The information in this guide is for educational purposes only. High protein intakes require healthy renal clearance. Individuals with pre-existing kidney disease, hepatic issues, or other clinical concerns should consult a qualified medical professional before starting a high-protein diet. All protein targets are estimates based on population-level research and may not reflect individual responses.</p>
 					</div>
 
 				</div>
 			</div>
-			
+
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#why-protein-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Protein Matters</a>
+						<a href="#issn-recommendations" class="block text-muted-foreground hover:text-accent transition-colors">2. ISSN Recommendations</a>
+						<a href="#leucine-threshold" class="block text-muted-foreground hover:text-accent transition-colors">3. Leucine Threshold & mTOR</a>
+						<a href="#protein-quality" class="block text-muted-foreground hover:text-accent transition-colors">4. Protein Quality (PDCAAS)</a>
+						<a href="#protein-distribution" class="block text-muted-foreground hover:text-accent transition-colors">5. Distribution & Timing</a>
+						<a href="#animal-vs-plant" class="block text-muted-foreground hover:text-accent transition-colors">6. Animal vs Plant Sources</a>
+						<a href="#special-populations" class="block text-muted-foreground hover:text-accent transition-colors">7. Special Populations</a>
+						<a href="#reassessment-changes" class="block text-muted-foreground hover:text-accent transition-colors">8. Reassessment & Adjustments</a>
+						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+					</nav>
+				</div>
+
+				<!-- 2. Strategic Tools -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
-					<p class="text-xs text-muted-foreground mt-2">Estimate your daily protein targets based on your goals.</p>
+					<p class="text-xs text-muted-foreground mt-2">Calculate your personalized protein target based on evidence-based ranges.</p>
 					<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-4 block">Protein Calculator</a>
 				</div>
 
+				<!-- 3. Related Calculators -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
+						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
+						<a href="/calculators/body-fat-calculator" class="block text-accent hover:underline">Body Fat Calculator</a>
+						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
+					</div>
+				</div>
+
+				<!-- 4. Related Guides -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
 					<div class="mt-3 space-y-2 text-xs">
 						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Cut or Bulk Matrix</a>
 						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
-						<a href="/guides/maintenance-calories" class="block text-accent hover:underline font-semibold">TDEE & Maintenance</a>
+						<a href="/guides/maintenance-calories" class="block text-accent hover:underline">TDEE & Maintenance</a>
+						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Guide</a>
 					</div>
 				</div>
+
+				<!-- 5. Quick Facts -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
+					<div class="mt-3 space-y-3 text-xs">
+						<div>
+							<p class="font-bold text-foreground">Optimal Intake</p>
+							<p class="text-muted-foreground mt-0.5">1.6-2.2 g/kg body weight</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Protein During a Cut</p>
+							<p class="text-muted-foreground mt-0.5">2.0-2.4 g/kg to spare muscle</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Leucine Threshold</p>
+							<p class="text-muted-foreground mt-0.5">~3 g per meal for MPS</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Meal Frequency</p>
+							<p class="text-muted-foreground mt-0.5">4-5 meals with 30-40 g each</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- 6. Article Info -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
+					<div class="mt-3 space-y-2.5 text-xs">
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+							<span class="text-muted-foreground">10 min read</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+							<span class="text-muted-foreground">Updated Jun 2026</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							<span class="text-muted-foreground">Editorial Board</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- 7. Key Takeaway -->
+				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
+					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Key Takeaway
+					</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Target 1.6-2.2 g/kg daily, distributed across 4-5 meals with ~3 g leucine each. Prioritize total daily intake over timing precision. Increase during cuts (2.0-2.4 g/kg) to defend muscle mass.</p>
+				</div>
+
 			</div>
 		</div>
 	</section>

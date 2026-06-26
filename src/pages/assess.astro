@@ -28,7 +28,7 @@ const assessSchema = {
 
 			<!-- Page Header -->
 			<div class="mb-6">
-				<span class="badge badge-accent text-[10px]">Free Assessment Tool</span>
+				<span class="badge badge-accent text-xs">Free Assessment Tool</span>
 				<h1 class="mt-3 text-3xl font-black text-foreground sm:text-4xl">Find Your Body Composition Strategy</h1>
 				<p class="mt-2 text-sm text-muted-foreground leading-relaxed">
 					Enter your stats below to get a personalized recommendation — whether to cut, bulk, recomp, or maintain — plus calorie and protein targets, pace, and timeline.
@@ -79,7 +79,7 @@ const assessSchema = {
 
 					<!-- Section: Body Composition -->
 					<div class="sm:col-span-2 mt-2">
-						<p class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Body Composition</p>
+						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Body Composition</p>
 						<div class="border-t border-border/30 mt-1.5"></div>
 					</div>
 
@@ -202,93 +202,21 @@ const assessSchema = {
 		round,
 		clamp,
 		calculateNavyBodyFat as engineNavyBF,
+		paceAndTimeline,
 	} from '../lib/engines';
+	import { autoFillBodyFat, setStrategyUnitWithCircumferences as setUnit, saveAssessment } from '../lib/strategyForm';
 
 	const activityFactors = engineActivityFactors;
 	const labels = goalLabels;
 	let strategyUnit = 'metric';
 
-	(function() {
-		const savedBf = localStorage.getItem('bodycompos.estimatedBodyFat');
-		if (savedBf) {
-			const input = document.getElementById('bodyFat') as HTMLInputElement;
-			if (input && !input.dataset.autofilled) {
-				input.value = savedBf;
-				input.dataset.autofilled = 'true';
-				const msg = document.createElement('p');
-				msg.className = 'text-xs text-success font-medium mt-1.5';
-				msg.textContent = 'Estimated body fat imported successfully.';
-				input.parentElement?.appendChild(msg);
-				setTimeout(() => msg.remove(), 4000);
-			}
-		}
-	})();
-
-	function round(n: number, d = 0) { const p = 10 ** d; return Math.round(n * p) / p; }
-	function clamp(n: number, min: number, max: number) { return Math.max(min, Math.min(max, n)); }
-	function safeJsonParse(value: string | null, fallback: any) {
-		try { return value ? JSON.parse(value) : fallback; } catch { return fallback; }
-	}
-
-	function kgToLb(kg: number) { return kg * 2.2046226218; }
-
-	function lbToKg(lb: number) { return lb / 2.2046226218; }
-	function cmToIn(cm: number) { return cm / 2.54; }
-	function inToCm(value: number) { return value * 2.54; }
-
-	function setStrategyUnit(unit) {
-		if (unit === strategyUnit) return;
-		const form = document.querySelector('#strategy-form') as HTMLFormElement;
-		if (!form) return;
-
-		const height = Number(form.height.value);
-		const weight = Number(form.weight.value);
-		const waist = Number(form.waist.value);
-		const neck = Number(form.neck.value);
-		const hip = Number(form.hip.value);
-
-		if (unit === 'imperial') {
-			form.height.value = String(round(cmToIn(height), 1));
-			form.weight.value = String(round(kgToLb(weight), 1));
-			if (waist) form.waist.value = String(round(cmToIn(waist), 1));
-			if (neck) form.neck.value = String(round(cmToIn(neck), 1));
-			if (hip) form.hip.value = String(round(cmToIn(hip), 1));
-			form.height.min = '47';
-			form.height.max = '91';
-			form.weight.min = '77';
-			form.weight.max = '551';
-			form.waist.min = '16';
-			form.waist.max = '87';
-			form.neck.min = '8';
-			form.neck.max = '31';
-			form.hip.min = '16';
-			form.hip.max = '87';
-		} else {
-			form.height.value = String(round(inToCm(height), 1));
-			form.weight.value = String(round(lbToKg(weight), 1));
-			if (waist) form.waist.value = String(round(inToCm(waist), 1));
-			if (neck) form.neck.value = String(round(inToCm(neck), 1));
-			if (hip) form.hip.value = String(round(inToCm(hip), 1));
-			form.height.min = '120';
-			form.height.max = '230';
-			form.weight.min = '35';
-			form.weight.max = '250';
-			form.waist.min = '40';
-			form.waist.max = '220';
-			form.neck.min = '20';
-			form.neck.max = '80';
-			form.hip.min = '40';
-			form.hip.max = '220';
-		}
-
-		strategyUnit = unit;
-		document.querySelectorAll('[data-strategy-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-strategy-unit') === unit)));
-		document.querySelectorAll('[data-strategy-height-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(cm)' : '(in)');
-		document.querySelectorAll('[data-strategy-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
-	}
+	autoFillBodyFat();
 
 	document.querySelectorAll('[data-strategy-unit]').forEach((button) => {
-		button.addEventListener('click', () => setStrategyUnit(button.getAttribute('data-strategy-unit')));
+		button.addEventListener('click', () => {
+			const form = document.querySelector('#strategy-form') as HTMLFormElement;
+			strategyUnit = setUnit(button.getAttribute('data-strategy-unit'), strategyUnit, form);
+		});
 	});
 
 	// Input toggle logic
@@ -368,51 +296,12 @@ const assessSchema = {
 		const target = calorieTarget(maintenance, rec.recommended);
 		const proteinLow = round(rawInput.weightKg * 1.6);
 		const proteinHigh = round(rawInput.weightKg * 2.2);
-
-		const saved = { ...rawInput, proteinAdequate, ...rec, maintenance, target, targetBasis: 'recommended', proteinLow, proteinHigh, createdAt: new Date().toISOString() };
-		localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(saved));
-		localStorage.removeItem('bodycompos.estimatedBodyFat');
-
-		const history = safeJsonParse(localStorage.getItem('bodycompos.assessments'), []);
-		history.unshift(saved);
-		localStorage.setItem('bodycompos.assessments', JSON.stringify(history.slice(0, 12)));
-
-		let paceText = 'Flat Weight';
-		let timelineText = 'Ongoing';
-		const rDecay = 0.99;
-
-		if (rec.recommended === 'fat-loss') {
-			const pace = -rawInput.weightKg * 0.0075;
-			const targetWeightChange = -rawInput.weightKg * 0.08;
-			const term = (targetWeightChange * (1 - rDecay)) / pace;
-			const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 16;
-
-			const val = strategyUnit === 'metric' ? `${round(Math.abs(pace), 2)} kg` : `${round(kgToLb(Math.abs(pace)), 2)} lb`;
-			paceText = `Lose ~${val}/week`;
-			timelineText = `~${round(etaWeeks, 1)} weeks to reach 8% reduction`;
-		} else if (rec.recommended === 'lean-bulk') {
-			const pace = rawInput.weightKg * 0.002;
-			const targetWeightChange = rawInput.weightKg * 0.04;
-			const term = (targetWeightChange * (1 - rDecay)) / pace;
-			const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 24;
-
-			const val = strategyUnit === 'metric' ? `${round(pace, 2)} kg` : `${round(kgToLb(pace), 2)} lb`;
-			paceText = `Gain ~${val}/week`;
-			timelineText = `~${round(etaWeeks, 1)} weeks to build 4% lean mass`;
-		} else if (rec.recommended === 'aggressive-bulk') {
-			const pace = rawInput.weightKg * 0.004;
-			const targetWeightChange = rawInput.weightKg * 0.06;
-			const term = (targetWeightChange * (1 - rDecay)) / pace;
-			const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 16;
-
-			const val = strategyUnit === 'metric' ? `${round(pace, 2)} kg` : `${round(kgToLb(pace), 2)} lb`;
-			paceText = `Gain ~${val}/week`;
-			timelineText = `~${round(etaWeeks, 1)} weeks to target weight`;
-		} else if (rec.recommended === 'recomp') {
-			paceText = 'Parity (Flat scale)';
-			timelineText = '12 - 16 weeks (recommended phase block)';
-		}
-
+		
+		const saved = { ...rawInput, proteinAdequate, ...rec, maintenance, target, proteinLow, proteinHigh, createdAt: new Date().toISOString() };
+		saveAssessment(saved);
+		
+		const { paceText, timelineText } = paceAndTimeline(rec.recommended, rawInput.weightKg, strategyUnit as 'metric' | 'imperial');
+		
 		const outputContainer = document.querySelector('#strategy-result');
 		if (outputContainer) {
 			outputContainer.classList.add('has-result');
@@ -428,15 +317,15 @@ const assessSchema = {
 
 					<div class="grid gap-3 sm:grid-cols-2">
 						<div class="result-card">
-							<p class="text-[10px] font-bold uppercase text-muted-foreground">Alternative Strategy</p>
+							<p class="text-xs font-bold uppercase text-muted-foreground">Alternative Strategy</p>
 							<p class="mt-1 text-base font-bold text-foreground">${labels[rec.alternative]}</p>
 							<div class="flex items-center gap-2 mt-1.5">
-								<span class="text-[10px] text-muted-foreground">Confidence: ${rec.alternativeConfidence}%</span>
+								<span class="text-xs text-muted-foreground">Confidence: ${rec.alternativeConfidence}%</span>
 								<div class="mini-bar flex-1 max-w-20"><span style="width:${rec.alternativeConfidence}%"></span></div>
 							</div>
 						</div>
 						<div class="result-card">
-							<p class="text-[10px] font-bold uppercase text-muted-foreground">Strategy Confidence</p>
+							<p class="text-xs font-bold uppercase text-muted-foreground">Strategy Confidence</p>
 							<p class="mt-1 text-xl font-black text-foreground">${rec.confidence}%</p>
 							<div class="mini-bar mt-2"><span style="width:${rec.confidence}%"></span></div>
 						</div>
@@ -444,27 +333,27 @@ const assessSchema = {
 
 					<div class="grid gap-3 sm:grid-cols-2">
 						<div class="result-card bg-accent/5 border-accent/20">
-							<p class="text-[10px] font-bold uppercase text-accent tracking-wider">Starting Calories</p>
-							<p class="mt-1 text-xl font-black text-foreground">${target} <span class="text-[10px] font-normal text-muted-foreground">kcal/day</span></p>
-							<p class="text-[10px] text-muted-foreground mt-0.5">Maintenance TDEE: ${maintenance} kcal</p>
+							<p class="text-xs font-bold uppercase text-accent tracking-wider">Starting Calories</p>
+							<p class="mt-1 text-xl font-black text-foreground">${target} <span class="text-xs font-normal text-muted-foreground">kcal/day</span></p>
+							<p class="text-xs text-muted-foreground mt-0.5">Maintenance TDEE: ${maintenance} kcal</p>
 						</div>
 						<div class="result-card bg-success/5 border-success/20">
-							<p class="text-[10px] font-bold uppercase text-success tracking-wider">Protein Range</p>
-							<p class="mt-1 text-xl font-black text-foreground">${proteinLow} - ${proteinHigh} <span class="text-[10px] font-normal text-muted-foreground">g/day</span></p>
-							<p class="text-[10px] text-muted-foreground mt-0.5">Based on 1.6 - 2.2 g/kg weight</p>
+							<p class="text-xs font-bold uppercase text-success tracking-wider">Protein Range</p>
+							<p class="mt-1 text-xl font-black text-foreground">${proteinLow} - ${proteinHigh} <span class="text-xs font-normal text-muted-foreground">g/day</span></p>
+							<p class="text-xs text-muted-foreground mt-0.5">Based on 1.6 - 2.2 g/kg weight</p>
 						</div>
 					</div>
 
 					<div class="grid gap-3 sm:grid-cols-2">
 						<div class="result-card">
-							<p class="text-[10px] font-bold uppercase text-muted-foreground">Estimated Weekly Pace</p>
+							<p class="text-xs font-bold uppercase text-muted-foreground">Estimated Weekly Pace</p>
 							<p class="mt-1 text-base font-black text-foreground">${paceText}</p>
-							<p class="text-[10px] text-muted-foreground mt-0.5">Accounts for metabolic adaptation</p>
+							<p class="text-xs text-muted-foreground mt-0.5">Accounts for metabolic adaptation</p>
 						</div>
 						<div class="result-card">
-							<p class="text-[10px] font-bold uppercase text-muted-foreground">Adaptation Timeline</p>
+							<p class="text-xs font-bold uppercase text-muted-foreground">Adaptation Timeline</p>
 							<p class="mt-1 text-base font-black text-foreground">${timelineText}</p>
-							<p class="text-[10px] text-muted-foreground mt-0.5">Compounding velocity decay model</p>
+							<p class="text-xs text-muted-foreground mt-0.5">Compounding velocity decay model</p>
 						</div>
 					</div>
 
@@ -503,7 +392,7 @@ const assessSchema = {
 								Maintain 8,000-10,000 daily steps to defend metabolic rate against adaptive slowdowns.
 							</div>
 						</div>
-						<div class="mt-3 border-t border-border pt-2.5 text-[10px] text-muted-foreground flex gap-1.5 items-start">
+						<div class="mt-3 border-t border-border pt-2.5 text-xs text-muted-foreground flex gap-1.5 items-start">
 							<svg class="shrink-0 text-accent mt-0.5" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
 							<span><strong>Reassessment:</strong> If weight does not shift by at least 0.5kg/1lb after 3 weeks of consistent tracking, metabolic adaptation is likely. Adjust targets by 100-150 kcal.</span>
 						</div>
@@ -519,6 +408,7 @@ const assessSchema = {
 					<p class="text-center text-xs text-muted-foreground">
 						Use as an estimate. Adjust targets only after tracking 2-4 weeks of consistent weight trends.
 					</p>
+					<p class="text-center text-xs font-medium text-warning">Educational estimates — consult a healthcare professional before starting.</p>
 				</div>
 			`;
 

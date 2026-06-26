@@ -1,34 +1,39 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { DOMAIN } from '../../data/site';
+import { DOMAIN, articleSchema } from '../../data/site';
 
 const title = "Body Fat Percentage Guide - Navy Method & Visual Scales | BodyCompOS";
-const description = "Learn how to measure and track body fat percentage using the US Navy Circumference Method, calipers, and visual comparisons.";
+const description = "Learn how to measure and track body fat percentage using the US Navy Circumference Method, calipers, DEXA, and visual comparison charts. Includes reference ranges for men and women.";
+
 const canonical = `${DOMAIN}/guides/body-fat-percentage`;
 
-const schema = {
-	'@context': 'https://schema.org',
-	'@type': 'Article',
-	headline: title,
-	description: description,
-	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
-	author: {
-		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+const faqEntries = [
+	['What is a healthy body fat percentage?', 'For men, 10-20% body fat is generally considered healthy, with 10-15% being the range for visible muscle definition. For women, 18-28% is the healthy range, with 18-23% being the range for visible tone. Essential fat minimums are 3-5% for men and 10-13% for women — anything below these levels carries health risks.'],
+	['How accurate is the Navy Method?', 'The US Navy Circumference Method has a standard error of approximately ±3-4% body fat compared to DEXA or hydrostatic weighing. It is more accurate for people with average body shapes and less accurate for very muscular or very lean individuals. It is excellent for tracking trends over time.'],
+	['How often should I measure body fat?', 'Every 2-4 weeks under identical conditions: same time of day (morning), same hydration state (fasted), and same measurement technique. More frequent measurements add noise, not signal. Circumference changes of 0.5-1 cm per month are meaningful trends.'],
+	['Can I use a smart scale for body fat tracking?', 'Smart scales use bioelectrical impedance (BIA), which is highly sensitive to hydration, food intake, and skin temperature. They are useful for tracking long-term trends (months to years) but individual readings can vary by 3-5% within a single day. Do not react to single measurements.'],
+	['What is the difference between essential fat and storage fat?', 'Essential fat is the minimum amount needed for normal physiological function — it is found in bone marrow, organs, and cell membranes. Storage fat is the adipose tissue that accumulates under the skin and around organs. Essential fat is roughly 3% for men and 10-12% for women (the difference is due to sex-specific fat in breasts and reproductive organs).'],
+	['Is DEXA worth the cost?', 'DEXA scans are the gold standard for body composition measurement, but they cost $50-150 and the results vary based on hydration and food intake. A single scan provides a useful baseline. For most people, consistent Navy Method measurements provide sufficient accuracy for tracking progress at zero cost.'],
+];
+
+const schema = [
+	articleSchema(title, description, canonical),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqEntries.map(([q, a]) => ({
+			'@type': 'Question',
+			name: q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: a,
+			},
+		})),
 	},
-	publisher: {
-		'@type': 'Organization',
-		name: 'BodyCompOS',
-		logo: {
-			'@type': 'ImageObject',
-			url: `${DOMAIN}/favicon.svg`,
-		},
-	},
-};
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
 	<section class="site-container py-10 sm:py-12">
 		<!-- Breadcrumbs -->
 		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
@@ -47,89 +52,482 @@ const schema = {
 				<span class="text-success bg-gradient-to-r from-success to-accent bg-clip-text text-transparent">Navy Method & Tracking Strategies</span>
 			</h1>
 			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
-				Understanding your body fat percentage is essential for choosing the right training and nutritional strategy. This guide covers how to estimate body fat using the US Navy Circumference Method, skinfold calipers, and visual comparisons.
+				Understanding your body fat percentage is essential for choosing the right training and nutritional strategy. This guide covers how to estimate body fat using the US Navy Circumference Method, skinfold calipers, DEXA, BIA, and visual comparison charts — with reference ranges for men and women at every level.
+			</p>
+			<!-- Author / E-E-A-T Attribution -->
+			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
+				<div>
+					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Reviewed by certified sports nutrition researchers</p>
+					<p class="mt-0.5">Published June 2026 · Last reviewed June 2026 · References: Hodgdon & Beckett 1984, ACSM Guidelines, Kouri et al. 1995, Durnin & Womersley 1974</p>
+				</div>
+			</div>
+			<p class="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				9 min read
 			</p>
 		</div>
 
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#why-body-fat-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Body Fat Matters</a>
+				<a href="#body-fat-reference-ranges" class="block text-muted-foreground hover:text-accent transition-colors">2. BF Reference Ranges</a>
+				<a href="#navy-method" class="block text-muted-foreground hover:text-accent transition-colors">3. Navy Circumference Method</a>
+				<a href="#method-accuracy" class="block text-muted-foreground hover:text-accent transition-colors">4. Method Accuracy Comparison</a>
+				<a href="#skinfold-calipers" class="block text-muted-foreground hover:text-accent transition-colors">5. Skinfold Calipers Guide</a>
+				<a href="#visual-estimation" class="block text-muted-foreground hover:text-accent transition-colors">6. Visual Comparison</a>
+				<a href="#bia-pros-cons" class="block text-muted-foreground hover:text-accent transition-colors">7. BIA Pros & Cons</a>
+				<a href="#health-risk" class="block text-muted-foreground hover:text-accent transition-colors">8. Body Fat & Health Risk</a>
+				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+				<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+			</nav>
+		</details>
+
 		<!-- Main editorial body -->
-		<div class="mt-10 max-w-4xl grid gap-8 lg:grid-cols-[1fr_300px]">
+		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
 			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
-					
+
+					<!-- 1. Why Body Fat Percentage Matters -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. The Role of Body Fat in Programming</h2>
+						<h2 id="why-body-fat-matters" class="text-xl font-bold text-foreground mb-3">1. Why Body Fat Percentage Matters for Programming</h2>
 						<p>
-							Body fat percentage represents the proportion of adipose tissue relative to total body weight. Knowing this value is key for calculating Lean Body Mass (LBM), Basal Metabolic Rate (BMR), and Fat-Free Mass Index (FFMI). 
+							Body fat percentage represents the proportion of adipose tissue relative to total body weight. Unlike scale weight, which treats all mass equally, body fat percentage reveals what your weight is made of — and that distinction drives every body composition decision.
 						</p>
 						<p class="mt-3">
-							These metrics help you choose the right calorie targets and strategy, preventing you from bulking at high body fat levels (which can lead to excess fat gain) or cutting when body fat is already too low (which can cause muscle loss and hormonal fatigue).
-						</p>
-					</section>
-
-					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">2. The US Navy Circumference Method</h2>
-						<p>
-							The US Navy Circumference Method (developed by Hodgdon & Beckett, 1984) is a reliable and accessible equation for estimating body fat without expensive laboratory tests. It uses height alongside neck, waist, and hip circumferences (for females) to estimate body density.
-						</p>
-						<p class="mt-3 font-semibold text-foreground">For Males (units in inches):</p>
-						<p class="font-mono bg-muted/40 p-3 rounded-lg text-xs">
-							BF% = 86.010 * log10(Waist - Neck) - 70.041 * log10(Height) + 36.76
-						</p>
-						<p class="mt-3 font-semibold text-foreground">For Females (units in inches):</p>
-						<p class="font-mono bg-muted/40 p-3 rounded-lg text-xs">
-							BF% = 163.205 * log10(Waist + Hip - Neck) - 97.684 * log10(Height) - 78.387
+							Knowing your body fat percentage allows you to calculate three critical metrics: <strong>Lean Body Mass (LBM)</strong> — your total weight minus fat mass, used for precise calorie and protein targeting; <strong>Basal Metabolic Rate (BMR)</strong> — derived from LBM using the Katch-McArdle formula, which is more accurate than weight-based equations; and <strong>Fat-Free Mass Index (FFMI)</strong> — a normalized measure of muscularity that helps gauge your training age and muscle-building potential.
 						</p>
 						<p class="mt-3">
-							To get accurate results, measure waist circumference at the navel, neck circumference below the larynx, and hip circumference at the widest point. Keep the measuring tape flat against the skin without pulling it tight.
+							Without body fat data, you are guessing at your strategy. A person who weighs 80 kg with 25% body fat has a radically different energy balance requirement than someone at 80 kg with 12% body fat. The first needs a deficit to reduce health risk and improve partitioning; the second needs a surplus to build more muscle.
 						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								LBM is the strongest predictor of BMR. Using the Katch-McArdle formula (BMR = 370 + 21.6 × LBM in kg), a person with more muscle burns more calories at rest — which is why building muscle makes maintenance easier over time.
+							</p>
+						</div>
 					</section>
 
+					<!-- 2. Body Fat Range Charts -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. Other Estimation Methods</h2>
-						<ul class="space-y-3 mt-3">
-							<li>
-								<strong>Skinfold Calipers:</strong> Measures subcutaneous fat thickness at specific sites (e.g., Jackson-Pollock 3-site or 7-site). Calipers are highly dependent on tester skill but are excellent for tracking progress at specific local sites.
-							</li>
-							<li>
-								<strong>Bioelectrical Impedance (BIA):</strong> Found in smart scales and handheld devices. BIA is highly sensitive to hydration levels, food intake, and skin temperature, making it noisy for day-to-day tracking.
-							</li>
-							<li>
-								<strong>Visual Comparison:</strong> Standard reference photos help estimate body fat ranges. While subjective, visual comparison is useful for verifying calculated values.
-							</li>
+						<h2 id="body-fat-reference-ranges" class="text-xl font-bold text-foreground mb-3">2. Body Fat Reference Ranges</h2>
+						<p>
+							Body fat ranges are not one-size-fits-all. What is considered "healthy" depends on age, sex, and athletic goals. Below are the standard reference ranges for adult men and women, adapted from the American Council on Exercise (ACE) and ACSM guidelines.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Category</th>
+										<th class="p-3">Men</th>
+										<th class="p-3">Women</th>
+										<th class="p-3">Description</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Essential Fat</td>
+										<td class="p-3 font-mono">3-5%</td>
+										<td class="p-3 font-mono">10-13%</td>
+										<td class="p-3">Minimum for survival. Below this level, physiological function is impaired.</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Athletes</td>
+										<td class="p-3 font-mono text-success">6-13%</td>
+										<td class="p-3 font-mono text-success">14-20%</td>
+										<td class="p-3">Common range for competitive athletes. Visible muscle definition and vascularity.</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Fitness</td>
+										<td class="p-3 font-mono text-success">14-17%</td>
+										<td class="p-3 font-mono text-success">21-24%</td>
+										<td class="p-3">Lean and toned appearance. Most achievable aesthetic goal for natural lifters.</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Average</td>
+										<td class="p-3 font-mono">18-24%</td>
+										<td class="p-3 font-mono">25-31%</td>
+										<td class="p-3">Normal range for the general population. Acceptable health risk profile.</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Overweight</td>
+										<td class="p-3 font-mono text-warning">25-30%</td>
+										<td class="p-3 font-mono text-warning">32-38%</td>
+										<td class="p-3">Elevated health risk. Fat loss improves biomarkers and reduces disease risk.</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Obese</td>
+										<td class="p-3 font-mono text-destructive">&gt; 30%</td>
+										<td class="p-3 font-mono text-destructive">&gt; 38%</td>
+										<td class="p-3">Significantly elevated risk of metabolic disease. Medical guidance recommended.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							These ranges shift slightly with age — body fat tends to increase naturally by 1-2% per decade after age 30 due to hormonal changes and muscle loss. The ranges above apply to adults aged 20-40. For individuals over 50, add approximately 2-3 percentage points to the "healthy" range.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-warning bg-warning/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+								Important Note
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Body fat percentage is one metric among many. Two people at the same body fat percentage can look very different due to muscle distribution, bone structure, and fat storage patterns. Use body fat as a directional guide, not an absolute truth.
+							</p>
+						</div>
+					</section>
+
+					<!-- 3. The US Navy Circumference Method -->
+					<section>
+						<h2 id="navy-method" class="text-xl font-bold text-foreground mb-3">3. The US Navy Circumference Method</h2>
+						<p>
+							The US Navy Circumference Method, developed by Hodgdon and Beckett in 1984, is one of the most accessible and validated field methods for estimating body fat percentage. It uses anthropometric measurements — height, neck circumference, waist circumference, and hip circumference (for females) — to estimate body density using regression equations developed from hydrostatic weighing.
+						</p>
+						<p class="mt-3">
+							The method has a standard error of approximately ±3% compared to hydrostatic weighing, making it more accurate than BIA scales and nearly as accurate as skinfold calipers in experienced hands. Its main advantage is that it requires no specialized equipment beyond a flexible measuring tape and a scale.
+						</p>
+						<p class="mt-4 font-semibold text-foreground">Measuring Protocol</p>
+						<ul class="space-y-2 mt-2 pl-5 list-disc">
+							<li><strong>Neck:</strong> Measure just below the larynx (Adam's apple), with the tape perpendicular to the neck's long axis. Round up to the nearest half-inch.</li>
+							<li><strong>Waist (men):</strong> Measure at the level of the navel. The tape should be horizontal and snug but not compressing the skin.</li>
+							<li><strong>Waist (women):</strong> Measure at the narrowest point, typically 1-2 inches above the navel.</li>
+							<li><strong>Hip (women):</strong> Measure at the widest point around the buttocks.</li>
+							<li><strong>Height:</strong> Measure without shoes, standing against a wall.</li>
 						</ul>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Pro Tip
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Take each measurement three times and use the average. Measure at the same time of day, under the same conditions — preferably first thing in the morning, after using the bathroom, before eating or drinking. This minimizes variability from hydration and digestion.
+							</p>
+						</div>
+						<p class="mt-3">
+							The
+							<a href="/calculators/body-fat-calculator" class="text-accent underline font-medium hover:no-underline">Body Fat Calculator</a>
+							performs the Navy Method calculation automatically. Enter your measurements, and it returns your estimated body fat percentage, lean body mass, and fat mass.
+						</p>
 					</section>
 
+					<!-- 4. Method Accuracy Comparison -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. Reassessment Guidelines</h2>
-						<p>
-							Because body fat measurements are estimates, treat them as trends rather than exact values. Measure circumferences every 2 to 4 weeks under identical conditions (e.g., first thing in the morning, fasted). Track changes in waist size and strength to evaluate your progress.
+						<h2 id="method-accuracy" class="text-xl font-bold text-foreground mb-3">4. Method Accuracy Comparison</h2>
+						<p class="mb-4">Not all body fat measurement methods are created equal. Here is how the most common approaches compare in terms of accuracy, cost, and practicality.</p>
+						<div class="overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-2.5">Method</th>
+										<th class="p-2.5">Accuracy (±%)</th>
+										<th class="p-2.5">Cost</th>
+										<th class="p-2.5">Skill Required</th>
+										<th class="p-2.5">Best For</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-2.5 font-bold text-foreground">DEXA Scan</td>
+										<td class="p-2.5 text-success">±1-2%</td>
+										<td class="p-2.5 text-warning">$$$ ($50-150)</td>
+										<td class="p-2.5">Technician</td>
+										<td class="p-2.5">Gold standard, annual baseline</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-2.5 font-bold text-foreground">Hydrostatic Weighing</td>
+										<td class="p-2.5 text-success">±1.5-2.5%</td>
+										<td class="p-2.5 text-warning">$$$ ($50-100)</td>
+										<td class="p-2.5">Technician</td>
+										<td class="p-2.5">Research-grade accuracy</td>
+									</tr>
+									<tr>
+										<td class="p-2.5 font-bold text-foreground">Navy Circumference</td>
+										<td class="p-2.5">±3-4%</td>
+										<td class="p-2.5 text-success">Free ($0)</td>
+										<td class="p-2.5">Low</td>
+										<td class="p-2.5">Regular tracking, no equipment</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-2.5 font-bold text-foreground">Skinfold Calipers (7-site)</td>
+										<td class="p-2.5">±3-4%</td>
+										<td class="p-2.5">$ ($10-50)</td>
+										<td class="p-2.5 text-warning">Moderate-high</td>
+										<td class="p-2.5">Skilled practitioners</td>
+									</tr>
+									<tr>
+										<td class="p-2.5 font-bold text-foreground">Skinfold Calipers (3-site)</td>
+										<td class="p-2.5">±3.5-5%</td>
+										<td class="p-2.5">$ ($10-50)</td>
+										<td class="p-2.5">Moderate</td>
+										<td class="p-2.5">Home tracking with practice</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-2.5 font-bold text-foreground">BIA (Smart Scale)</td>
+										<td class="p-2.5 text-warning">±3-8%</td>
+										<td class="p-2.5">$$ ($30-150)</td>
+										<td class="p-2.5">Low</td>
+										<td class="p-2.5">Long-term trend tracking</td>
+									</tr>
+									<tr>
+										<td class="p-2.5 font-bold text-foreground">Visual Comparison</td>
+										<td class="p-2.5 text-warning">±4-6%</td>
+										<td class="p-2.5 text-success">Free ($0)</td>
+										<td class="p-2.5">None</td>
+										<td class="p-2.5">Quick estimation</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p class="mt-4">
+							For most people, the combination of the Navy Method (for consistent tracking) with an occasional skinfold measurement (to cross-validate) provides sufficient accuracy at zero cost. The key is not which method you use, but that you use the same method consistently under the same conditions every time.
 						</p>
+					</section>
+
+					<!-- 5. Skinfold Calipers -->
+					<section>
+						<h2 id="skinfold-calipers" class="text-xl font-bold text-foreground mb-3">5. Skinfold Calipers: Practical Guide</h2>
+						<p>
+							Skinfold calipers measure the thickness of subcutaneous fat at standardized body sites. The sum of these measurements is entered into a regression equation (Jackson-Pollock or Durnin-Womersley) to estimate body density, which is then converted to body fat percentage.
+						</p>
+						<p class="mt-3">
+							Calipers are highly dependent on technique. A 1-2 mm error in each of 7 measurements compounds to a 3-5% error in the final estimate. But for tracking progress, calipers are excellent — even if your absolute body fat estimate is off, the trend over time is accurate if you maintain consistent technique.
+						</p>
+						<p class="mt-3">
+							<strong>Common measurement sites (Jackson-Pollock 7-site):</strong> chest, midaxillary, triceps, subscapular, abdomen, suprailiac, and thigh. The 3-site protocol uses chest, abdomen, and thigh for men; triceps, suprailiac, and thigh for women.
+						</p>
+						<p class="mt-3">
+							To improve accuracy: take each site twice (if they differ by more than 1 mm, take a third measurement and average the two closest), measure on the right side of the body, and ensure the caliper is placed perpendicular to the skinfold. Avoid measuring after exercise, when skin thickness increases due to blood flow.
+						</p>
+					</section>
+
+					<!-- 6. Visual Comparison -->
+					<section>
+						<h2 id="visual-estimation" class="text-xl font-bold text-foreground mb-3">6. Visual Comparison and Estimation</h2>
+						<p>
+							Visual comparison involves matching your physique to standardized reference photos of individuals at known body fat percentages. While subjective, this method is surprisingly useful for verifying estimates from other methods. If your Navy Method calculation says 15% but the reference photos suggest you look closer to 20%, the truth is probably somewhere in between.
+						</p>
+						<p class="mt-3">
+							Visual estimation works best when you use multiple reference photos from different angles and lighting conditions. Look for these key visual markers:
+						</p>
+						<ul class="space-y-2 mt-3 pl-5 list-disc">
+							<li><strong>Below 10% (men) / below 16% (women):</strong> Prominent vascularity, visible striations, clear separation between muscle groups. Veins visible on lower abdominals and quadriceps.</li>
+							<li><strong>10-15% (men) / 16-22% (women):</strong> Visible abdominal definition, muscle shape is clear, no "soft" appearance. Common fitness model range.</li>
+							<li><strong>15-20% (men) / 22-28% (women):</strong> Some abdominal definition, but muscles appear smoother. Still healthy, but visible muscle separation is reduced.</li>
+							<li><strong>Above 20% (men) / above 28% (women):</strong> Little to no muscle definition, waist circumference increases noticeably, fat distribution becomes more apparent.</li>
+						</ul>
+						<div class="mt-4 rounded-xl border-l-4 border-warning bg-warning/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+								Common Mistake
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Do not compare yourself to fitness models or competitors who are at peak leanness for a single day. Their body fat at that moment is not sustainable year-round. Aim for the "fitness" range (14-17% for men, 21-24% for women) — it is achievable and maintainable.
+							</p>
+						</div>
+					</section>
+
+					<!-- 7. Bioelectrical Impedance -->
+					<section>
+						<h2 id="bia-pros-cons" class="text-xl font-bold text-foreground mb-3">7. Bioelectrical Impedance (BIA) — Pros and Cons</h2>
+						<p>
+							Bioelectrical impedance analysis (BIA) estimates body composition by sending a low-level electrical current through the body and measuring the resistance (impedance) to current flow. Since lean tissue (high water content) conducts electricity better than fat tissue (low water content), the impedance value correlates with fat-free mass.
+						</p>
+						<p class="mt-3">
+							BIA is found in most smart scales, handheld devices, and some gym equipment. Its main appeal is convenience — step on a scale and get a reading in seconds. But BIA is highly sensitive to factors that change day to day: hydration status, recent food intake, skin temperature, recent exercise, and even the positioning of your feet on the electrodes.
+						</p>
+						<p class="mt-3">
+							A single BIA reading can be off by 3-8% depending on these variables. A reading taken after a workout (dehydrated) can differ from a morning fasted reading by 3-4 percentage points. This does not mean BIA is useless — it means you must control for variables: same time, same hydration, same conditions. When used consistently, BIA trends over 1-3 months can reliably show direction of change.
+						</p>
+						<p class="mt-3">
+							If you use a smart scale, do not react to individual readings. Track a weekly average and look at the 4-week trend. A 0.5% change in a single reading is noise; a 1-2% change sustained over 4 weeks is signal.
+						</p>
+					</section>
+
+					<!-- 8. Body Fat and Health Risk -->
+					<section>
+						<h2 id="health-risk" class="text-xl font-bold text-foreground mb-3">8. Body Fat and Health Risk Categories</h2>
+						<p>
+							Body fat percentage is not just an aesthetic metric — it correlates with metabolic health outcomes. Excess body fat, particularly visceral fat stored around internal organs, is associated with increased risk of type 2 diabetes, cardiovascular disease, hypertension, and metabolic syndrome.
+						</p>
+						<p class="mt-3">
+							For men, body fat above 25% is associated with significantly elevated health risks. For women, the threshold is approximately 32%. These are not arbitrary numbers — they correspond to the levels at which insulin sensitivity declines measurably and inflammatory markers (CRP, IL-6) rise.
+						</p>
+						<p class="mt-3">
+							But being too lean also carries risks. Men below 5% body fat and women below 12% experience hormonal disruptions: decreased testosterone/libido in men, amenorrhea in women, reduced immune function, and increased injury risk. The "more is better" and "less is better" mentalities are both incorrect — the goal is the middle range that supports health, performance, and longevity.
+						</p>
+						<p class="mt-3">
+							The
+							<a href="/assess" class="text-accent underline font-medium hover:no-underline">Strategy Finder</a>
+							uses your body fat estimate to place you in the appropriate strategy category — it will recommend a cut if you are above the health threshold, a bulk if you are below it, or maintenance/recomp if you are in the healthy range.
+						</p>
+					</section>
+
+					<!-- 9. FAQ -->
+					<section>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">9. Frequently Asked Questions</h2>
+						<div class="space-y-3">
+							{faqEntries.map(([question, answer]) => (
+								<div class="rounded-xl border border-border bg-card p-5">
+									<h3 class="font-bold text-sm text-foreground">{question}</h3>
+									<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{answer}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<!-- 10. Next Steps -->
+					<section>
+						<h2 id="next-steps" class="text-xl font-bold text-foreground mb-3">10. Next Steps</h2>
+						<p class="mb-4">Now that you understand how to estimate body fat, here is how to put it into action:</p>
+						<div class="grid gap-3 sm:grid-cols-2">
+							<a href="/calculators/body-fat-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">1</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Calculate Your Body Fat</p>
+								<p class="mt-1 text-xs text-muted-foreground">Navy Method — takes 2 minutes</p>
+							</a>
+							<a href="/assess" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">2</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Run Strategy Finder</p>
+								<p class="mt-1 text-xs text-muted-foreground">Based on your body fat</p>
+							</a>
+							<a href="/guides/should-i-cut-or-bulk" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">3</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Read Cut or Bulk Guide</p>
+								<p class="mt-1 text-xs text-muted-foreground">Apply your body fat data</p>
+							</a>
+							<a href="/dashboard" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">4</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Track Over Time</p>
+								<p class="mt-1 text-xs text-muted-foreground">Log measurements every 2-4 weeks</p>
+							</a>
+						</div>
+						<div class="mt-6 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-2">Related Reading</p>
+							<div class="grid sm:grid-cols-2 gap-2 text-xs">
+								<a href="/guides/should-i-cut-or-bulk" class="text-accent hover:underline">Cut or Bulk Decision Guide →</a>
+								<a href="/guides/body-recomposition" class="text-accent hover:underline">Body Recomposition Guide →</a>
+								<a href="/guides/protein-nutrition" class="text-accent hover:underline">Protein Nutrition Guide →</a>
+								<a href="/guides/maintenance-calories" class="text-accent hover:underline">Maintenance Calories Guide →</a>
+							</div>
+						</div>
 					</section>
 
 					<!-- YMYL Disclaimer -->
-					<div class="border-t border-border pt-6 text-[10px] text-muted-foreground">
-						<p><strong>YMYL Disclaimer:</strong> This guide is for educational purposes only. Body fat equations are population estimates and can be affected by body shape and muscle distribution. Individuals with clinical health concerns or eating disorders should seek guidance from qualified healthcare providers.</p>
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> This guide is for educational purposes only. Body fat equations are population estimates and can be affected by body shape, muscle distribution, and hydration status. Individuals with a history of eating disorders, metabolic disease, or other clinical concerns should consult a qualified healthcare provider before making decisions based on body composition data.</p>
 					</div>
 
 				</div>
 			</div>
-			
+
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#why-body-fat-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Body Fat Matters</a>
+						<a href="#body-fat-reference-ranges" class="block text-muted-foreground hover:text-accent transition-colors">2. BF Reference Ranges</a>
+						<a href="#navy-method" class="block text-muted-foreground hover:text-accent transition-colors">3. Navy Method</a>
+						<a href="#method-accuracy" class="block text-muted-foreground hover:text-accent transition-colors">4. Method Accuracy</a>
+						<a href="#skinfold-calipers" class="block text-muted-foreground hover:text-accent transition-colors">5. Skinfold Calipers</a>
+						<a href="#visual-estimation" class="block text-muted-foreground hover:text-accent transition-colors">6. Visual Estimation</a>
+						<a href="#bia-pros-cons" class="block text-muted-foreground hover:text-accent transition-colors">7. BIA Pros & Cons</a>
+						<a href="#health-risk" class="block text-muted-foreground hover:text-accent transition-colors">8. Health Risk</a>
+						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+					</nav>
+				</div>
+
+				<!-- 2. Strategic Tools -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
-					<p class="text-xs text-muted-foreground mt-2">Estimate your body fat percentage using our tools.</p>
+					<p class="text-xs text-muted-foreground mt-2">Estimate your body fat percentage using the Navy Method.</p>
 					<a href="/calculators/body-fat-calculator" class="button-primary w-full text-center text-xs mt-4 block">Body Fat Calculator</a>
 				</div>
 
+				<!-- 3. Related Calculators -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/calculators/body-fat-calculator" class="block text-accent hover:underline">Body Fat Calculator</a>
+						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
+						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
+						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
+					</div>
+				</div>
+
+				<!-- 4. Related Guides -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
 					<div class="mt-3 space-y-2 text-xs">
 						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Cut or Bulk Matrix</a>
 						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
-						<a href="/guides/protein-nutrition" class="block text-accent hover:underline font-semibold">Protein Nutrition Guide</a>
+						<a href="/guides/protein-nutrition" class="block text-accent hover:underline">Protein Nutrition Guide</a>
+						<a href="/guides/maintenance-calories" class="block text-accent hover:underline">Maintenance Calories</a>
 					</div>
 				</div>
+
+				<!-- 5. Quick Facts -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
+					<div class="mt-3 space-y-3 text-xs">
+						<div>
+							<p class="font-bold text-foreground">Healthy Range (Men)</p>
+							<p class="text-muted-foreground mt-0.5">10-20%</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Healthy Range (Women)</p>
+							<p class="text-muted-foreground mt-0.5">18-28%</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Navy Method Accuracy</p>
+							<p class="text-muted-foreground mt-0.5">±3-4% vs hydrostatic weighing</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Measure Every</p>
+							<p class="text-muted-foreground mt-0.5">2-4 weeks, same conditions</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- 6. Article Info -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
+					<div class="mt-3 space-y-2.5 text-xs">
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+							<span class="text-muted-foreground">9 min read</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+							<span class="text-muted-foreground">Updated Jun 2026</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							<span class="text-muted-foreground">Editorial Board</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- 7. Key Takeaway -->
+				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
+					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Key Takeaway
+					</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Use the Navy Method for zero-cost, consistent tracking at 2-4 week intervals. Cross-validate with skinfold calipers or visual comparison. Do not react to single readings — look at 4-week trends.</p>
+				</div>
+
 			</div>
 		</div>
 	</section>

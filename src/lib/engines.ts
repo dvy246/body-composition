@@ -119,17 +119,22 @@ export const goalLabels: Record<Goal, string> = {
 	maintain: 'Maintenance',
 };
 
+export function kgToLb(kg: number) { return kg * 2.2046226218; }
+export function lbToKg(lb: number) { return lb / 2.2046226218; }
+export function cmToIn(cm: number) { return cm / 2.54; }
+export function inToCm(val: number) { return val * 2.54; }
+
 /** Shared pace and timeline calculation for Strategy Finder and assess page */
 export function paceAndTimeline(
 	recommended: Goal,
 	weightKg: number,
+	unit: 'metric' | 'imperial' = 'metric',
 	rDecay = 0.99
 ): { paceText: string; timelineText: string } {
-	function fmt(kg: number, unit: 'metric' | 'imperial') {
+	function fmt(kg: number) {
 		if (unit === 'imperial') return `${round(kg * 2.2046226218, 2)} lb`;
 		return `${round(kg, 2)} kg`;
 	}
-	const _fmt = (kg: number) => fmt(kg, 'metric');
 
 	if (recommended === 'fat-loss') {
 		const pace = -weightKg * 0.0075;
@@ -137,7 +142,7 @@ export function paceAndTimeline(
 		const term = (target * (1 - rDecay)) / pace;
 		const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 16;
 		return {
-			paceText: `Lose ~${_fmt(Math.abs(pace))}/week`,
+			paceText: `Lose ~${fmt(Math.abs(pace))}/week`,
 			timelineText: `~${round(etaWeeks, 1)} weeks to reach 8% reduction`,
 		};
 	}
@@ -147,7 +152,7 @@ export function paceAndTimeline(
 		const term = (target * (1 - rDecay)) / pace;
 		const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 24;
 		return {
-			paceText: `Gain ~${_fmt(pace)}/week`,
+			paceText: `Gain ~${fmt(pace)}/week`,
 			timelineText: `~${round(etaWeeks, 1)} weeks to build 4% lean mass`,
 		};
 	}
@@ -157,7 +162,7 @@ export function paceAndTimeline(
 		const term = (target * (1 - rDecay)) / pace;
 		const etaWeeks = term < 0.99 ? Math.log(1 - term) / Math.log(rDecay) : 16;
 		return {
-			paceText: `Gain ~${_fmt(pace)}/week`,
+			paceText: `Gain ~${fmt(pace)}/week`,
 			timelineText: `~${round(etaWeeks, 1)} weeks to target weight`,
 		};
 	}

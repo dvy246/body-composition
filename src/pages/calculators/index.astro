@@ -46,12 +46,12 @@ function findCalculator(slug: string) {
 									</p>
 									<div class="mt-3 flex flex-wrap gap-1">
 										{calc.primaryInputs.slice(0, 3).map((input) => (
-											<span class="text-[10px] font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+											<span class="text-xs font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
 												{input}
 											</span>
 										))}
 										{calc.primaryInputs.length > 3 && (
-											<span class="text-[10px] font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+											<span class="text-xs font-semibold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
 												+{calc.primaryInputs.length - 3} more
 											</span>
 										)}
