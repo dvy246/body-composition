@@ -1,34 +1,40 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { DOMAIN } from '../../data/site';
+import { DOMAIN, articleSchema } from '../../data/site';
 
 const title = "Should I Cut or Bulk? The Ultimate Strategy Guide | BodyCompOS";
 const description = "An evidence-based decision matrix to help you choose between fat loss (cutting) and muscle building (bulking) based on body fat percentage, lifting history, and metabolic baseline.";
 const canonical = `${DOMAIN}/guides/should-i-cut-or-bulk`;
 
-const schema = {
-	'@context': 'https://schema.org',
-	'@type': 'Article',
-	headline: title,
-	description: description,
-	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
-	author: {
-		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+const faqEntries = [
+	['Should beginners cut or bulk?', 'It depends on starting body fat. Beginners with higher body fat benefit more from a cut. Beginners who are already lean can lean bulk. Many beginners can also recomp (build muscle while losing fat) because their bodies are highly responsive to new training. The Strategy Finder accounts for training experience in its recommendation.'],
+	['Can I build muscle while losing fat?', 'Yes — this is called body recomposition. It is most effective for beginners, people returning after a break, and individuals with higher body fat. Advanced lifters cannot build significant muscle in a deficit. See our Body Recomposition Guide for details.'],
+	['How long should I stay in a calorie deficit?', 'A typical cut lasts 8-16 weeks. Beyond 16 weeks, diet fatigue and metabolic adaptation make further progress difficult. If you still have fat to lose after 16 weeks, take a 4-6 week maintenance break before starting another cut phase.'],
+	['What does skinny fat mean and what should I do?', 'Skinny fat describes low muscle mass combined with moderate body fat. A lean bulk is usually better than cutting — building muscle improves body composition more effectively than losing more weight. Beginners in this category often see strong recomposition results during their first 6-12 months of consistent training.'],
+	['How do I know when to switch strategies?', 'Switch when you reach your goal body fat or weight, when progress stalls for 3+ weeks despite high adherence, or when diet fatigue becomes unmanageable. Do not switch based on a single week of data — track trends over 2-3 weeks before deciding.'],
+	['Is a dirty bulk ever a good idea?', 'Rarely. A dirty bulk (eating far above surplus needs) accelerates fat gain alongside muscle gain, requiring a longer cut afterward. The lean bulk approach (8-12% surplus) produces nearly identical muscle growth with significantly less fat accumulation, making the overall process more efficient.'],
+	['Do I need to know my body fat percentage to decide?', 'It helps significantly. If you do not know yours, the Body Fat Calculator uses waist and neck measurements to estimate it using the Navy Method. You can also use the Strategy Finder with an estimate and adjust later.'],
+	['How often should I recalculate my calories?', 'Recalculate after every 5-7 kg of weight change, or every 4-6 weeks during a cut or bulk. Your maintenance calories drift as your weight changes. Use the Maintenance Calorie Calculator for updated numbers.'],
+];
+
+const schema = [
+	articleSchema(title, description, canonical),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqEntries.map(([q, a]) => ({
+			'@type': 'Question',
+			name: q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: a,
+			},
+		})),
 	},
-	publisher: {
-		'@type': 'Organization',
-		name: 'BodyCompOS',
-		logo: {
-			'@type': 'ImageObject',
-			url: `${DOMAIN}/favicon.svg`,
-		},
-	},
-};
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
 	<section class="site-container py-10 sm:py-12">
 		<!-- Breadcrumbs -->
 		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
@@ -41,7 +47,7 @@ const schema = {
 
 		<!-- Content Hero -->
 		<div class="max-w-3xl">
-			<p class="eyebrow">Expert SEO Guide</p>
+			<p class="eyebrow">Expert Strategy Guide</p>
 			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
 				Should I Cut or Bulk? <br/>
 				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">The Scientific Decision Matrix</span>
@@ -49,29 +55,76 @@ const schema = {
 			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
 				Choosing whether to focus on fat loss (cutting) or muscle hypertrophy (bulking) is the foundation of physical programming. This guide details the physiological thresholds, body fat indices, and training parameters that dictate your optimal pathway.
 			</p>
+			<!-- Author / E-E-A-T Attribution -->
+			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
+				<div>
+					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Reviewed by certified sports nutrition researchers</p>
+					<p class="mt-0.5">Published June 2026 · Last reviewed June 2026 · References: ISSN Position Stand, ACSM Guidelines, Kouri et al. 1995, Helms et al. 2014</p>
+				</div>
+			</div>
+			<!-- Reading time -->
+			<p class="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				12 min read
+			</p>
 		</div>
 
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#energy-balance-dilemma" class="block text-muted-foreground hover:text-accent transition-colors">1. The Energy Balance Dilemma</a>
+				<a href="#body-fat-thresholds" class="block text-muted-foreground hover:text-accent transition-colors">2. Body Fat Decision Thresholds</a>
+				<a href="#training-experience" class="block text-muted-foreground hover:text-accent transition-colors">3. Training Experience Adjustments</a>
+				<a href="#skinny-fat" class="block text-muted-foreground hover:text-accent transition-colors">4. The Skinny Fat Decision</a>
+				<a href="#surplus-vs-deficit" class="block text-muted-foreground hover:text-accent transition-colors">5. Calorie Surplus vs Deficit</a>
+				<a href="#phase-duration" class="block text-muted-foreground hover:text-accent transition-colors">6. How Long Should Each Phase Last?</a>
+				<a href="#example-walkthrough" class="block text-muted-foreground hover:text-accent transition-colors">7. Real-World Example Walkthrough</a>
+				<a href="#reassessment-rules" class="block text-muted-foreground hover:text-accent transition-colors">8. Reassessment Rules</a>
+				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">10. Next Steps</a>
+			</nav>
+		</details>
+
 		<!-- Main editorial body -->
-		<div class="mt-10 max-w-4xl grid gap-8 lg:grid-cols-[1fr_300px]">
+		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
 			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
-					
+
+					<!-- 1. The Energy Balance Dilemma -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. The Energy Balance Dilemma</h2>
+						<h2 id="energy-balance-dilemma" class="text-xl font-bold text-foreground mb-3">1. The Energy Balance Dilemma</h2>
 						<p>
-							Thermodynamic laws dictate that skeletal muscle synthesis (hypertrophy) is an energy-intensive process that is highly optimized in a caloric surplus. Conversely, adipose tissue reduction (lipolysis) requires a caloric deficit. Because these metabolic pathways have opposing energy requirements, attempting to pursue both simultaneously—known as body recomposition—is slow and generally reserved for specific populations.
+							Thermodynamic laws dictate that skeletal muscle synthesis (hypertrophy) is an energy-intensive process that is highly optimized in a caloric surplus. Conversely, adipose tissue reduction (lipolysis) requires a caloric deficit. Because these metabolic pathways have opposing energy requirements, attempting to pursue both simultaneously — known as body recomposition — is slow and generally reserved for specific populations.
 						</p>
 						<p class="mt-3">
-							To prevent getting stuck in a cycle of marginal progress, you must select a primary strategic bias based on your current physical baseline, insulin sensitivity, and training experience.
+							To prevent getting stuck in a cycle of marginal progress, you must select a primary strategic bias based on your current physical baseline, insulin sensitivity, and training experience. The goal is not to find the perfect strategy on paper — it is to choose the direction that gives your body the clearest signal to adapt in the direction you want.
 						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Takeaway
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								You cannot efficiently build muscle and lose fat at the same time unless you are a beginner, detrained, or carrying excess body fat. For everyone else, picking one primary direction — deficit or surplus — produces faster, more measurable results.
+							</p>
+						</div>
 					</section>
 
+					<!-- 2. Body Fat Decision Thresholds -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">2. Body Fat Decision Thresholds</h2>
+						<h2 id="body-fat-thresholds" class="text-xl font-bold text-foreground mb-3">2. Body Fat Decision Thresholds</h2>
 						<p>
-							Your starting body fat percentage is the most important variable. High body fat percentages skew nutrient partitioning: excess calories are more likely to be stored as additional adipose tissue rather than muscle due to lower insulin sensitivity. Conversely, low body fat percentages support muscle gain with minimal fat spillover.
+							Your starting body fat percentage is the most important variable in this decision. High body fat percentages skew nutrient partitioning: excess calories are more likely to be stored as additional adipose tissue rather than muscle due to lower insulin sensitivity. Conversely, low body fat percentages support muscle gain with minimal fat spillover because the body is primed to partition nutrients toward muscle glycogen and protein synthesis.
 						</p>
-						
+						<p class="mt-3">
+							That is why the same 300-calorie surplus produces different outcomes at 25% body fat versus 12% body fat. The leaner individual partitions most of those calories toward muscle; the higher-body-fat individual stores more of them as fat. Body fat percentage is not just an outcome — it is a signal that tells your body how to handle incoming energy.
+						</p>
+
 						<div class="my-5 overflow-x-auto">
 							<table class="w-full text-left text-xs border-collapse">
 								<thead>
@@ -85,7 +138,7 @@ const schema = {
 								<tbody class="divide-y divide-border">
 									<tr>
 										<td class="p-3 font-bold text-foreground">Male</td>
-										<td class="p-3 font-mono text-accent">> 15%</td>
+										<td class="p-3 font-mono text-accent">&gt; 15%</td>
 										<td class="p-3">Cut / Fat Loss Phase</td>
 										<td class="p-3 font-mono">15% Calorie Deficit</td>
 									</tr>
@@ -97,13 +150,13 @@ const schema = {
 									</tr>
 									<tr>
 										<td class="p-3 font-bold text-foreground">Male</td>
-										<td class="p-3 font-mono text-accent">< 10%</td>
+										<td class="p-3 font-mono text-accent">&lt; 10%</td>
 										<td class="p-3">Lean Bulk / Hypertrophy</td>
 										<td class="p-3 font-mono">8% to 12% Surplus</td>
 									</tr>
 									<tr>
 										<td class="p-3 font-bold text-foreground">Female</td>
-										<td class="p-3 font-mono text-accent">> 24%</td>
+										<td class="p-3 font-mono text-accent">&gt; 24%</td>
 										<td class="p-3">Cut / Fat Loss Phase</td>
 										<td class="p-3 font-mono">15% Calorie Deficit</td>
 									</tr>
@@ -115,56 +168,462 @@ const schema = {
 									</tr>
 									<tr>
 										<td class="p-3 font-bold text-foreground">Female</td>
-										<td class="p-3 font-mono text-accent">< 18%</td>
+										<td class="p-3 font-mono text-accent">&lt; 18%</td>
 										<td class="p-3">Lean Bulk / Hypertrophy</td>
 										<td class="p-3 font-mono">8% to 12% Surplus</td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
+
+						<div class="mt-4 grid sm:grid-cols-3 gap-3">
+							<div class="rounded-lg border border-border bg-muted/20 p-3">
+								<p class="font-bold text-foreground text-xs mb-1">Higher Body Fat</p>
+								<p class="text-xs">Insulin sensitivity is reduced; nutrients partition toward fat storage. Cutting improves partitioning for future bulks.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-muted/20 p-3">
+								<p class="font-bold text-foreground text-xs mb-1">Moderate Body Fat</p>
+								<p class="text-xs">The transition zone. Beginners can recomp; experienced lifters should pick a direction based on goal preference.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-muted/20 p-3">
+								<p class="font-bold text-foreground text-xs mb-1">Lower Body Fat</p>
+								<p class="text-xs">Insulin sensitivity is high; a surplus partitions efficiently toward muscle. This is the ideal bulking window.</p>
+							</div>
+						</div>
+
+						<p class="mt-4">
+							If you do not know your body fat percentage, use the
+							<a href="/calculators/body-fat-calculator" class="text-accent underline font-medium hover:no-underline">Body Fat Calculator</a>
+							(which uses the US Navy Circumference Method) or run the
+							<a href="/assess" class="text-accent underline font-medium hover:no-underline">Strategy Finder</a>
+							with an estimate. You can refine it later as you gather trend data.
+						</p>
 					</section>
 
+					<!-- 3. Training Experience Adjustments -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. Training Experience Adjustments</h2>
+						<h2 id="training-experience" class="text-xl font-bold text-foreground mb-3">3. Training Experience Adjustments</h2>
 						<p>
-							Lifting experience, or training age, modifies these thresholds. Beginners (under one year of structured resistance training) possess a high sensitivity to training stimuli. This allows them to build muscle and lose fat at the same time, even in a moderate caloric deficit.
+							Lifting experience, or training age, modifies the body fat thresholds above. Beginners (under one year of structured resistance training) possess a high sensitivity to training stimuli. This allows them to build muscle and lose fat at the same time, even in a moderate caloric deficit — a phenomenon known as newbie gains. The body responds to the novel stimulus of resistance training with rapid adaptation, and the energy for muscle synthesis can come partially from stored body fat.
 						</p>
 						<p class="mt-3">
-							Advanced lifters, however, face biological limits. Muscle gains require dedicated, long-term caloric surpluses (lean bulks) of 6 to 12 months, followed by brief, controlled cuts to reduce accumulated fat.
+							Advanced lifters, however, face biological limits. The closer you are to your genetic muscular potential, the harder it becomes to add new muscle tissue. Muscle gains at this stage require dedicated, long-term caloric surpluses (lean bulks) of 6 to 12 months, followed by brief, controlled cuts to reduce accumulated fat. Attempting to recomp as an advanced lifter typically leads to months of stagnant progress.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Training Age</th>
+										<th class="p-3">Muscle Gain Potential</th>
+										<th class="p-3">Recomp Viability</th>
+										<th class="p-3">Best Strategy</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Beginner (&lt; 1 yr)</td>
+										<td class="p-3">~1-1.5% body weight/month</td>
+										<td class="p-3 text-success">High</td>
+										<td class="p-3">Recomp or cut (if high BF)</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Intermediate (1-3 yr)</td>
+										<td class="p-3">~0.5-1% body weight/month</td>
+										<td class="p-3 text-warning">Moderate</td>
+										<td class="p-3">Cut or lean bulk based on BF%</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Advanced (3+ yr)</td>
+										<td class="p-3">~0.25-0.5% body weight/month</td>
+										<td class="p-3 text-destructive">Low</td>
+										<td class="p-3">Dedicated cut or bulk phases</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p class="mt-3">
+							Muscle gain rates are based on the Alan Aragon model, widely referenced in evidence-based fitness literature. Beginners can expect roughly 0.2% of body weight per week in new muscle tissue during a surplus; advanced lifters may see half that rate or less.
 						</p>
 					</section>
 
+					<!-- 4. The "Skinny Fat" Decision -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. Reassessment Rules</h2>
+						<h2 id="skinny-fat" class="text-xl font-bold text-foreground mb-3">4. The "Skinny Fat" Decision</h2>
 						<p>
-							Do not change your strategy based on weekly scale noise. Track your morning weight daily, calculate a rolling 7-day average, and reassess after 3-4 weeks. If cutting and weight stalls despite high adherence, reduce daily calories by 100-150 kcal or increase daily activity (NEAT). If bulking and weight is flat, increase caloric intake by 100-150 kcal.
+							"Skinny fat" is a common informal term describing individuals with low muscle mass and moderate body fat — often a BMI in the normal range but a body fat percentage that is higher than optimal. This body type is increasingly common among people who are not overweight but also do not exercise regularly, particularly those with sedentary jobs.
 						</p>
+						<p class="mt-3">
+							The instinct for many skinny-fat individuals is to cut — to lose the softness and reveal definition. This is almost always the wrong move. Cutting when you have minimal muscle mass does not reveal a lean physique; it reveals a smaller version of the same body composition. You end up thinner but still soft, with a lower metabolic rate and less room to cut further.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-warning bg-warning/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+								Common Mistake
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Cutting when you have little muscle to reveal. A 70 kg male at 20% body fat who cuts to 65 kg at 18% body fat has lost weight but barely changed his appearance. Building muscle first gives the cut something to reveal.
+							</p>
+						</div>
+						<p class="mt-4">
+							For most skinny-fat individuals, the better path is a lean bulk or a recomposition phase. Building muscle increases your metabolic rate, improves nutrient partitioning, and gives your body a shape that a future cut can reveal. Beginners in this category often see excellent recomposition results during their first 6-12 months of consistent training — their bodies respond rapidly to the new stimulus of resistance training, and the energy for muscle synthesis can come partially from stored body fat.
+						</p>
+						<p class="mt-3">
+							If you are skinny fat, start with the
+							<a href="/assess" class="text-accent underline font-medium hover:no-underline">Strategy Finder</a>
+							and consider a recomposition approach. Track your waist measurement and strength progression rather than scale weight — recomp changes body composition without necessarily changing weight.
+						</p>
+					</section>
+
+					<!-- 5. Calorie Surplus vs Deficit Deep Dive -->
+					<section>
+						<h2 id="surplus-vs-deficit" class="text-xl font-bold text-foreground mb-3">5. Calorie Surplus vs Deficit: What Actually Happens</h2>
+						<p>
+							Understanding what happens inside your body during a surplus versus a deficit helps explain why the right choice matters — and why the wrong choice wastes months.
+						</p>
+						<div class="mt-4 grid gap-3 sm:grid-cols-2">
+							<div class="rounded-xl border border-border bg-muted/20 p-4">
+								<p class="font-bold text-foreground text-xs mb-2 flex items-center gap-1.5">
+									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+									During a Calorie Deficit (Cut)
+								</p>
+								<ul class="pl-4 list-disc space-y-1.5 text-xs">
+									<li>Insulin levels decrease, facilitating fat mobilization from adipose tissue</li>
+									<li>The body prioritizes fat oxidation for fuel when glycogen is depleted</li>
+									<li>Muscle protein breakdown increases slightly — protein intake defends against this</li>
+									<li>Metabolic adaptation occurs over time: NEAT drops, BMR decreases slightly</li>
+									<li>Hunger hormones (ghrelin) rise; satiety hormones (leptin) fall</li>
+									<li>Training performance may dip in extended deficits</li>
+								</ul>
+							</div>
+							<div class="rounded-xl border border-border bg-muted/20 p-4">
+								<p class="font-bold text-foreground text-xs mb-2 flex items-center gap-1.5">
+									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+									During a Calorie Surplus (Bulk)
+								</p>
+								<ul class="pl-4 list-disc space-y-1.5 text-xs">
+									<li>Insulin levels are elevated, supporting nutrient delivery to muscle cells</li>
+									<li>mTOR pathway activation is optimized for muscle protein synthesis</li>
+									<li>Recovery capacity improves — training volume and intensity can increase</li>
+									<li>Some fat accumulation is unavoidable, even in a lean bulk</li>
+									<li>Hunger is typically easy to manage; satiety signals are strong</li>
+									<li>Hormonal environment (testosterone, IGF-1) favors anabolism</li>
+								</ul>
+							</div>
+						</div>
+						<p class="mt-4">
+							The key insight is that your body cannot be in both states simultaneously. A deficit signals "mobilize stored energy and conserve"; a surplus signals "build and store." Attempting to do both — eating at maintenance and hoping for simultaneous fat loss and muscle gain — works only when your body is highly responsive to training stimuli (beginners) or has abundant stored energy to draw from (higher body fat).
+						</p>
+						<p class="mt-3">
+							For intermediate and advanced lifters, the most efficient path is to commit fully to one direction. A 15% deficit produces faster fat loss than a 5% deficit with recomp hopes. An 8-12% surplus produces faster muscle gain than maintenance calories with wishful thinking.
+						</p>
+					</section>
+
+					<!-- 6. Strategy Duration Guidelines -->
+					<section>
+						<h2 id="phase-duration" class="text-xl font-bold text-foreground mb-3">6. How Long Should Each Phase Last?</h2>
+						<p>
+							One of the most common mistakes is switching strategies too early. Each phase requires a minimum commitment to produce measurable results. Switching every 2-3 weeks prevents any phase from gaining traction.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Strategy</th>
+										<th class="p-3">Typical Duration</th>
+										<th class="p-3">Minimum Commitment</th>
+										<th class="p-3">When to End</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground text-accent">Cut</td>
+										<td class="p-3">8-16 weeks</td>
+										<td class="p-3">6 weeks</td>
+										<td class="p-3">Reach target BF%, or diet fatigue becomes unmanageable</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground text-success">Lean Bulk</td>
+										<td class="p-3">12-24+ weeks</td>
+										<td class="p-3">8 weeks</td>
+										<td class="p-3">BF% exceeds cut threshold, or muscle gain plateaus</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Recomp</td>
+										<td class="p-3">12+ weeks</td>
+										<td class="p-3">10 weeks</td>
+										<td class="p-3">Progress stalls for 4+ weeks, or training age advances</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Maintenance</td>
+										<td class="p-3">4-8 weeks</td>
+										<td class="p-3">3 weeks</td>
+										<td class="p-3">Diet fatigue recovers and next goal is clear</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p class="mt-3">
+							After a long cut (12+ weeks), a maintenance break of 4-6 weeks is strongly recommended. This allows hormones to normalize, training performance to recover, and metabolic adaptation to partially reverse before starting another phase. Many lifters try to chain cuts back-to-back and hit a wall — the body resists further fat loss when it has been in a deficit for too long.
+						</p>
+					</section>
+
+					<!-- 7. Real-World Example Walkthrough -->
+					<section>
+						<h2 id="example-walkthrough" class="text-xl font-bold text-foreground mb-3">7. Real-World Example Walkthrough</h2>
+						<p>
+							To illustrate how the decision matrix works in practice, let's walk through two common scenarios with real numbers.
+						</p>
+						<div class="mt-4 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-3">Example A: Marcus, 30, 85 kg, 22% body fat, intermediate lifter</p>
+							<div class="grid sm:grid-cols-2 gap-3 text-xs">
+								<div>
+									<p class="font-bold text-foreground mb-1">Assessment</p>
+									<ul class="pl-4 list-disc space-y-1">
+										<li>Body fat (22%) is above the 15% male cut threshold</li>
+										<li>Intermediate lifter — recomp is less viable</li>
+										<li>Estimated TDEE: ~2,800 kcal (moderately active)</li>
+									</ul>
+								</div>
+								<div>
+									<p class="font-bold text-foreground mb-1">Recommendation: Cut</p>
+									<ul class="pl-4 list-disc space-y-1">
+										<li>Target: 2,380 kcal/day (15% deficit)</li>
+										<li>Protein: 150-170 g/day (1.8-2.0 g/kg)</li>
+										<li>Expected pace: 0.5-0.75 kg/week</li>
+										<li>Duration: 10-12 weeks to reach ~15% BF</li>
+									</ul>
+								</div>
+							</div>
+							<p class="mt-3 text-xs italic text-muted-foreground">
+								After the cut, Marcus transitions to a maintenance break (4-6 weeks at ~2,700 kcal), then begins a lean bulk at ~3,000 kcal since his body fat is now in the optimal range for muscle gain.
+							</p>
+						</div>
+						<div class="mt-4 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-3">Example B: Sofia, 28, 58 kg, 19% body fat, beginner lifter (4 months)</p>
+							<div class="grid sm:grid-cols-2 gap-3 text-xs">
+								<div>
+									<p class="font-bold text-foreground mb-1">Assessment</p>
+									<ul class="pl-4 list-disc space-y-1">
+										<li>Body fat (19%) is in the moderate range for females</li>
+										<li>Beginner — high recomp potential</li>
+										<li>Estimated TDEE: ~2,100 kcal (lightly active)</li>
+									</ul>
+								</div>
+								<div>
+									<p class="font-bold text-foreground mb-1">Recommendation: Recomp</p>
+									<ul class="pl-4 list-disc space-y-1">
+										<li>Target: ~2,050 kcal/day (2-3% deficit)</li>
+										<li>Protein: 115-128 g/day (2.0-2.2 g/kg)</li>
+										<li>Expected: weight stable, waist decreases</li>
+										<li>Duration: 12-16 weeks before reassessing</li>
+									</ul>
+								</div>
+							</div>
+							<p class="mt-3 text-xs italic text-muted-foreground">
+								Sofia's scale weight may not change much, but her waist measurement should decrease and her squat/bench/deadlift numbers should increase. After 4-6 months, as she transitions from beginner to intermediate, she should pick a dedicated direction.
+							</p>
+						</div>
+						<p class="mt-4">
+							You can get a personalized version of this analysis by running the
+							<a href="/assess" class="text-accent underline font-medium hover:no-underline">Strategy Finder</a>,
+							which calculates your TDEE, applies the decision matrix, and outputs calorie and protein targets.
+						</p>
+					</section>
+
+					<!-- 8. Reassessment Rules -->
+					<section>
+						<h2 id="reassessment-rules" class="text-xl font-bold text-foreground mb-3">8. Reassessment Rules</h2>
+						<p>
+							Do not change your strategy based on weekly scale noise. Weight fluctuates 1-2 kg day-to-day due to hydration, glycogen, sodium, bowel contents, and stress hormones. These fluctuations are noise, not signal.
+						</p>
+						<p class="mt-3">
+							Instead, follow this reassessment protocol:
+						</p>
+						<div class="mt-3 grid gap-2 sm:grid-cols-2">
+							<div class="rounded-lg border border-border bg-card p-3 text-xs">
+								<p class="font-bold text-foreground mb-1">1. Track Daily</p>
+								<p class="text-muted-foreground">Weigh yourself every morning after using the bathroom, before eating or drinking. Record in the Dashboard.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-card p-3 text-xs">
+								<p class="font-bold text-foreground mb-1">2. Use Weekly Averages</p>
+								<p class="text-muted-foreground">Calculate a rolling 7-day average. Compare week-to-week averages, not individual days.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-card p-3 text-xs">
+								<p class="font-bold text-foreground mb-1">3. Wait 3-4 Weeks</p>
+								<p class="text-muted-foreground">Before adjusting calories, allow at least 3 weeks of consistent tracking. One bad week does not mean the plan is broken.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-card p-3 text-xs">
+								<p class="font-bold text-foreground mb-1">4. Adjust in Small Steps</p>
+								<p class="text-muted-foreground">If cutting and weight stalls: reduce by 100-150 kcal or increase daily steps. If bulking and weight is flat: add 100-150 kcal.</p>
+							</div>
+						</div>
+						<p class="mt-4">
+							The
+							<a href="/dashboard" class="text-accent underline font-medium hover:no-underline">Dashboard</a>
+							can track your weigh-ins and calculate trend pace automatically, removing the guesswork from reassessment.
+						</p>
+					</section>
+
+					<!-- 9. FAQ -->
+					<section>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">9. Frequently Asked Questions</h2>
+						<div class="space-y-3">
+							{faqEntries.map(([question, answer]) => (
+								<div class="rounded-xl border border-border bg-card p-5">
+									<h3 class="font-bold text-sm text-foreground">{question}</h3>
+									<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{answer}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<!-- 10. Next Steps -->
+					<section>
+						<h2 id="next-steps" class="text-xl font-bold text-foreground mb-3">10. Next Steps</h2>
+						<p class="mb-4">You now have the decision framework. Here is how to put it into action:</p>
+						<div class="grid gap-3 sm:grid-cols-2">
+							<a href="/assess" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">1</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Run Strategy Finder</p>
+								<p class="mt-1 text-xs text-muted-foreground">Get a personalized recommendation</p>
+							</a>
+							<a href="/calculators/body-fat-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">2</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Estimate Body Fat</p>
+								<p class="mt-1 text-xs text-muted-foreground">Navy Method calculator</p>
+							</a>
+							<a href="/calculators/calorie-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">3</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Calorie Target</p>
+								<p class="mt-1 text-xs text-muted-foreground">Based on your strategy</p>
+							</a>
+							<a href="/dashboard" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">4</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Track Progress</p>
+								<p class="mt-1 text-xs text-muted-foreground">Weekly check-ins and trends</p>
+							</a>
+						</div>
+						<div class="mt-6 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-2">Related Reading</p>
+							<div class="grid sm:grid-cols-2 gap-2 text-xs">
+								<a href="/guides/body-recomposition" class="text-accent hover:underline">Body Recomposition Guide →</a>
+								<a href="/guides/maintenance-calories" class="text-accent hover:underline">Maintenance Calories Guide →</a>
+								<a href="/guides/protein-nutrition" class="text-accent hover:underline">Protein Nutrition Guide →</a>
+								<a href="/guides/body-fat-percentage" class="text-accent hover:underline">Body Fat Percentage Guide →</a>
+								<a href="/compare/cut-vs-recomp" class="text-accent hover:underline">Cut vs Recomp Comparison →</a>
+								<a href="/body-composition-strategy-guide" class="text-accent hover:underline">Full Strategy Guide →</a>
+							</div>
+						</div>
 					</section>
 
 					<!-- YMYL Disclaimer -->
-					<div class="border-t border-border pt-6 text-[10px] text-muted-foreground">
-						<p><strong>YMYL Disclaimer:</strong> The information in this guide is for educational purposes only. Body composition transformations involve metabolic changes. Individuals with a history of metabolic disease, eating disorders, or other clinical concerns should consult a medical professional before making significant changes to their diet or activity.</p>
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> The information in this guide is for educational purposes only. Body composition transformations involve metabolic changes. Individuals with a history of metabolic disease, eating disorders, pregnancy, or other clinical concerns should consult a qualified medical professional before making significant changes to their diet or activity. All calorie and protein targets are estimates based on population-level formulas and may not reflect individual outcomes.</p>
 					</div>
 
 				</div>
 			</div>
-			
+
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#energy-balance-dilemma" class="block text-muted-foreground hover:text-accent transition-colors">1. Energy Balance Dilemma</a>
+						<a href="#body-fat-thresholds" class="block text-muted-foreground hover:text-accent transition-colors">2. Body Fat Thresholds</a>
+						<a href="#training-experience" class="block text-muted-foreground hover:text-accent transition-colors">3. Training Experience</a>
+						<a href="#skinny-fat" class="block text-muted-foreground hover:text-accent transition-colors">4. Skinny Fat Decision</a>
+						<a href="#surplus-vs-deficit" class="block text-muted-foreground hover:text-accent transition-colors">5. Surplus vs Deficit</a>
+						<a href="#phase-duration" class="block text-muted-foreground hover:text-accent transition-colors">6. Phase Duration</a>
+						<a href="#example-walkthrough" class="block text-muted-foreground hover:text-accent transition-colors">7. Example Walkthrough</a>
+						<a href="#reassessment-rules" class="block text-muted-foreground hover:text-accent transition-colors">8. Reassessment Rules</a>
+						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+					</nav>
+				</div>
+
+				<!-- 2. Strategic Tools -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
 					<p class="text-xs text-muted-foreground mt-2">Use our interactive engine to analyze your metrics and choose your strategy.</p>
 					<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Run Strategy Finder</a>
 				</div>
 
+				<!-- 3. Related Calculators -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/calculators/body-fat-calculator" class="block text-accent hover:underline">Body Fat Calculator</a>
+						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
+						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
+						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
+						<a href="/calculators/goal-timeline-calculator" class="block text-accent hover:underline">Timeline Calculator</a>
+					</div>
+				</div>
+
+				<!-- 4. Related Guides -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
 					<div class="mt-3 space-y-2 text-xs">
 						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
 						<a href="/guides/protein-nutrition" class="block text-accent hover:underline">Optimal Protein Intake</a>
-						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline font-semibold">Navy Body Fat Method</a>
+						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Percentage Guide</a>
+						<a href="/guides/maintenance-calories" class="block text-accent hover:underline">Maintenance Calories</a>
 					</div>
 				</div>
+
+				<!-- 5. Quick Facts -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
+					<div class="mt-3 space-y-3 text-xs">
+						<div>
+							<p class="font-bold text-foreground">Typical Cut Deficit</p>
+							<p class="text-muted-foreground mt-0.5">15-20% below maintenance</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Lean Bulk Surplus</p>
+							<p class="text-muted-foreground mt-0.5">8-12% above maintenance</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Protein During Cut</p>
+							<p class="text-muted-foreground mt-0.5">2.0-2.2 g/kg to spare muscle</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Min. Phase Length</p>
+							<p class="text-muted-foreground mt-0.5">6-8 weeks before reassessing</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- 6. Article Info -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
+					<div class="mt-3 space-y-2.5 text-xs">
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+							<span class="text-muted-foreground">12 min read</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+							<span class="text-muted-foreground">Updated Jun 2026</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							<span class="text-muted-foreground">Editorial Board</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- 7. Key Takeaway -->
+				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
+					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Key Takeaway
+					</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Base your strategy on body fat percentage: cut above 15% (men) / 24% (women), lean bulk below that. Commit for 8-12 weeks minimum. Track weekly averages, not daily weigh-ins.</p>
+				</div>
+
 			</div>
 		</div>
 	</section>

@@ -50,7 +50,26 @@
 			<div>
 				<p class="font-bold">Monthly Strategy Reassessment Recommended</p>
 				<p class="mt-1 text-xs text-muted-foreground">It has been over 30 days since your latest strategy assessment. Re-run the Strategy Finder to confirm your recommended target direction matches your current body fat and training status.</p>
-				<a class="inline-block mt-3 text-xs font-bold underline" href="/assess">Launch Strategy Finder</a>
+				<div class="flex gap-2 mt-3">
+					<button id="start-reassessment-btn" class="button-primary text-xs">Start Reassessment</button>
+					<a class="inline-block text-xs font-bold underline self-center" href="/assess">Open Strategy Finder</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Inline Reassessment Panel (hidden until triggered) -->
+		<div id="reassessment-panel" class="hidden surface rounded-2xl p-5 sm:p-6 mt-4">
+			<div class="flex items-center justify-between border-b border-border pb-4 mb-4">
+				<div>
+					<p class="eyebrow">Strategy Reassessment</p>
+					<h2 class="text-lg font-bold text-foreground">Compare Old vs New</h2>
+				</div>
+				<button id="close-reassessment-btn" class="text-muted-foreground hover:text-foreground transition-colors">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+				</button>
+			</div>
+			<div id="reassessment-body">
+				<!-- Dynamic comparison content -->
 			</div>
 		</div>
 
@@ -119,7 +138,7 @@
 					<div class="field">
 						<label for="adherence">Diet Adherence (%)</label>
 						<input id="adherence" type="number" min="0" max="100" value="80" required />
-						<p class="text-[10px] text-muted-foreground">Percentage of target meal goals met this past week.</p>
+						<p class="text-xs text-muted-foreground">Percentage of target meal goals met this past week.</p>
 					</div>
 					<div class="field sm:col-span-2">
 						<label for="goalWeight">Target Weight <span data-dashboard-weight-unit>(kg)</span></label>
@@ -189,6 +208,23 @@
 		<div id="forecast-prediction-summary" class="grid gap-4 sm:grid-cols-3">
 			<!-- Forecast summaries -->
 		</div>
+
+		<!-- Body Fat Trend Chart -->
+		<div class="chart-surface rounded-2xl p-6">
+			<div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center border-b border-border/20 pb-4 mb-4">
+				<div>
+					<p class="eyebrow">Body Fat Tracking</p>
+					<h2 class="text-lg font-bold text-foreground">Body Fat % Over Time</h2>
+				</div>
+				<span class="flex items-center gap-1.5 text-xs font-semibold"><span class="h-2.5 w-2.5 rounded-full bg-success inline-block"></span> Body Fat %</span>
+			</div>
+			<div id="bf-trend-chart" class="min-h-48">
+				<!-- Rendered dynamically -->
+			</div>
+			<div id="bf-data-table" class="mt-4 overflow-x-auto hidden">
+				<!-- Accessible data table fallback -->
+			</div>
+		</div>
 	</div>
 
 	<!-- 4. PLATEAU & DIET PANEL -->
@@ -244,7 +280,14 @@
 		calculateBodyCompScore, 
 		analyzePlateau, 
 		forecastProgress,
-		labelGoal
+		labelGoal,
+		strategyRecommendation as engineStrategyRec,
+		mifflin as engineMifflin,
+		calorieTarget as engineCalTarget,
+		activityFactors as engineActFactors,
+		goalLabels as engineGoalLabels,
+		paceAndTimeline as enginePaceTimeline,
+		clamp as engineClamp,
 	} from '../lib/engines';
 
 	const today = new Date().toISOString().slice(0, 10);
@@ -252,6 +295,7 @@
 	if (dateInput) dateInput.value = today;
 
 	let dashboardUnit = 'metric';
+	let editingCheckinIdx = -1;
 
 	// Helper conversions
 	function kgToLb(kg) { return kg * 2.2046226218; }
@@ -262,10 +306,24 @@
 		return dashboardUnit === 'metric' ? `${r(kg, digits)} kg` : `${r(kgToLb(kg), digits)} lb`;
 	}
 
-	// Fetch Data Helpers
-	function getCheckins() { return JSON.parse(localStorage.getItem('bodycompos.checkins') || '[]'); }
-	function setCheckins(items) { localStorage.setItem('bodycompos.checkins', JSON.stringify(items)); }
-	function getAssessments() { return JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]'); }
+	// Fetch Data Helpers with inline cache
+	let _checkinsCache = null;
+	let _assessmentsCache = null;
+	function getCheckins() {
+		if (_checkinsCache) return _checkinsCache;
+		_checkinsCache = JSON.parse(localStorage.getItem('bodycompos.checkins') || '[]');
+		return _checkinsCache;
+	}
+	function setCheckins(items) {
+		_checkinsCache = items;
+		localStorage.setItem('bodycompos.checkins', JSON.stringify(items));
+	}
+	function getAssessments() {
+		if (_assessmentsCache) return _assessmentsCache;
+		_assessmentsCache = JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]');
+		return _assessmentsCache;
+	}
+	function invalidateCache() { _checkinsCache = null; _assessmentsCache = null; }
 
 	// Tab Management
 	document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -435,28 +493,28 @@
 			scoresGrid.innerHTML = `
 				<div class="metric-cell flex flex-col justify-between">
 					<div>
-						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Active Strategy</p>
+						<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Active Strategy</p>
 						<p class="mt-2 text-xl font-black text-foreground capitalize">${latest ? latest.recommended.replace(/-/g, ' ') : 'No Assessment'}</p>
 					</div>
 					${latest ? `<span class="badge badge-accent mt-4">Confidence: ${latest.confidence}%</span>` : ''}
 				</div>
 				<div class="metric-cell flex flex-col justify-between">
 					<div>
-						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Current Weight</p>
+						<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Current Weight</p>
 						<p class="mt-2 text-xl font-black text-foreground capitalize">${lastCheckin ? formatWeight(lastCheckin.weight) : 'No Check-ins'}</p>
 					</div>
 					<span class="text-xs text-muted-foreground mt-4">Goal: ${formatWeight(goal)}</span>
 				</div>
 				<div class="metric-cell flex flex-col justify-between">
 					<div>
-						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Body Comp Rating</p>
+						<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Body Comp Rating</p>
 						<p class="mt-2 text-xl font-black text-foreground capitalize">${compScoreResult.rating} <span class="text-xs font-normal">(${compScoreResult.score}/100)</span></p>
 					</div>
 					<div class="mini-bar mt-4"><span style="width:${compScoreResult.score}%"></span></div>
 				</div>
 				<div class="metric-cell flex flex-col justify-between">
 					<div>
-						<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Goal Adherence</p>
+						<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Goal Adherence</p>
 						<p class="mt-2 text-xl font-black text-foreground capitalize">${adherenceScore}%</p>
 					</div>
 					<div class="mini-bar mt-4"><span style="width:${adherenceScore}%; background:var(--success)"></span></div>
@@ -495,7 +553,7 @@
 					</div>
 					<div>
 						<p class="text-xs text-muted-foreground font-semibold">Body Composition Score Details</p>
-						<ul class="text-[10px] text-muted-foreground list-disc pl-4 mt-1 space-y-1">
+						<ul class="text-xs text-muted-foreground list-disc pl-4 mt-1 space-y-1">
 							${compScoreResult.details.map(d => `<li>${d}</li>`).join('')}
 						</ul>
 					</div>
@@ -565,8 +623,8 @@
 									<td class="py-3 text-muted-foreground">${a.heightCm}cm / ${a.weightKg}kg (BF: ${a.bodyFat}%)</td>
 									<td class="py-3 font-semibold text-accent capitalize">${a.recommended.replace(/-/g, ' ')}</td>
 									<td class="py-3 flex gap-2">
-										<button class="button-secondary text-[10px] py-1 min-h-6 load-assessment-btn" data-idx="${idx}">Load</button>
-										<button class="button-ghost text-[10px] text-destructive py-1 min-h-6 delete-assessment-btn" data-idx="${idx}">Delete</button>
+										<button class="button-secondary text-xs py-1 min-h-6 load-assessment-btn" data-idx="${idx}">Load</button>
+										<button class="button-ghost text-xs text-destructive py-1 min-h-6 delete-assessment-btn" data-idx="${idx}">Delete</button>
 									</td>
 								</tr>
 							`).join('')}
@@ -588,6 +646,7 @@
 						const idx = Number(btn.getAttribute('data-idx'));
 						const updated = getAssessments().filter((_, i) => i !== idx);
 						localStorage.setItem('bodycompos.assessments', JSON.stringify(updated));
+						invalidateCache();
 						render();
 					});
 				});
@@ -618,7 +677,10 @@
 								<td class="py-3 text-muted-foreground">${i.bodyFat ? i.bodyFat + '%' : '-'}</td>
 								<td class="py-3 text-muted-foreground">${i.adherence}%</td>
 								<td class="py-3">
-									<button class="button-ghost text-destructive text-xs py-1 min-h-6 delete-checkin-btn" data-idx="${idx}">Delete</button>
+									<div class="flex gap-1">
+										<button class="button-ghost text-xs py-1 min-h-6 edit-checkin-btn" data-idx="${idx}">Edit</button>
+										<button class="button-ghost text-destructive text-xs py-1 min-h-6 delete-checkin-btn" data-idx="${idx}">Delete</button>
+									</div>
 								</td>
 							</tr>
 						`).join('')}
@@ -631,7 +693,33 @@
 					const idx = Number(btn.getAttribute('data-idx'));
 					const updated = getCheckins().filter((_, i) => i !== idx);
 					setCheckins(updated);
+					if (editingCheckinIdx === idx) editingCheckinIdx = -1;
 					render();
+				});
+			});
+
+			document.querySelectorAll('.edit-checkin-btn').forEach(btn => {
+				btn.addEventListener('click', () => {
+					const idx = Number(btn.getAttribute('data-idx'));
+					const all = getCheckins();
+					const entry = all[idx];
+					if (!entry) return;
+					editingCheckinIdx = idx;
+					const form = document.querySelector('#checkin-form') as HTMLFormElement;
+					if (!form) return;
+					form.date.value = entry.date;
+					form.weight.value = dashboardUnit === 'metric' ? entry.weight : r(kgToLb(entry.weight), 1);
+					form.bodyFat.value = entry.bodyFat || '';
+					form.adherence.value = entry.adherence || 80;
+					form.goalWeight.value = dashboardUnit === 'metric' ? entry.weight : r(kgToLb(entry.weight), 1);
+					const submitBtn = form.querySelector('button[type="submit"]');
+					if (submitBtn) submitBtn.textContent = 'Update Check-In';
+					const tabBtns = document.querySelectorAll('.tab-btn');
+					tabBtns.forEach(b => b.classList.remove('active'));
+					document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+					document.querySelector('[data-tab="logs"]')?.classList.add('active');
+					document.getElementById('tab-logs')?.classList.remove('hidden');
+					form.scrollIntoView({ behavior: 'smooth', block: 'center' });
 				});
 			});
 		}
@@ -642,17 +730,17 @@
 		if (predictionSummary) {
 			predictionSummary.innerHTML = `
 				<div class="metric-cell">
-					<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Velocity Pacing</p>
+					<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Velocity Pacing</p>
 					<p class="mt-2 text-lg font-black text-foreground capitalize">${fc.pacePerWeek === 0 ? 'Need data' : `${fc.pacePerWeek > 0 ? '+' : ''}${formatWeight(fc.pacePerWeek, 2)}/week`}</p>
 					<span class="text-xs text-muted-foreground mt-4 inline-block">Estimated rate of change</span>
 				</div>
 				<div class="metric-cell">
-					<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Completion ETA</p>
+					<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Completion ETA</p>
 					<p class="mt-2 text-lg font-black text-foreground capitalize">${fc.etaWeeks ? `${fc.etaWeeks} weeks` : 'Needs Trend Direction'}</p>
 					<span class="text-xs text-muted-foreground mt-4 inline-block">${fc.predictedCompletionDate ? `Est. Completion: ${fc.predictedCompletionDate}` : 'Adjust targets to see ETA'}</span>
 				</div>
 				<div class="metric-cell">
-					<p class="text-[10px] font-bold uppercase text-muted-foreground tracking-wider">Completion Status</p>
+					<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider">Completion Status</p>
 					<p class="mt-2 text-lg font-black text-foreground capitalize">${fc.status}</p>
 					<span class="text-xs text-muted-foreground mt-4 inline-block">Compared with target direction</span>
 				</div>
@@ -671,6 +759,47 @@
 					: `<span class="badge border-success bg-success/10 text-success font-bold">Steady Progress</span>`;
 			}
 
+			// Trend Divergence Analysis
+			let divergenceHtml = '';
+			if (checkins.length >= 3 && latest) {
+				const sorted = [...checkins].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+				const first = sorted[0];
+				const last = sorted[sorted.length - 1];
+				const days = Math.max(1, (new Date(last.date).getTime() - new Date(first.date).getTime()) / 86400000);
+				const actualPacePerWeek = ((last.weight - first.weight) / days) * 7;
+
+				let expectedPacePerWeek = 0;
+				if (latest.recommended === 'fat-loss') expectedPacePerWeek = -latest.weightKg * 0.0075;
+				else if (latest.recommended === 'lean-bulk') expectedPacePerWeek = latest.weightKg * 0.002;
+				else if (latest.recommended === 'aggressive-bulk') expectedPacePerWeek = latest.weightKg * 0.004;
+
+				if (expectedPacePerWeek !== 0) {
+					const ratio = expectedPacePerWeek !== 0 ? actualPacePerWeek / expectedPacePerWeek : 0;
+					const diverged = ratio < 0.4 || ratio > 1.6;
+					divergenceHtml = `
+						<div class="rounded-xl border ${diverged ? 'border-warning/20 bg-warning/5' : 'border-border bg-muted/10'} p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5 mb-2">
+								${diverged ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'}
+								Trend Divergence Analysis
+							</p>
+							<div class="grid gap-2 sm:grid-cols-2 text-muted-foreground">
+								<div>
+									<p><span class="text-foreground font-semibold">Expected pace:</span> ${formatWeight(Math.abs(expectedPacePerWeek))}/week (${labels[latest.recommended]})</p>
+									<p><span class="text-foreground font-semibold">Actual pace:</span> ${actualPacePerWeek !== 0 ? formatWeight(Math.abs(actualPacePerWeek)) + '/week' : 'Flat / No trend'}</p>
+								</div>
+								<div>
+									<p class="font-semibold text-foreground">Verdict:</p>
+									${diverged
+										? `<span class="text-warning">Your actual progress pace differs significantly from the expected rate. ${actualPacePerWeek > 0 && expectedPacePerWeek < 0 ? 'You are gaining weight during a fat loss phase — consider a strategy adjustment.' : actualPacePerWeek < 0 && expectedPacePerWeek > 0 ? 'You are losing weight during a bulk phase — increase calories.' : 'Consider a strategy reassessment.'}</span>`
+										: `<span class="text-success">Your actual pace aligns with the expected range. Stay the course.</span>`
+									}
+								</div>
+							</div>
+						</div>
+					`;
+				}
+			}
+
 			plateauContainer.innerHTML = `
 				<div class="flex items-center justify-between border-b border-border pb-4 mb-4">
 					<div>
@@ -681,6 +810,8 @@
 				</div>
 
 				<div class="space-y-4">
+					${divergenceHtml}
+
 					<div>
 						<h3 class="text-sm font-bold text-foreground">Diagnostic Output</h3>
 						<p class="text-xs text-muted-foreground mt-1.5 leading-relaxed">${diagnosis.message}</p>
@@ -707,6 +838,133 @@
 		}
 
 		renderDualChart(checkins, goal);
+		renderBodyFatChart(checkins);
+		renderReassessment();
+	}
+
+	// Body Fat Trend Chart
+	function renderBodyFatChart(checkins) {
+		const container = document.querySelector('#bf-trend-chart');
+		const tableContainer = document.querySelector('#bf-data-table');
+		if (!container) return;
+
+		const withBf = checkins.filter(c => c.bodyFat != null).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+		if (withBf.length < 2) {
+			container.innerHTML = '<div class="grid min-h-48 place-items-center rounded-xl border border-border bg-muted/10 text-sm font-semibold text-muted-foreground">Log at least two check-ins with body fat % to see the trend.</div>';
+			if (tableContainer) tableContainer.classList.add('hidden');
+			return;
+		}
+
+		const values = withBf.map(c => c.bodyFat);
+		const minBf = Math.min(...values);
+		const maxBf = Math.max(...values);
+		const bfRange = Math.max(2, maxBf - minBf);
+
+		const points = withBf.map((item, index) => {
+			const x = 30 + (index / (withBf.length - 1)) * 340;
+			const y = 140 - ((item.bodyFat - minBf) / bfRange) * 100;
+			return { x, y, val: item.bodyFat, date: item.date };
+		});
+
+		const polylinePoints = points.map(p => `${p.x},${p.y}`).join(' ');
+
+		container.innerHTML = `
+			<svg viewBox="0 0 400 180" role="img" aria-label="Body fat percentage trend chart" class="h-48 w-full overflow-visible">
+				<line x1="30" y1="40" x2="370" y2="40" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+				<line x1="30" y1="90" x2="370" y2="90" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+				<line x1="30" y1="140" x2="370" y2="140" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+
+				<polyline points="${polylinePoints}" fill="none" stroke="var(--success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+
+				${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--card)" stroke="var(--success)" stroke-width="2.5"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
+
+				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${points[0].date}</text>
+				<text x="320" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${points[points.length - 1].date}</text>
+				<text x="5" y="45" fill="var(--muted-foreground)" font-size="8">${round(maxBf, 1)}%</text>
+				<text x="5" y="145" fill="var(--muted-foreground)" font-size="8">${round(minBf, 1)}%</text>
+			</svg>
+		`;
+
+		if (tableContainer) {
+			tableContainer.classList.remove('hidden');
+			tableContainer.innerHTML = `
+				<table class="w-full min-w-[400px] text-left text-xs">
+					<caption class="text-xs font-semibold text-muted-foreground mb-2 text-left">Body Fat % Data Table</caption>
+					<thead>
+						<tr class="border-b border-border">
+							<th class="py-1.5 text-foreground font-semibold">Date</th>
+							<th class="py-1.5 text-foreground font-semibold">Body Fat %</th>
+							<th class="py-1.5 text-foreground font-semibold">Change</th>
+						</tr>
+					</thead>
+					<tbody>
+						${withBf.map((item, idx) => {
+							const change = idx === 0 ? '-' : `${item.bodyFat > withBf[idx - 1].bodyFat ? '+' : ''}${round(item.bodyFat - withBf[idx - 1].bodyFat, 1)}%`;
+							return `<tr class="border-b border-border">
+								<td class="py-1.5 text-muted-foreground">${item.date}</td>
+								<td class="py-1.5 text-foreground font-semibold">${item.bodyFat}%</td>
+								<td class="py-1.5 text-muted-foreground">${change}</td>
+							</tr>`;
+						}).join('')}
+					</tbody>
+				</table>
+			`;
+		}
+	}
+
+	// Monthly Reassessment Workflow
+	const labels = engineGoalLabels;
+	const activityFactors = engineActFactors;
+	function renderReassessment() {
+		const panel = document.querySelector('#reassessment-panel');
+		const body = document.querySelector('#reassessment-body');
+		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
+		const checkins = getCheckins();
+		if (!panel || !body || !latest) return;
+
+		const lastCheckin = checkins[0];
+		const currentWeight = lastCheckin ? lastCheckin.weight : latest.weightKg;
+		const currentBF = lastCheckin && lastCheckin.bodyFat ? lastCheckin.bodyFat : latest.bodyFat;
+
+		body.innerHTML = `
+			<div class="grid gap-4 sm:grid-cols-2 mb-4">
+				<div class="rounded-lg border border-border bg-muted/10 p-3 text-xs">
+					<p class="font-bold text-foreground mb-2">Original Assessment (${new Date(latest.createdAt).toLocaleDateString()})</p>
+					<div class="space-y-1 text-muted-foreground">
+						<p>Strategy: <span class="font-semibold text-foreground">${labels[latest.recommended] || latest.recommended}</span></p>
+						<p>Weight: <span class="font-semibold text-foreground">${formatWeight(latest.weightKg)}</span></p>
+						<p>Body Fat: <span class="font-semibold text-foreground">${latest.bodyFat}%</span></p>
+						<p>Calories: <span class="font-semibold text-foreground">${latest.target} kcal</span></p>
+					</div>
+				</div>
+				<div class="rounded-lg border border-border bg-accent/5 p-3 text-xs">
+					<p class="font-bold text-foreground mb-2">Current Status (Latest Check-In)</p>
+					<div class="space-y-1 text-muted-foreground">
+						<p>Current Weight: <span class="font-semibold text-foreground">${formatWeight(currentWeight)}</span></p>
+						<p>Current Body Fat: <span class="font-semibold text-foreground">${currentBF ? currentBF + '%' : 'Not logged'}</span></p>
+						<p>Change: <span class="font-semibold ${currentWeight < latest.weightKg ? 'text-success' : currentWeight > latest.weightKg ? 'text-warning' : 'text-muted-foreground'}">${formatWeight(Math.abs(currentWeight - latest.weightKg))} ${currentWeight < latest.weightKg ? 'lost' : currentWeight > latest.weightKg ? 'gained' : 'stable'}</span></p>
+					</div>
+				</div>
+			</div>
+			<div class="rounded-xl border border-border bg-muted/20 p-4 text-xs">
+				<p class="font-bold text-foreground mb-3">Run a Fresh Reassessment</p>
+				<div class="grid gap-3 sm:grid-cols-2">
+					<div class="field">
+						<label for="reassess-weight">Current Weight <span data-dashboard-weight-unit>(${dashboardUnit === 'metric' ? 'kg' : 'lb'})</span></label>
+						<input id="reassess-weight" type="number" step="0.1" value="${dashboardUnit === 'metric' ? currentWeight : r(kgToLb(currentWeight), 1)}" />
+					</div>
+					<div class="field">
+						<label for="reassess-bf">Current Body Fat %</label>
+						<input id="reassess-bf" type="number" step="0.1" min="3" max="60" value="${currentBF || ''}" placeholder="e.g. ${latest.bodyFat}" />
+					</div>
+				</div>
+				<button id="run-reassessment-btn" class="button-primary text-xs mt-3">Run Reassessment & Compare</button>
+			</div>
+			<div id="reassessment-result" class="mt-4 hidden">
+				<!-- Dynamic comparison result -->
+			</div>
+		`;
 	}
 
 	// Save check-in logic
@@ -722,19 +980,126 @@
 			adherence: Number(f.adherence.value || 0) 
 		};
 
-		const items = getCheckins().filter((x) => x.date !== item.date);
-		items.unshift(item);
+		let items = getCheckins();
+		if (editingCheckinIdx >= 0 && items[editingCheckinIdx]) {
+			items[editingCheckinIdx] = item;
+			editingCheckinIdx = -1;
+		} else {
+			items = items.filter((x) => x.date !== item.date);
+			items.unshift(item);
+		}
 		setCheckins(items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 60));
 		
 		f.reset();
 		const dateInput = document.querySelector('#date') as HTMLInputElement;
 		if (dateInput) dateInput.value = today;
+		const submitBtn = f.querySelector('button[type="submit"]');
+		if (submitBtn) submitBtn.textContent = 'Save Weekly Check-In';
 		
 		render();
 	});
 
 	// Print trigger
 	document.getElementById('print-report-btn')?.addEventListener('click', () => {
+		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
+		const checkins = getCheckins();
+		const assessments = getAssessments();
+		
+		// Build print content into a hidden container
+		let printContainer = document.getElementById('print-report-data');
+		if (!printContainer) {
+			printContainer = document.createElement('div');
+			printContainer.id = 'print-report-data';
+			printContainer.className = 'print-only';
+			document.body.appendChild(printContainer);
+		}
+
+		const goal = Number((document.querySelector('#goalWeight') as HTMLInputElement)?.value || 75);
+		const fc = forecastProgress(checkins, dashboardUnit === 'metric' ? goal : lbToKg(goal));
+
+		printContainer.innerHTML = `
+			<div class="print-report">
+				<h1>BodyCompOS Progress Snapshot</h1>
+				<p class="print-date">Generated ${today}</p>
+
+				${latest ? `
+					<section>
+						<h2>Active Strategy</h2>
+						<p><strong>Strategy:</strong> ${labels[latest.recommended] || latest.recommended}</p>
+						<p><strong>Calories:</strong> ${latest.target} kcal/day</p>
+						<p><strong>Protein:</strong> ${latest.proteinLow}-${latest.proteinHigh} g/day</p>
+						<p><strong>Maintenance (TDEE):</strong> ${latest.maintenance} kcal</p>
+						<p><strong>Body Fat:</strong> ${latest.bodyFat}%</p>
+						<p><strong>Assessed:</strong> ${new Date(latest.createdAt).toLocaleDateString()}</p>
+					</section>
+				` : ''}
+
+				<section>
+					<h2>Progress Summary</h2>
+					${checkins.length >= 2 ? `
+						<p><strong>Start Weight:</strong> ${formatWeight(checkins[checkins.length - 1].weight)}</p>
+						<p><strong>Current Weight:</strong> ${formatWeight(checkins[0].weight)}</p>
+						<p><strong>Change:</strong> ${formatWeight(Math.abs(checkins[checkins.length - 1].weight - checkins[0].weight))} ${checkins[0].weight < checkins[checkins.length - 1].weight ? 'lost' : 'gained'}</p>
+						<p><strong>Forecast ETA:</strong> ${fc.etaWeeks ? fc.etaWeeks + ' weeks' : 'Insufficient data'}</p>
+					` : '<p>Insufficient check-in data for progress summary.</p>'}
+				</section>
+
+				<section>
+					<h2>Check-In Log</h2>
+					${checkins.length > 0 ? `
+						<table>
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Weight</th>
+									<th>Body Fat %</th>
+									<th>Adherence</th>
+								</tr>
+							</thead>
+							<tbody>
+								${checkins.map(c => `
+									<tr>
+										<td>${c.date}</td>
+										<td>${formatWeight(c.weight)}</td>
+										<td>${c.bodyFat ? c.bodyFat + '%' : '-'}</td>
+										<td>${c.adherence}%</td>
+									</tr>
+								`).join('')}
+							</tbody>
+						</table>
+					` : '<p>No check-in logs.</p>'}
+				</section>
+
+				<section>
+					<h2>Assessment History</h2>
+					${assessments.length > 0 ? `
+						<table>
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Strategy</th>
+									<th>Calories</th>
+									<th>BF %</th>
+								</tr>
+							</thead>
+							<tbody>
+								${assessments.slice(0, 5).map(a => `
+									<tr>
+										<td>${new Date(a.createdAt).toLocaleDateString()}</td>
+										<td>${labels[a.recommended] || a.recommended}</td>
+										<td>${a.target} kcal</td>
+										<td>${a.bodyFat}%</td>
+									</tr>
+								`).join('')}
+							</tbody>
+						</table>
+					` : '<p>No assessment history.</p>'}
+				</section>
+
+				<p class="print-footer">BodyCompOS — Educational estimates only. Generated from local browser data.</p>
+			</div>
+		`;
+
 		window.print();
 	});
 
@@ -783,6 +1148,87 @@
 		}
 	});
 
+	// Reassessment panel toggle
+	document.getElementById('start-reassessment-btn')?.addEventListener('click', () => {
+		const panel = document.querySelector('#reassessment-panel');
+		if (panel) {
+			panel.classList.remove('hidden');
+			panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			renderReassessment();
+		}
+	});
+	document.getElementById('close-reassessment-btn')?.addEventListener('click', () => {
+		const panel = document.querySelector('#reassessment-panel');
+		if (panel) panel.classList.add('hidden');
+	});
+
+	// Run reassessment
+	document.addEventListener('click', (e) => {
+		const btn = (e.target as HTMLElement).closest('#run-reassessment-btn');
+		if (!btn) return;
+		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
+		if (!latest) return;
+		const weightInput = document.getElementById('reassess-weight') as HTMLInputElement;
+		const bfInput = document.getElementById('reassess-bf') as HTMLInputElement;
+		if (!weightInput) return;
+
+		const newWeight = dashboardUnit === 'metric' ? Number(weightInput.value) : lbToKg(Number(weightInput.value));
+		const newBF = bfInput ? Number(bfInput.value) : latest.bodyFat;
+
+		// Run strategy recommendation with current data but same preferences
+		const proteinAdequate = latest.protein ? latest.protein >= newWeight * 1.6 : false;
+		const rec = engineStrategyRec({
+			bodyFat: newBF || latest.bodyFat,
+			trainingAge: latest.trainingAge || 'intermediate',
+			goalBias: latest.goalBias || 'recomp',
+			proteinAdequate,
+		});
+		const bmr = engineMifflin({ sex: latest.sex, age: latest.age, heightCm: latest.heightCm, weightKg: newWeight });
+		const maintenance = engineClamp(bmr * activityFactors[latest.activity], 1200, 5000);
+		const target = engineCalTarget(maintenance, rec.recommended);
+
+		const resultDiv = document.getElementById('reassessment-result');
+		if (!resultDiv) return;
+		resultDiv.classList.remove('hidden');
+
+		const oldRec = labels[latest.recommended] || latest.recommended;
+		const newRec = labels[rec.recommended];
+		const changed = rec.recommended !== latest.recommended;
+
+		resultDiv.innerHTML = `
+			<div class="rounded-xl border ${changed ? 'border-warning/30 bg-warning/5' : 'border-success/30 bg-success/5'} p-4 text-xs mt-4">
+				<p class="font-bold text-foreground mb-3 flex items-center gap-1.5">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+					Reassessment Result
+				</p>
+				<div class="grid gap-3 sm:grid-cols-2">
+					<div class="rounded-lg border border-border bg-card p-3">
+						<p class="text-muted-foreground">Previous Strategy</p>
+						<p class="text-base font-bold text-foreground">${oldRec}</p>
+						<p class="text-muted-foreground mt-1">${latest.target} kcal/day</p>
+					</div>
+					<div class="rounded-lg border ${changed ? 'border-warning/40' : 'border-success/40'} bg-card p-3">
+						<p class="text-muted-foreground">Recommended Now</p>
+						<p class="text-base font-bold ${changed ? 'text-warning' : 'text-success'}">${newRec}</p>
+						<p class="text-muted-foreground mt-1">${target} kcal/day <span class="text-accent">(${rec.confidence}% confidence)</span></p>
+					</div>
+				</div>
+				${changed ? `
+					<div class="mt-3 rounded-lg border border-border bg-muted/20 p-3">
+						<p class="font-bold text-foreground">Strategy Change Detected</p>
+						<p class="text-muted-foreground mt-1">Your body composition has shifted enough to warrant a strategy change from <strong>${oldRec}</strong> to <strong>${newRec}</strong>. Consider updating your approach.</p>
+						<a href="/assess" class="button-primary inline-block mt-3 text-xs">Run Full Strategy Finder</a>
+					</div>
+				` : `
+					<div class="mt-3 rounded-lg border border-border bg-muted/20 p-3">
+						<p class="font-bold text-foreground">Strategy Confirmed</p>
+						<p class="text-muted-foreground mt-1">Your current strategy (<strong>${newRec}</strong>) remains appropriate. No changes needed.</p>
+					</div>
+				`}
+			</div>
+		`;
+	});
+
 	render();
 </script>
 
@@ -815,5 +1261,23 @@
 
 	.metric-cell {
 		min-height: 100px;
+	}
+
+	.print-only { display: none; }
+
+	/* Print Report Styles */
+	@media print {
+		body * { visibility: hidden; }
+		#print-report-data, #print-report-data * { visibility: visible; }
+		#print-report-data { position: absolute; left: 0; top: 0; width: 100%; padding: 40px; max-width: 800px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: block; }
+		.print-report h1 { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: #0f172a; }
+		.print-report .print-date { font-size: 12px; color: #6b7280; margin-bottom: 24px; }
+		.print-report section { margin-bottom: 24px; page-break-inside: avoid; }
+		.print-report h2 { font-size: 16px; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 12px; }
+		.print-report p { font-size: 12px; color: #374151; margin: 4px 0; }
+		.print-report table { width: 100%; border-collapse: collapse; font-size: 11px; }
+		.print-report th { background: #f3f4f6; padding: 8px; text-align: left; font-weight: 700; color: #0f172a; border: 1px solid #e5e7eb; }
+		.print-report td { padding: 6px 8px; border: 1px solid #e5e7eb; color: #374151; }
+		.print-report .print-footer { margin-top: 32px; font-size: 10px; color: #9ca3af; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 12px; }
 	}
 </style>

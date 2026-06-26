@@ -1,0 +1,179 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = 'BMI vs. Body Fat Percentage - Side-by-Side Comparison | BodyCompOS';
+const description = 'Compare Body Mass Index (BMI) with Body Fat Percentage. Understand the formula differences, the muscular-athlete caveat, and which metric is best for tracking your body composition.';
+const canonical = `${DOMAIN}/compare/bmi-vs-body-fat-percentage`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: '2026-06-25',
+	dateModified: '2026-06-25',
+	author: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Editorial Board',
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+	<section class="site-container py-10 sm:py-12">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+			<span>/</span>
+			<span class="text-foreground">BMI vs. Body Fat</span>
+		</nav>
+
+		<!-- Hero -->
+		<div class="max-w-4xl">
+			<p class="eyebrow">Metric Comparison Matrix</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				BMI vs. Body Fat Percentage <br />
+				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Height-Weight Ratio or True Composition?</span>
+			</h1>
+			<!-- EEAT Attribution -->
+			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
+				<div>
+					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Clinical anthropometry research comparison</p>
+					<p class="mt-0.5">Published June 2026 · References: World Health Organization (WHO), Hodgdon & Beckett 1984</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grid Layout -->
+		<div class="mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
+			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
+					
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">1. The Concept and Calculation</h2>
+						<p>
+							Both <strong>Body Mass Index (BMI)</strong> and <strong>Body Fat Percentage</strong> are anthropometric tools used to evaluate weight and health risks. However, they analyze your physical body from different perspectives.
+						</p>
+						<p class="mt-3">
+							<strong>BMI</strong> is a simple, population-level proxy index. It calculates the ratio of your total body weight relative to your height: BMI = weight (kg) / height (m)<sup>2</sup>. Because it requires only height and weight, it is highly accessible and widely used in clinical trials and epidemiological studies.
+						</p>
+						<p class="mt-3">
+							<strong>Body Fat Percentage</strong> measures what your body weight actually consists of. It divides total mass into fat tissue and fat-free mass (muscle, bone, organs, skin, water). Body fat percentage represents the true composition of your body and is the primary factor used to choose nutritional strategies (cut vs. bulk).
+						</p>
+					</section>
+
+					<!-- Side-by-Side Table -->
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Comparison</h2>
+						<div class="overflow-x-auto rounded-xl border border-border">
+							<table class="w-full text-left border-collapse text-xs">
+								<thead>
+									<tr class="bg-muted/50 text-foreground border-b border-border">
+										<th class="p-3 font-bold">Parameter</th>
+										<th class="p-3 font-bold">Body Mass Index (BMI)</th>
+										<th class="p-3 font-bold">Body Fat Percentage</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border/60">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Definition</td>
+										<td class="p-3">Ratio of total body mass to height squared</td>
+										<td class="p-3">Ratio of fat mass to total body mass</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Formula</td>
+										<td class="p-3">Weight (kg) &divide; Height (m)<sup>2</sup></td>
+										<td class="p-3">Fat Mass (kg) &divide; Total Weight (kg) &times; 100</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Inputs Needed</td>
+										<td class="p-3">Height, Weight</td>
+										<td class="p-3">Height, Weight, Circumferences (or DXA/Caliper data)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Muscle Sensitivity</td>
+										<td class="p-3">Blind to muscle (categorizes athletes as overweight)</td>
+										<td class="p-3">Accounts for muscle (identifies lean, heavy athletes)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Clinical Use</td>
+										<td class="p-3">Excellent for large epidemiological populations</td>
+										<td class="p-3">Excellent for individual metabolic health tracking</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Accessibility</td>
+										<td class="p-3">100% (requires only standard scale & stadiometer)</td>
+										<td class="p-3">Variable (requires tape, calipers, or DXA scan)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Tracking Utility</td>
+										<td class="p-3">Low for lifters (weight fluctuations mask changes)</td>
+										<td class="p-3">High (verifies if changes are fat loss or muscle gain)</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">3. The Muscle-Athlete Caveat (Overweight vs. Overfat)</h2>
+						<p>
+							The primary limitation of BMI is its inability to distinguish between muscle mass and fat mass. Because muscle tissue is highly dense, muscular individuals and strength athletes often weigh more than the population average for their height. 
+						</p>
+						<p class="mt-3">
+							Under the standard WHO classifications, a BMI between 25.0 and 29.9 is categorized as "Overweight." However, a bodybuilder at 1.8 meters and 90 kg of lean mass will register a BMI of 27.8, categorizing them as overweight. In reality, their body fat percentage may be under 12%, representing a very healthy, athletic physical state. Conversely, "normal-weight obesity" (or "skinny fat") occurs when an inactive individual falls in the normal BMI range (18.5 - 24.9) but carries a high body fat percentage and very low muscle mass, exposing them to similar metabolic health risks as obese individuals.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">4. How to Use Both Metrics Effectively</h2>
+						<p>
+							Instead of discarding BMI, sports science recommends using both metrics together:
+						</p>
+						<ul class="pl-5 list-disc space-y-2 mt-3 text-xs">
+							<li>Use <strong>BMI</strong> as a baseline health screen to ensure you are not at extreme height-weight margins.</li>
+							<li>Use <strong>Body Fat Percentage</strong> and <strong>FFMI (Fat-Free Mass Index)</strong> to choose your fitness strategy. If your BMI is 26 but your body fat is 12%, you do not need to cut; a lean bulk or recomposition is appropriate.</li>
+							<li>For strength athletes, Normalized FFMI (Kouri et al., 1995) is a far more useful index than BMI, as it tracks lean muscle mass normalized to height.</li>
+						</ul>
+					</section>
+
+					<!-- YMYL Warning -->
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> This comparison is for educational planning. BMI is a clinical screening metric. High adiposity is associated with cardiovascular risks, regardless of muscular development. Consult a physician or qualified metabolic specialist for personal clinical health evaluations.</p>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Sidebar -->
+			<div class="space-y-6">
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Interactive Analysis</h3>
+					<p class="text-xs text-muted-foreground mt-2">Let our algorithm evaluate your biological metrics and suggest the optimal strategy.</p>
+					<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Start Strategy Assessment</a>
+				</div>
+
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Other Comparisons</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/compare/cut-vs-recomp" class="block text-accent hover:underline font-medium">Cut vs. Recomp Comparison</a>
+						<a href="/compare/lean-bulk-vs-aggressive-bulk" class="block text-accent hover:underline font-medium">Lean Bulk vs. Aggressive Bulk</a>
+					</div>
+				</div>
+				<!-- Ad Zone: Sidebar -->
+			</div>
+		</div>
+	</section>
+</Layout>

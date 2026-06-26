@@ -1,0 +1,189 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = 'Lean Bulk vs. Aggressive Bulk - Side-by-Side Comparison | BodyCompOS';
+const description = 'Compare a lean bulking strategy (controlled calorie surplus) with an aggressive bulk (maximum surplus). Understand weight gain targets, fat gain risks, and performance tradeoffs.';
+const canonical = `${DOMAIN}/compare/lean-bulk-vs-aggressive-bulk`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: '2026-06-25',
+	dateModified: '2026-06-25',
+	author: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Editorial Board',
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+	<section class="site-container py-10 sm:py-12">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+			<span>/</span>
+			<span class="text-foreground">Lean vs. Aggressive Bulk</span>
+		</nav>
+
+		<!-- Hero -->
+		<div class="max-w-4xl">
+			<p class="eyebrow">Strategy Tradeoff Matrix</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Lean Bulk vs. Aggressive Bulk <br />
+				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Moderate Surplus or Maximum Growth?</span>
+			</h1>
+			<!-- EEAT Attribution -->
+			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
+				<div>
+					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Peer-Reviewed sports medicine research review</p>
+					<p class="mt-0.5">Published June 2026 · References: Garthe et al. 2011, Iraki et al. 2019</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grid Layout -->
+		<div class="mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
+			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
+					
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">1. The Mechanics of Caloric Surplus</h2>
+						<p>
+							To build muscle at a rate that approaches your genetic limit, your body must be in an anabolic state supported by a caloric surplus. This surplus provides the extra chemical energy required to synthesize new myofibrillar proteins.
+						</p>
+						<p class="mt-3">
+							A <strong>Lean Bulk</strong> employs a highly controlled, conservative surplus—typically setting calories 5% to 10% above maintenance (roughly 200 to 300 kcal/day). The biological premise is that muscle protein synthesis has a physiological ceiling. Gaining weight slowly limits the amount of fat your body stores alongside the new muscle.
+						</p>
+						<p class="mt-3">
+							An <strong>Aggressive Bulk</strong> uses a larger surplus, setting calories 15% to 20% above maintenance (roughly 500+ kcal/day). The goal here is to completely remove energy availability as a bottleneck for recovery and strength. While this maximizes the rate of muscle growth, it also guarantees a substantial amount of body fat accumulation, which must eventually be dieted off during a cut.
+						</p>
+					</section>
+
+					<!-- Side-by-Side Table -->
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Tradeoff Matrix</h2>
+						<div class="overflow-x-auto rounded-xl border border-border">
+							<table class="w-full text-left border-collapse text-xs">
+								<thead>
+									<tr class="bg-muted/50 text-foreground border-b border-border">
+										<th class="p-3 font-bold">Parameter</th>
+										<th class="p-3 font-bold">Lean Bulk</th>
+										<th class="p-3 font-bold">Aggressive Bulk</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border/60">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Caloric Surplus</td>
+										<td class="p-3">200 - 300 kcal/day (+8% to +10%)</td>
+										<td class="p-3">500+ kcal/day (+15% to +20%)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Rate of Weight Gain</td>
+										<td class="p-3">0.5% to 1.0% of body weight per month</td>
+										<td class="p-3">1.5% to 2.0%+ of body weight per month</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Muscle-to-Fat Ratio</td>
+										<td class="p-3">Optimized (e.g., 1:1 or 2:1 for intermediates)</td>
+										<td class="p-3">Skewed (e.g., 1:2 or 1:3 fat dominance)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Fat Spillover Risk</td>
+										<td class="p-3">Low (minimal aesthetic change)</td>
+										<td class="p-3">High (rapid softening of definition)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Gym Recovery Index</td>
+										<td class="p-3">Good (consistent strength gains)</td>
+										<td class="p-3">Excellent (maximum glycogen & hydration)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Typical Phase Length</td>
+										<td class="p-3">16 to 36 weeks (long commitment)</td>
+										<td class="p-3">8 to 16 weeks (cut required sooner)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Eating Demand</td>
+										<td class="p-3">Manageable (standard diet adjustments)</td>
+										<td class="p-3">High (often requires force-feeding/liquids)</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">3. What the Science Says: The Garthe Study</h2>
+						<p>
+							A landmark study in sports nutrition by <i>Garthe et al. (2011)</i> compared elite athletes split into two bulking groups: a small surplus group (lean bulk) and a larger surplus group (aggressive bulk).
+						</p>
+						<p class="mt-3">
+							Both groups gained similar amounts of lean muscle tissue over the training period. However, the larger surplus group gained significantly more body fat. This study demonstrated that once you supply enough energy to support muscle growth, additional calories do not increase muscle hypertrophy; instead, they partition directly into adipose tissue. This is why for intermediate and advanced lifters, a lean bulk is almost always recommended to avoid unnecessary fat gain.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-xl font-bold text-foreground mb-3">4. How to Choose Your Surplus</h2>
+						<div class="mt-4 grid gap-4 sm:grid-cols-2">
+							<div class="surface border border-border p-4 rounded-xl">
+								<h3 class="font-bold text-foreground mb-1 text-xs">Choose a Lean Bulk If:</h3>
+								<ul class="pl-4 list-disc space-y-1 text-xs">
+									<li>You want to maintain a lean appearance and visible abs year-round.</li>
+									<li>You are an intermediate or advanced lifter whose rate of muscle gain is naturally slow.</li>
+									<li>You prefer long, consistent building phases without needing to cut frequently.</li>
+								</ul>
+							</div>
+							<div class="surface border border-border p-4 rounded-xl">
+								<h3 class="font-bold text-foreground mb-1 text-xs">Choose an Aggressive Bulk If:</h3>
+								<ul class="pl-4 list-disc space-y-1 text-xs">
+									<li>You are an underweight beginner with a high metabolism (hard gainer).</li>
+									<li>Your primary focus is raw gym strength, powerlifting, or recovery capacity.</li>
+									<li>You are comfortable gaining body fat and planning a strict cut phase afterward.</li>
+								</ul>
+							</div>
+						</div>
+					</section>
+
+					<!-- YMYL Warning -->
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> This strategy comparison is for educational planning purposes. Caloric surpluses elevate insulin levels and can affect blood lipids and metabolic markers. Consult a qualified clinical nutritionist or healthcare professional before initiating high-calorie dietary strategies.</p>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Sidebar -->
+			<div class="space-y-6">
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Interactive Analysis</h3>
+					<p class="text-xs text-muted-foreground mt-2">Let our algorithm evaluate your biological metrics and suggest the optimal strategy.</p>
+					<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Start Strategy Assessment</a>
+				</div>
+
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Other Comparisons</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/compare/cut-vs-recomp" class="block text-accent hover:underline font-medium">Cut vs. Recomp Comparison</a>
+						<a href="/compare/bmi-vs-body-fat-percentage" class="block text-accent hover:underline font-medium">BMI vs. Body Fat Percentage</a>
+					</div>
+				</div>
+				<!-- Ad Zone: Sidebar -->
+			</div>
+		</div>
+	</section>
+</Layout>

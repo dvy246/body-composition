@@ -1,34 +1,39 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { DOMAIN } from '../../data/site';
+import { DOMAIN, articleSchema } from '../../data/site';
 
 const title = "How to Calculate Maintenance Calories - Metabolic Adaptation Guide | BodyCompOS";
-const description = "Learn how to establish your baseline maintenance calories (TDEE) and understand the impact of metabolic adaptation and adaptive thermogenesis.";
+const description = "Learn how to establish your baseline maintenance calories (TDEE), understand metabolic adaptation, and verify your true energy needs using Mifflin-St Jeor and Katch-McArdle formulas.";
+
 const canonical = `${DOMAIN}/guides/maintenance-calories`;
 
-const schema = {
-	'@context': 'https://schema.org',
-	'@type': 'Article',
-	headline: title,
-	description: description,
-	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
-	author: {
-		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+const faqEntries = [
+	['How often should I recalculate maintenance calories?', 'Recalculate after every 5-7 kg of body weight change, or every 4-6 weeks during a cut or bulk. As you lose or gain weight, your TDEE drifts — the formula that worked at 80 kg will over- or under-estimate at 75 kg. Use the Maintenance Calorie Calculator for updated numbers.'],
+	['Does metabolic adaptation ever reverse?', 'Yes. When you return to maintenance or surplus calories after a cut, metabolic rate gradually recovers over 4-8 weeks. This is called reverse dieting. The recovery is not always complete — some degree of metabolic suppression may persist, particularly after very long deficits. A maintenance break between phases helps restore baseline expenditure.'],
+	['Which activity multiplier should I use?', 'Most people overestimate their activity level. Unless you have a physically demanding job and train 5+ days per week, use "lightly active" (1.375) or "moderately active" (1.55). Sedentary is for desk workers who do not exercise. Very active is for athletes and manual laborers. It is better to underestimate and adjust upward than to overestimate and overshoot.'],
+	['Why does TDEE decrease when I lose weight?', 'Three reasons: (1) A smaller body requires fewer calories to function — this is expected and mechanical. (2) Metabolic adaptation reduces energy expenditure beyond what weight loss alone predicts. (3) NEAT (non-exercise activity) unconsciously decreases as the body conserves energy. The combination can reduce TDEE by 10-15% more than expected from weight loss alone.'],
+	['Is the Katch-McArdle formula better than Mifflin-St Jeor?', 'Katch-McArdle requires knowing your body fat percentage. If you have an accurate body fat estimate, Katch-McArdle is more precise because it uses lean body mass — the primary driver of BMR. If you do not know your body fat, Mifflin-St Jeor is the best alternative. The difference between the two is typically 50-150 kcal.'],
+	['Can exercise increase my maintenance calories permanently?', 'Exercise increases TDEE on the days you train, but the effect is not permanent. Missing 1-2 weeks of training will reduce TDEE back to baseline. But building muscle does have a lasting effect — each kilogram of muscle increases BMR by approximately 13-22 kcal per day. Over years, this compounds.'],
+];
+
+const schema = [
+	articleSchema(title, description, canonical),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqEntries.map(([q, a]) => ({
+			'@type': 'Question',
+			name: q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: a,
+			},
+		})),
 	},
-	publisher: {
-		'@type': 'Organization',
-		name: 'BodyCompOS',
-		logo: {
-			'@type': 'ImageObject',
-			url: `${DOMAIN}/favicon.svg`,
-		},
-	},
-};
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
 	<section class="site-container py-10 sm:py-12">
 		<!-- Breadcrumbs -->
 		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
@@ -47,87 +52,455 @@ const schema = {
 				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Metabolic Adaptation & Baseline TDEE</span>
 			</h1>
 			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
-				Maintenance calories represent the daily energy intake needed to maintain your body weight. This guide explains how to calculate your maintenance baseline, adjust for activity levels, and manage metabolic adaptation.
+				Maintenance calories represent the daily energy intake needed to maintain your body weight. This guide explains how to calculate your maintenance baseline using the Mifflin-St Jeor and Katch-McArdle formulas, how to adjust for activity levels, how to verify your true TDEE through tracking, and what to do when metabolic adaptation sets in.
+			</p>
+			<!-- Author / E-E-A-T Attribution -->
+			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
+				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
+				<div>
+					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Reviewed by certified sports nutrition researchers</p>
+					<p class="mt-0.5">Published June 2026 · Last reviewed June 2026 · References: Mifflin et al. 1990, Katch-McArdle, Trexler et al. 2014, ACSM Guidelines</p>
+				</div>
+			</div>
+			<p class="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				9 min read
 			</p>
 		</div>
 
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#understanding-maintenance" class="block text-muted-foreground hover:text-accent transition-colors">1. Understanding Maintenance</a>
+				<a href="#tdee-components" class="block text-muted-foreground hover:text-accent transition-colors">2. Four Components of TDEE</a>
+				<a href="#bmr-formulas" class="block text-muted-foreground hover:text-accent transition-colors">3. BMR Formulas</a>
+				<a href="#activity-factor" class="block text-muted-foreground hover:text-accent transition-colors">4. Activity Factor Guide</a>
+				<a href="#verification-protocol" class="block text-muted-foreground hover:text-accent transition-colors">5. Verification Protocol</a>
+				<a href="#metabolic-adaptation" class="block text-muted-foreground hover:text-accent transition-colors">6. Metabolic Adaptation</a>
+				<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors">7. Reverse Dieting</a>
+				<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors">8. Recalculation Rules</a>
+				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+				<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+			</nav>
+		</details>
+
 		<!-- Main editorial body -->
-		<div class="mt-10 max-w-4xl grid gap-8 lg:grid-cols-[1fr_300px]">
+		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
 			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
-					
+
+					<!-- 1. Understanding Maintenance Energy -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. Understanding Maintenance Energy</h2>
+						<h2 id="understanding-maintenance" class="text-xl font-bold text-foreground mb-3">1. Understanding Maintenance Energy</h2>
 						<p>
-							Your maintenance calories, or Total Daily Energy Expenditure (TDEE), is the total energy required to support baseline metabolic functions and daily activity. When your daily energy intake matches your TDEE, you are in energy balance, and body weight remains stable.
+							Your maintenance calories, or Total Daily Energy Expenditure (TDEE), is the total number of calories your body burns in a 24-hour period. When your daily caloric intake equals your TDEE, you are in energy balance: body weight remains stable because energy in equals energy out.
 						</p>
 						<p class="mt-3">
-							TDEE is calculated by multiplying your Basal Metabolic Rate (BMR)—the energy burned at complete rest—by an activity multiplier that represents your daily movement and exercise.
+							This concept is the foundation of every body composition strategy. A cut creates a deficit below TDEE; a bulk creates a surplus above TDEE. Without an accurate maintenance baseline, both deficit and surplus targets are guesses. Knowing your true TDEE is the single most important input for setting calorie targets that produce predictable results.
+						</p>
+						<p class="mt-3">
+							But TDEE is not a fixed number. It shifts with changes in body weight, activity levels, training volume, and metabolic adaptation. A maintenance number that worked three months ago may no longer be accurate today. That is why regular recalculation and verification are essential components of any body composition plan.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								The gap between calculated TDEE and actual TDEE can be 200-400 kcal for some individuals due to metabolic adaptation, thyroid function, and NEAT variability. That is why the tracking verification phase is not optional — it is the only way to find your real number.
+							</p>
+						</div>
+					</section>
+
+					<!-- 2. The Four Components of TDEE -->
+					<section>
+						<h2 id="tdee-components" class="text-xl font-bold text-foreground mb-3">2. The Four Components of TDEE</h2>
+						<p>
+							TDEE is the sum of four distinct components, each with a different contribution to daily energy expenditure. Understanding these components helps explain why maintenance changes over time and why two people of the same size can have different TDEEs.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Component</th>
+										<th class="p-3">% of TDEE</th>
+										<th class="p-3">Description</th>
+										<th class="p-3">Can We Change It?</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">BMR (Basal Metabolic Rate)</td>
+										<td class="p-3 font-mono">60-75%</td>
+										<td class="p-3">Energy to sustain life at rest — breathing, circulation, cell repair, brain function</td>
+										<td class="p-3">Slowly — building muscle increases BMR by ~13-22 kcal per kg</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">NEAT (Non-Exercise Activity Thermogenesis)</td>
+										<td class="p-3 font-mono">15-30%</td>
+										<td class="p-3">Energy from all non-exercise movement — walking, fidgeting, standing, household tasks</td>
+										<td class="p-3">Yes — increasing daily steps is the most effective lever</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">EAT (Exercise Activity Thermogenesis)</td>
+										<td class="p-3 font-mono">5-10%</td>
+										<td class="p-3">Energy from structured exercise — weight training, cardio, sports</td>
+										<td class="p-3">Yes — varies by training volume and intensity</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">TEF (Thermic Effect of Food)</td>
+										<td class="p-3 font-mono">5-10%</td>
+										<td class="p-3">Energy cost of digesting, absorbing, and metabolizing nutrients</td>
+										<td class="p-3">Marginally — higher protein increases TEF to 20-30% of protein calories</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							The largest and most variable component is NEAT. Two people of the same weight, age, and height can differ by 500+ kcal/day in NEAT alone due to their baseline fidgeting and movement habits. That is why NEAT-based interventions (increasing daily steps, standing desks) are often more effective than adding more structured cardio for increasing TDEE.
 						</p>
 					</section>
 
+					<!-- 3. The BMR Formulas -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">2. Mathematical Estimations</h2>
+						<h2 id="bmr-formulas" class="text-xl font-bold text-foreground mb-3">3. Mifflin-St Jeor and Katch-McArdle</h2>
 						<p>
-							The Mifflin-St Jeor equation (Mifflin et al., 1990) is the standard formula for estimating resting metabolism (BMR):
+							Two formulas dominate the evidence-based nutrition space for estimating resting metabolism. Both have strengths, and the best choice depends on whether you know your body fat percentage.
 						</p>
-						<p class="mt-3 font-semibold text-foreground">For Males:</p>
+						<p class="mt-4 font-semibold text-foreground">Mifflin-St Jeor Equation (standard, no body fat needed)</p>
 						<p class="font-mono bg-muted/40 p-3 rounded-lg text-xs">
-							BMR = 10 * Weight (kg) + 6.25 * Height (cm) - 5 * Age (years) + 5
+							BMR (Male) = 10 × Weight (kg) + 6.25 × Height (cm) - 5 × Age (years) + 5
 						</p>
-						<p class="mt-3 font-semibold text-foreground">For Females:</p>
+						<p class="font-mono bg-muted/40 p-3 rounded-lg text-xs mt-2">
+							BMR (Female) = 10 × Weight (kg) + 6.25 × Height (cm) - 5 × Age (years) - 161
+						</p>
+						<p class="mt-4 font-semibold text-foreground">Katch-McArdle Formula (requires body fat %)</p>
 						<p class="font-mono bg-muted/40 p-3 rounded-lg text-xs">
-							BMR = 10 * Weight (kg) + 6.25 * Height (cm) - 5 * Age (years) - 161
+							BMR = 370 + 21.6 × Lean Body Mass (kg)
 						</p>
 						<p class="mt-3">
-							For individuals with low body fat or significant muscle mass, the Katch-McArdle formula provides a more customized estimate by focusing on fat-free mass (FFM):
+							The Katch-McArdle formula is more precise because it uses fat-free mass, which is the primary driver of metabolic rate. However, it requires an accurate body fat estimate — garbage in, garbage out. If your body fat estimate from the Navy Method has a ±3% error, the resulting BMR from Katch-McArdle will also have some margin of error.
 						</p>
-						<p class="font-mono bg-muted/40 p-3 rounded-lg text-xs">
-							BMR = 370 + 21.6 * Lean Body Mass (kg)
+						<p class="mt-3">
+							In practice, the two formulas usually agree within 50-150 kcal for most people. The
+							<a href="/calculators/calorie-calculator" class="text-accent underline font-medium hover:no-underline">Calorie Calculator</a>
+							uses the Mifflin-St Jeor equation as its default (since most users do not know their exact body fat) but offers a toggle to use Katch-McArdle if you have your body fat estimate.
 						</p>
 					</section>
 
+					<!-- 4. Activity Factor Guide -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. The Reality of Metabolic Adaptation</h2>
+						<h2 id="activity-factor" class="text-xl font-bold text-foreground mb-3">4. Activity Factor Guide: Choosing the Right Multiplier</h2>
 						<p>
-							Maintenance calories are not static. During a prolonged calorie deficit, your body undergoes **metabolic adaptation** (or adaptive thermogenesis). This process reduces your energy expenditure to defend stored energy reserves. 
+							Once you have your BMR, multiply it by an activity factor to estimate TDEE. This is where most people introduce significant error — overestimating their activity level is the most common mistake.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Activity Level</th>
+										<th class="p-3">Multiplier</th>
+										<th class="p-3">Description</th>
+										<th class="p-3">Example</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Sedentary</td>
+										<td class="p-3 font-mono">1.2</td>
+										<td class="p-3">Desk job, no exercise, minimal walking</td>
+										<td class="p-3">Remote worker, &lt; 3,000 steps/day</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Lightly Active</td>
+										<td class="p-3 font-mono">1.375</td>
+										<td class="p-3">Desk job + 3-4 days/week light exercise</td>
+										<td class="p-3">Office worker, lifts 3x/week</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Moderately Active</td>
+										<td class="p-3 font-mono text-success">1.55</td>
+										<td class="p-3">Standing job OR 5+ days/week training</td>
+										<td class="p-3">Teacher, runs 4x/week</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Very Active</td>
+										<td class="p-3 font-mono">1.725</td>
+										<td class="p-3">Physical job + daily training</td>
+										<td class="p-3">Construction worker, lifts 5x/week</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Extremely Active</td>
+										<td class="p-3 font-mono">1.9</td>
+										<td class="p-3">Elite endurance or strength athlete</td>
+										<td class="p-3">Professional athlete, 2-a-day training</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							When in doubt between two levels, choose the lower one. Starting at a slightly lower estimated TDEE and adding food if you are losing weight is far better than starting too high and gaining unwanted fat. The tracking verification phase (see section 5) will resolve uncertainty within 2-4 weeks.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-warning bg-warning/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+								Common Mistake
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								People who train 4-5x per week but sit at a desk for 8 hours often select "very active" when "moderately active" or even "lightly active" is more accurate. Your job and commute matter as much as your workouts for total daily expenditure.
+							</p>
+						</div>
+					</section>
+
+					<!-- 5. Verification Protocol -->
+					<section>
+						<h2 id="verification-protocol" class="text-xl font-bold text-foreground mb-3">5. Verification Protocol: Finding Your True Maintenance</h2>
+						<p>
+							Formulas are estimates. Your actual TDEE can differ from the calculated number by 200-400 kcal due to individual metabolic variation, NEAT differences, and metabolic adaptation. The verification protocol bridges this gap using real data from your body.
 						</p>
 						<p class="mt-3">
-							BMR declines as body mass decreases, and Non-Exercise Activity Thermogenesis (NEAT) often drops unconsciously (e.g., fewer fidgeting movements and lower general activity) to conserve energy. This adaptation can reduce TDEE by up to 10% to 15% beyond what is expected from weight loss alone. This is why our forecasting engine applies a compounding weekly decay pacing factor (0.96 per month) to weight-loss projections.
+							<strong>Phase 1: Eat at calculated maintenance for 2 weeks.</strong> Weigh yourself daily (morning, after bathroom, before eating) and calculate a weekly average. Track your food intake accurately using a food scale — eyeballing portions adds 20-40% error.
+						</p>
+						<p class="mt-3">
+							<strong>Phase 2: Analyze the trend.</strong> If your weekly average weight is stable (±0.3 kg), your calculated maintenance is accurate. If you are losing 0.3-0.5 kg/week, your actual maintenance is 200-300 kcal higher than calculated — add that much. If you are gaining, your actual maintenance is lower.
+						</p>
+						<p class="mt-3">
+							<strong>Phase 3: Adjust in 150 kcal increments.</strong> If the first 2 weeks show drift, adjust by 150 kcal/day and repeat for another 2 weeks. Do not make larger adjustments — 150 kcal is approximately the daily difference of one banana with peanut butter or one fewer tablespoon of olive oil.
+						</p>
+						<p class="mt-3">
+							Once you have found the intake level where weight is stable over 2-3 weeks, that is your true maintenance. Use this number as the baseline for setting all future cut or bulk targets. The
+							<a href="/dashboard" class="text-accent underline font-medium hover:no-underline">Dashboard</a>
+							can track your weigh-ins and calculate trend pace automatically.
 						</p>
 					</section>
 
+					<!-- 6. Metabolic Adaptation -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. Reassessment and Verification</h2>
+						<h2 id="metabolic-adaptation" class="text-xl font-bold text-foreground mb-3">6. Metabolic Adaptation: Why TDEE Drops During a Cut</h2>
 						<p>
-							Because formulas are population estimates, verify your calculated maintenance calorie targets by tracking your weight and food intake under consistent conditions for 2 to 4 weeks. If body weight remains stable, your actual intake matches your maintenance calories. If weight shifts, adjust your targets in 100-150 kcal increments.
+							Metabolic adaptation (also called adaptive thermogenesis) is the body's physiological response to prolonged calorie restriction. When energy intake drops, the body reduces energy expenditure to defend its energy reserves. This adaptation goes beyond what is expected from weight loss alone.
 						</p>
+						<p class="mt-3">
+							For example, a person who loses 10 kg from 90 kg to 80 kg should see their TDEE drop by roughly 100-150 kcal simply because the smaller body requires less energy (mechanical effect). However, research from Trexler et al. (2014) shows that the actual TDEE drop can be 200-350 kcal — the additional reduction is metabolic adaptation.
+						</p>
+						<p class="mt-3">
+							Metabolic adaptation manifests through several mechanisms:
+						</p>
+						<ul class="space-y-2 mt-3 pl-5 list-disc">
+							<li><strong>NEAT reduction:</strong> Unconscious fidgeting decreases by 15-25% during extended deficits</li>
+							<li><strong>Thyroid downregulation:</strong> T3 hormone levels drop, slowing cellular metabolism</li>
+							<li><strong>Sympathetic nervous system:</strong> Norepinephrine levels fall, reducing fat oxidation</li>
+							<li><strong>Leptin suppression:</strong> Lower leptin signals the brain to reduce energy expenditure</li>
+							<li><strong>Mitochondrial efficiency:</strong> Cells become more energy-efficient, burning fewer calories for the same work</li>
+						</ul>
+						<p class="mt-3">
+							That is why the BodyCompOS goal timeline calculator applies a compounding weekly decay factor to weight loss projections. Progress that starts at 0.7 kg/week often slows to 0.3-0.4 kg/week by week 10, not because adherence slipped, but because the body adapted.
+						</p>
+					</section>
+
+					<!-- 7. Reverse Dieting -->
+					<section>
+						<h2 id="reverse-dieting" class="text-xl font-bold text-foreground mb-3">7. Reverse Dieting: Restoring Metabolic Rate</h2>
+						<p>
+							Reverse dieting is the gradual increase of calorie intake after a prolonged cut to restore metabolic rate while minimizing fat gain. The goal is not to lose weight but to normalize hormone levels, NEAT, and thyroid function so that future phases start from a higher metabolic baseline.
+						</p>
+						<p class="mt-3">
+							A typical reverse diet protocol adds 50-100 kcal per week to daily intake, starting from the final cut calories, until reaching true maintenance. The process takes 4-8 weeks depending on how long and aggressive the cut was. During this phase, weight gain should be minimal (0.5-1 kg total) because the increased energy expenditure from restored NEAT and thyroid function offsets much of the added calories.
+						</p>
+						<p class="mt-3">
+							Signs that reverse dieting is working: improved body temperature (warmer hands and feet), better sleep quality, increased daily movement without conscious effort, improved libido, and more energy during workouts. If weight jumps more than 1-2 kg in the first 2 weeks, the calorie increases are likely too aggressive.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Reverse dieting is not a fat loss strategy — it is a metabolic recovery strategy. The weight you regain (mostly water, glycogen, and gut content) is the price of restoring a healthy metabolic rate. Most of the regained weight comes off quickly when you enter your next cut.
+							</p>
+						</div>
+					</section>
+
+					<!-- 8. Recalculation Rules -->
+					<section>
+						<h2 id="recalculation" class="text-xl font-bold text-foreground mb-3">8. When to Recalculate Maintenance</h2>
+						<p>
+							Your maintenance calories change over time. Relying on a number calculated three months ago ensures you are operating with stale data. Recalculate under these conditions:
+						</p>
+						<ul class="space-y-2 mt-3 pl-5 list-disc">
+							<li><strong>Weight change:</strong> After every 5-7 kg of body weight change, your TDEE has shifted enough to warrant recalculation. A 75 kg person has a materially different TDEE than an 82 kg person.</li>
+							<li><strong>Activity change:</strong> If your job becomes more or less active, or you significantly change your training volume (e.g., going from 3x/week to 6x/week), recalculate.</li>
+							<li><strong>Phase transition:</strong> When moving from cut to maintenance or from maintenance to bulk, recalculate rather than reusing old numbers. Metabolic adaptation from a cut means your maintenance number is lower than a formula would predict.</li>
+							<li><strong>Age:</strong> BMR declines approximately 1-2% per decade after age 30 due to muscle loss and hormonal changes. Every few years, recalculate.</li>
+						</ul>
+						<p class="mt-3">
+							The
+							<a href="/calculators/maintenance-calorie-calculator" class="text-accent underline font-medium hover:no-underline">Maintenance Calorie Calculator</a>
+							generates a fresh TDEE estimate in seconds. Keep it bookmarked for phase transitions.
+						</p>
+					</section>
+
+					<!-- 9. FAQ -->
+					<section>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">9. Frequently Asked Questions</h2>
+						<div class="space-y-3">
+							{faqEntries.map(([question, answer]) => (
+								<div class="rounded-xl border border-border bg-card p-5">
+									<h3 class="font-bold text-sm text-foreground">{question}</h3>
+									<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{answer}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<!-- 10. Next Steps -->
+					<section>
+						<h2 id="next-steps" class="text-xl font-bold text-foreground mb-3">10. Next Steps</h2>
+						<p class="mb-4">You now understand how TDEE works and how to find your true maintenance. Here is the action plan:</p>
+						<div class="grid gap-3 sm:grid-cols-2">
+							<a href="/calculators/maintenance-calorie-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">1</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Calculate Your TDEE</p>
+								<p class="mt-1 text-xs text-muted-foreground">Get your starting estimate</p>
+							</a>
+							<a href="/calculators/calorie-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">2</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Cut or Bulk Calories</p>
+								<p class="mt-1 text-xs text-muted-foreground">Based on your verified maintenance</p>
+							</a>
+							<a href="/dashboard" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">3</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Track & Verify</p>
+								<p class="mt-1 text-xs text-muted-foreground">2-week verification protocol</p>
+							</a>
+							<a href="/guides/should-i-cut-or-bulk" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">4</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Choose Your Strategy</p>
+								<p class="mt-1 text-xs text-muted-foreground">Apply maintenance data to your goal</p>
+							</a>
+						</div>
+						<div class="mt-6 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-2">Related Reading</p>
+							<div class="grid sm:grid-cols-2 gap-2 text-xs">
+								<a href="/guides/should-i-cut-or-bulk" class="text-accent hover:underline">Cut or Bulk Decision Guide →</a>
+								<a href="/guides/body-recomposition" class="text-accent hover:underline">Body Recomposition Guide →</a>
+								<a href="/guides/protein-nutrition" class="text-accent hover:underline">Protein Nutrition Guide →</a>
+								<a href="/guides/body-fat-percentage" class="text-accent hover:underline">Body Fat Percentage Guide →</a>
+							</div>
+						</div>
 					</section>
 
 					<!-- YMYL Disclaimer -->
-					<div class="border-t border-border pt-6 text-[10px] text-muted-foreground">
-						<p><strong>YMYL Disclaimer:</strong> This guide is for educational purposes only. Daily caloric expenditures are estimated and can vary based on individual thyroid function, health conditions, and activity. Consult a qualified metabolic health professional for clinical dietary support.</p>
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> This guide is for educational purposes only. Daily caloric expenditures are estimated and can vary based on individual thyroid function, health conditions, and activity. Individuals with a history of metabolic disease, eating disorders, or other clinical concerns should consult a qualified healthcare professional before making significant dietary changes. All calculator outputs are estimates and may not reflect individual outcomes.</p>
 					</div>
 
 				</div>
 			</div>
-			
+
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#understanding-maintenance" class="block text-muted-foreground hover:text-accent transition-colors">1. Understanding Maintenance</a>
+						<a href="#tdee-components" class="block text-muted-foreground hover:text-accent transition-colors">2. Components of TDEE</a>
+						<a href="#bmr-formulas" class="block text-muted-foreground hover:text-accent transition-colors">3. BMR Formulas</a>
+						<a href="#activity-factor" class="block text-muted-foreground hover:text-accent transition-colors">4. Activity Factor</a>
+						<a href="#verification-protocol" class="block text-muted-foreground hover:text-accent transition-colors">5. Verification Protocol</a>
+						<a href="#metabolic-adaptation" class="block text-muted-foreground hover:text-accent transition-colors">6. Metabolic Adaptation</a>
+						<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors">7. Reverse Dieting</a>
+						<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors">8. Recalculation Rules</a>
+						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
+						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+					</nav>
+				</div>
+
+				<!-- 2. Strategic Tools -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
-					<p class="text-xs text-muted-foreground mt-2">Estimate your maintenance calories and daily expenditure.</p>
+					<p class="text-xs text-muted-foreground mt-2">Calculate your maintenance calories based on your stats and activity level.</p>
 					<a href="/calculators/maintenance-calorie-calculator" class="button-primary w-full text-center text-xs mt-4 block">Maintenance Calculator</a>
 				</div>
 
+				<!-- 3. Related Calculators -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/calculators/maintenance-calorie-calculator" class="block text-accent hover:underline">Maintenance Calculator</a>
+						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
+						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
+						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
+					</div>
+				</div>
+
+				<!-- 4. Related Guides -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
 					<div class="mt-3 space-y-2 text-xs">
 						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Cut or Bulk Matrix</a>
 						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
-						<a href="/guides/protein-nutrition" class="block text-accent hover:underline font-semibold">Protein Intake Guide</a>
+						<a href="/guides/protein-nutrition" class="block text-accent hover:underline">Protein Nutrition Guide</a>
+						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Guide</a>
 					</div>
 				</div>
+
+				<!-- 5. Quick Facts -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
+					<div class="mt-3 space-y-3 text-xs">
+						<div>
+							<p class="font-bold text-foreground">BMR Component</p>
+							<p class="text-muted-foreground mt-0.5">60-75% of TDEE</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">NEAT Variability</p>
+							<p class="text-muted-foreground mt-0.5">Can differ by 500+ kcal/day</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Metabolic Adaptation</p>
+							<p class="text-muted-foreground mt-0.5">Up to 15% beyond weight loss</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Recalculate After</p>
+							<p class="text-muted-foreground mt-0.5">5-7 kg body weight change</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- 6. Article Info -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
+					<div class="mt-3 space-y-2.5 text-xs">
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+							<span class="text-muted-foreground">9 min read</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+							<span class="text-muted-foreground">Updated Jun 2026</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							<span class="text-muted-foreground">Editorial Board</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- 7. Key Takeaway -->
+				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
+					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Key Takeaway
+					</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Start with Mifflin-St Jeor, verify with 2 weeks of daily weighing, adjust in 150 kcal increments. Recalculate after every 5-7 kg of weight change. Watch for metabolic adaptation — it can silently reduce TDEE by 10-15% during a cut.</p>
+				</div>
+
 			</div>
 		</div>
 	</section>

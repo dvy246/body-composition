@@ -12,7 +12,7 @@ const schema = {
 	headline: title,
 	description: description,
 	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
+	dateModified: '2026-06-26',
 	author: {
 		'@type': 'Organization',
 		name: 'BodyCompOS Editorial Board',
@@ -26,9 +26,56 @@ const schema = {
 		},
 	},
 };
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: [
+		{
+			'@type': 'Question',
+			name: 'Should beginners cut or bulk?',
+			acceptedAnswer: { '@type': 'Answer', text: 'It depends on starting body fat. Beginners with higher body fat benefit more from a cut. Beginners who are already lean can lean bulk. Many beginners can also recomp (build muscle while losing fat) because their bodies are highly responsive to new training.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'Can I build muscle while losing fat?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Yes — this is called body recomposition. It is most effective for beginners, people returning after a break, and individuals with higher body fat. Advanced lifters cannot build significant muscle in a deficit.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'How long should I stay in a calorie deficit?',
+			acceptedAnswer: { '@type': 'Answer', text: 'A typical cut lasts 8-16 weeks. Beyond 16 weeks, diet fatigue and metabolic adaptation make further progress difficult. If you still have fat to lose after 16 weeks, take a 4-6 week maintenance break before starting another cut phase.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'How often should I recalculate calories?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Recalculate after every 5-7 kg of weight change, or every 4-6 weeks during a cut or bulk. Your maintenance calories drift as your weight changes.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'What is body recomposition?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Body recomposition is the process of losing fat and gaining muscle at the same time. It requires eating near maintenance calories with high protein and consistent resistance training. Progress is slower than dedicated phases.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'Should skinny fat people cut or bulk?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Skinny fat describes low muscle mass with moderate body fat. A lean bulk is usually better — building muscle improves body composition more effectively than cutting. Beginners in this category often see strong recomposition results during their first 6-12 months of consistent training.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'Do I need to know my body fat percentage?',
+			acceptedAnswer: { '@type': 'Answer', text: 'It helps significantly. If you do not know yours, the Body Fat Calculator uses waist and neck measurements to estimate it (Navy Method). You can also use the Strategy Finder with an estimate and adjust later.' },
+		},
+		{
+			'@type': 'Question',
+			name: 'How do I know when to switch strategies?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Switch when you reach your goal (target body fat or weight), when progress stalls for 3+ weeks despite high adherence, or when diet fatigue becomes unmanageable. Do not switch based on a single week of data.' },
+		},
+	],
+};
 ---
 
-<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+<Layout title={title} description={description} canonical={canonical} schema={[schema, faqSchema]}>
 	<section class="site-container py-10 sm:py-12">
 		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
 			<a class="hover:text-accent transition-colors" href="/">Home</a>
@@ -53,13 +100,33 @@ const schema = {
 			</p>
 		</div>
 
-		<div class="mt-10 max-w-4xl grid gap-8 lg:grid-cols-[1fr_300px]">
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#what-is-body-composition" class="block text-muted-foreground hover:text-accent transition-colors">1. What Is Body Composition?</a>
+				<a href="#why-strategy-matters" class="block text-muted-foreground hover:text-accent transition-colors">2. Why Strategy Matters</a>
+				<a href="#four-main-strategies" class="block text-muted-foreground hover:text-accent transition-colors">3. The Four Strategies</a>
+				<a href="#comparison-table" class="block text-muted-foreground hover:text-accent transition-colors">4. Comparison Table</a>
+				<a href="#body-fat-changes-recommendation" class="block text-muted-foreground hover:text-accent transition-colors">5. Body Fat & Recommendation</a>
+				<a href="#strategy-finder" class="block text-muted-foreground hover:text-accent transition-colors">6. Strategy Finder</a>
+				<a href="#common-mistakes" class="block text-muted-foreground hover:text-accent transition-colors">7. Common Mistakes</a>
+				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">8. FAQ</a>
+				<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">9. Next Steps →</a>
+			</nav>
+		</details>
+
+		<!-- Main editorial body -->
+		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
 			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
 
 					<!-- 1. What Is Body Composition -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. What Is Body Composition?</h2>
+						<h2 id="what-is-body-composition" class="text-xl font-bold text-foreground mb-3">1. What Is Body Composition?</h2>
 						<p>
 							Body composition describes what your body weight is made of. Instead of treating weight as a single number,
 							it separates it into two main components:
@@ -86,17 +153,41 @@ const schema = {
 
 					<!-- 2. Why Choosing the Right Strategy Matters -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">2. Why the Right Strategy Matters</h2>
+						<h2 id="why-strategy-matters" class="text-xl font-bold text-foreground mb-3">2. Why the Right Strategy Matters</h2>
 						<p>
 							Each body composition strategy shifts your energy balance in a different direction — deficit, surplus, or maintenance.
 							Choosing the wrong one for your current state slows progress and can add unnecessary phases.
 						</p>
-						<ul class="mt-3 space-y-2 pl-5 list-disc">
-							<li><strong class="text-foreground">Cutting at low body fat</strong> risks muscle loss and metabolic slowdown with minimal fat to lose.</li>
-							<li><strong class="text-foreground">Bulking at high body fat</strong> adds fat faster than muscle due to poorer nutrient partitioning.</li>
-							<li><strong class="text-foreground">Recomping as an advanced lifter</strong> often leads to frustration — the body resists simultaneous gain and loss.</li>
-							<li><strong class="text-foreground">Staying in maintenance indefinitely</strong> without a goal can make training feel aimless.</li>
-						</ul>
+						<div class="mt-4 grid gap-2 sm:grid-cols-2">
+							<div class="rounded-lg border border-border bg-destructive/5 p-3 text-xs">
+								<p class="font-bold text-destructive flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									Cutting at low body fat
+								</p>
+								<p class="mt-1 text-muted-foreground">Risks muscle loss and metabolic slowdown with minimal fat to lose.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-warning/5 p-3 text-xs">
+								<p class="font-bold text-warning flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									Bulking at high body fat
+								</p>
+								<p class="mt-1 text-muted-foreground">Adds fat faster than muscle due to poorer nutrient partitioning.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-warning/5 p-3 text-xs">
+								<p class="font-bold text-warning flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+									Recomping as advanced lifter
+								</p>
+								<p class="mt-1 text-muted-foreground">Often leads to frustration — the body resists simultaneous gain and loss.</p>
+							</div>
+							<div class="rounded-lg border border-border bg-muted/40 p-3 text-xs">
+								<p class="font-bold text-muted-foreground flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+									Staying in maintenance indefinitely
+								</p>
+								<p class="mt-1 text-muted-foreground">Can make training feel aimless without a clear progression goal.</p>
+							</div>
+						</div>
 						<div class="mt-4 rounded-xl border-l-4 border-warning bg-warning/5 p-4 text-xs">
 							<p class="font-bold text-foreground flex items-center gap-1.5">
 								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -111,208 +202,291 @@ const schema = {
 
 					<!-- 3. The Four Main Strategies -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. The Four Main Strategies</h2>
+						<h2 id="four-main-strategies" class="text-xl font-bold text-foreground mb-3">3. The Four Main Strategies</h2>
 
 						<!-- Cut -->
-						<div class="mt-6 surface rounded-xl p-5 border border-border">
-							<div class="flex items-center gap-2.5 mb-3">
-								<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10 text-accent font-bold text-sm">C</span>
-								<h3 class="text-base font-black text-foreground">Cut / Fat Loss</h3>
-							</div>
-							<div class="grid gap-3 text-xs">
-								<p><strong class="text-foreground">What it is:</strong> A controlled calorie deficit (typically 15-20% below maintenance) combined with adequate protein and resistance training to reduce body fat while preserving muscle.</p>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Best For</p>
-										<p>Body fat above 15% (male) or 24% (female). Any training level.</p>
-									</div>
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Expected Timeline</p>
-										<p>8-16 weeks. Expect 0.5-1% body weight loss per week.</p>
+						<div class="mt-6 relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+							<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-accent"></div>
+							<div class="p-5 sm:p-6 pl-6 sm:pl-7">
+								<div class="flex items-center gap-3 mb-4">
+									<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10 text-accent font-bold text-sm shrink-0">C</span>
+									<div>
+										<h3 class="text-lg font-black text-foreground">Cut / Fat Loss</h3>
+										<span class="inline-flex items-center gap-1 text-xs text-accent font-semibold mt-0.5">15-20% calorie deficit</span>
 									</div>
 								</div>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div>
-										<p class="font-bold text-foreground mb-1">Advantages</p>
-										<ul class="pl-4 list-disc space-y-1">
+								<p class="text-sm text-muted-foreground leading-relaxed mb-4">
+									A controlled calorie deficit combined with adequate protein and resistance training to reduce body fat while preserving muscle. The most direct path to a leaner physique.
+								</p>
+								<div class="grid grid-cols-2 gap-2 mb-4">
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Best For</p>
+										<p class="text-muted-foreground mt-0.5">Body fat &gt; 15% (M) / &gt; 24% (F)</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Pace</p>
+										<p class="text-muted-foreground mt-0.5">0.5-1% body weight / week</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Duration</p>
+										<p class="text-muted-foreground mt-0.5">8-16 weeks</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Protein</p>
+										<p class="text-muted-foreground mt-0.5">2.0-2.4 g/kg to spare muscle</p>
+									</div>
+								</div>
+								<div class="grid sm:grid-cols-2 gap-3 mb-4 text-xs">
+									<div class="p-3 rounded-lg border border-success/20 bg-success/5">
+										<p class="font-bold text-success flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+											Advantages
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>Visible results relatively quickly</li>
 											<li>Improves insulin sensitivity</li>
 											<li>Shorter phase = less diet fatigue</li>
 										</ul>
 									</div>
-									<div>
-										<p class="font-bold text-foreground mb-1">Limitations</p>
-										<ul class="pl-4 list-disc space-y-1">
+									<div class="p-3 rounded-lg border border-warning/20 bg-warning/5">
+										<p class="font-bold text-warning flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+											Limitations
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>Minimal muscle gain</li>
 											<li>Hunger and energy dips</li>
 											<li>Metabolic adaptation over time</li>
 										</ul>
 									</div>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Common Mistakes</p>
-									<ul class="pl-4 list-disc space-y-1">
-										<li>Setting too large a deficit — leads to muscle loss and binge cycles</li>
-										<li>Dropping calories further when weight stalls for less than 3 weeks</li>
-									</ul>
+								<div class="rounded-xl border border-border bg-muted/20 p-3.5 text-xs mb-4">
+									<p class="font-bold text-foreground flex items-center gap-1.5 mb-1">
+										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+										Example Scenario
+									</p>
+									<p class="text-muted-foreground italic">"Marcus, 30, 85 kg at 22% body fat, trains 4x/week. Maintenance is ~2,800 kcal. A cut puts him at 2,300-2,400 kcal with 160-170 g protein. He loses ~0.5 kg/week for 10-12 weeks to reach ~15% BF."</p>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Example Scenario</p>
-									<p class="italic">"Marcus is 30, 85 kg at 22% body fat. He trains 4x per week. His maintenance is roughly 2800 kcal. A cut puts him at 2300-2400 kcal with 160-170 g protein. He expects to lose about 0.5 kg per week."</p>
+								<div class="flex flex-wrap items-center gap-2 text-xs">
+									<a href="/calculators/calorie-calculator" class="button-primary text-xs">Calculate Your Cut Calories</a>
+									<a href="/guides/should-i-cut-or-bulk" class="button-secondary text-xs">Read the Cut Guide</a>
 								</div>
-								<a href="/calculators/calorie-calculator" class="inline-flex items-center gap-1 text-accent font-semibold hover:underline text-xs">Calculate your cut calories →</a>
 							</div>
 						</div>
 
 						<!-- Lean Bulk -->
-						<div class="mt-5 surface rounded-xl p-5 border border-border">
-							<div class="flex items-center gap-2.5 mb-3">
-								<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10 text-success font-bold text-sm">B</span>
-								<h3 class="text-base font-black text-foreground">Lean Bulk</h3>
-							</div>
-							<div class="grid gap-3 text-xs">
-								<p><strong class="text-foreground">What it is:</strong> A controlled calorie surplus (8-12% above maintenance) paired with progressive resistance training to support muscle growth while limiting unnecessary fat gain.</p>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Best For</p>
-										<p>Body fat below 15% (male) or 24% (female). Intermediate to advanced lifters.</p>
-									</div>
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Expected Timeline</p>
-										<p>12-24+ weeks. Expect 0.25-0.5% body weight gain per week.</p>
+						<div class="mt-5 relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+							<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-success"></div>
+							<div class="p-5 sm:p-6 pl-6 sm:pl-7">
+								<div class="flex items-center gap-3 mb-4">
+									<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success font-bold text-sm shrink-0">B</span>
+									<div>
+										<h3 class="text-lg font-black text-foreground">Lean Bulk</h3>
+										<span class="inline-flex items-center gap-1 text-xs text-success font-semibold mt-0.5">8-12% calorie surplus</span>
 									</div>
 								</div>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div>
-										<p class="font-bold text-foreground mb-1">Advantages</p>
-										<ul class="pl-4 list-disc space-y-1">
+								<p class="text-sm text-muted-foreground leading-relaxed mb-4">
+									A controlled calorie surplus paired with progressive resistance training to support muscle growth while limiting unnecessary fat gain. The most efficient path to building size.
+								</p>
+								<div class="grid grid-cols-2 gap-2 mb-4">
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Best For</p>
+										<p class="text-muted-foreground mt-0.5">Body fat &lt; 15% (M) / &lt; 24% (F)</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Pace</p>
+										<p class="text-muted-foreground mt-0.5">0.25-0.5% body weight / week</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Duration</p>
+										<p class="text-muted-foreground mt-0.5">12-24+ weeks</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Protein</p>
+										<p class="text-muted-foreground mt-0.5">1.6-2.0 g/kg for growth</p>
+									</div>
+								</div>
+								<div class="grid sm:grid-cols-2 gap-3 mb-4 text-xs">
+									<div class="p-3 rounded-lg border border-success/20 bg-success/5">
+										<p class="font-bold text-success flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+											Advantages
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>Supports noticeable muscle growth</li>
 											<li>Better recovery and performance</li>
 											<li>Hormonal environment favors anabolism</li>
 										</ul>
 									</div>
-									<div>
-										<p class="font-bold text-foreground mb-1">Limitations</p>
-										<ul class="pl-4 list-disc space-y-1">
+									<div class="p-3 rounded-lg border border-warning/20 bg-warning/5">
+										<p class="font-bold text-warning flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+											Limitations
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>Some fat gain is unavoidable</li>
 											<li>Requires a future cut to reveal muscle</li>
 											<li>Longer commitment needed</li>
 										</ul>
 									</div>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Common Mistakes</p>
-									<ul class="pl-4 list-disc space-y-1">
-										<li>Using too large a surplus (dirty bulking) — most excess goes to fat</li>
-										<li>Staying in a bulk past the point of diminishing returns</li>
-									</ul>
+								<div class="rounded-xl border border-border bg-muted/20 p-3.5 text-xs mb-4">
+									<p class="font-bold text-foreground flex items-center gap-1.5 mb-1">
+										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+										Example Scenario
+									</p>
+									<p class="text-muted-foreground italic">"Sofia, 28, 62 kg at 18% body fat, has been lifting for 2 years. A lean bulk puts her at ~2,500 kcal (10% surplus) with 110-120 g protein. She gains ~0.3 kg/week over 16-20 weeks."</p>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Example Scenario</p>
-									<p class="italic">"Sofia is 28, 62 kg at 18% body fat. She has been lifting for 2 years. A lean bulk puts her at roughly 2500 kcal (10% surplus) with 110-120 g protein. She gains about 0.3 kg per week."</p>
+								<div class="flex flex-wrap items-center gap-2 text-xs">
+									<a href="/calculators/calorie-calculator" class="button-primary text-xs">Calculate Your Bulk Calories</a>
+									<a href="/guides/should-i-cut-or-bulk" class="button-secondary text-xs">Read the Bulk Guide</a>
 								</div>
-								<a href="/calculators/calorie-calculator" class="inline-flex items-center gap-1 text-accent font-semibold hover:underline text-xs">Calculate your bulk calories →</a>
 							</div>
 						</div>
 
 						<!-- Recomp -->
-						<div class="mt-5 surface rounded-xl p-5 border border-border">
-							<div class="flex items-center gap-2.5 mb-3">
-								<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-500 font-bold text-sm">R</span>
-								<h3 class="text-base font-black text-foreground">Body Recomposition</h3>
-							</div>
-							<div class="grid gap-3 text-xs">
-								<p><strong class="text-foreground">What it is:</strong> Eating near maintenance calories with high protein and consistent resistance training, aiming to lose fat and gain muscle simultaneously. Progress is slower than dedicated phases.</p>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Best For</p>
-										<p>Beginners, detrained individuals, body fat 12-20% (male) or 20-30% (female).</p>
-									</div>
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Expected Timeline</p>
-										<p>12+ weeks. Changes are gradual — track waist and strength, not just scale weight.</p>
+						<div class="mt-5 relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+							<div class="absolute left-0 top-0 bottom-0 w-1.5" style="background:#8b5cf6"></div>
+							<div class="p-5 sm:p-6 pl-6 sm:pl-7">
+								<div class="flex items-center gap-3 mb-4">
+									<span class="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-sm shrink-0" style="background:rgb(139 92 246 / 0.1);color:#8b5cf6">R</span>
+									<div>
+										<h3 class="text-lg font-black text-foreground">Body Recomposition</h3>
+										<span class="inline-flex items-center gap-1 text-xs font-semibold mt-0.5" style="color:#8b5cf6">Near maintenance calories</span>
 									</div>
 								</div>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div>
-										<p class="font-bold text-foreground mb-1">Advantages</p>
-										<ul class="pl-4 list-disc space-y-1">
+								<p class="text-sm text-muted-foreground leading-relaxed mb-4">
+									Eating near maintenance calories with high protein and consistent resistance training, aiming to lose fat and gain muscle simultaneously. Slower than dedicated phases but no aggressive deficit or surplus needed.
+								</p>
+								<div class="grid grid-cols-2 gap-2 mb-4">
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Best For</p>
+										<p class="text-muted-foreground mt-0.5">Beginners, detrained, 12-20% BF (M)</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Pace</p>
+										<p class="text-muted-foreground mt-0.5">Slow — weight stays stable</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Duration</p>
+										<p class="text-muted-foreground mt-0.5">12+ weeks (ongoing)</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Protein</p>
+										<p class="text-muted-foreground mt-0.5">1.8-2.2 g/kg — critical</p>
+									</div>
+								</div>
+								<div class="grid sm:grid-cols-2 gap-3 mb-4 text-xs">
+									<div class="p-3 rounded-lg border border-success/20 bg-success/5">
+										<p class="font-bold text-success flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+											Advantages
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>No aggressive deficit or surplus needed</li>
 											<li>Works well for new trainees</li>
-											<li>Scale weight stability is psychologically easier</li>
+											<li>Scale stability is easier mentally</li>
 										</ul>
 									</div>
-									<div>
-										<p class="font-bold text-foreground mb-1">Limitations</p>
-										<ul class="pl-4 list-disc space-y-1">
+									<div class="p-3 rounded-lg border border-warning/20 bg-warning/5">
+										<p class="font-bold text-warning flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+											Limitations
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>Slower results than dedicated phases</li>
 											<li>Not effective for advanced lifters</li>
-											<li>Easy to misjudge progress without measurements</li>
+											<li>Easy to misjudge progress</li>
 										</ul>
 									</div>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Common Mistakes</p>
-									<ul class="pl-4 list-disc space-y-1">
-										<li>Judging success only by scale weight (recomp changes body composition, not weight)</li>
-										<li>Not eating enough protein — recomp requires ~1.6-2.2 g per kg</li>
-									</ul>
+								<div class="rounded-xl border border-border bg-muted/20 p-3.5 text-xs mb-4">
+									<p class="font-bold text-foreground flex items-center gap-1.5 mb-1">
+										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+										Example Scenario
+									</p>
+									<p class="text-muted-foreground italic">"Alex, 25, 78 kg at 17% body fat, lifting for 4 months. Recomp at maintenance (~2,600 kcal) with 140 g protein. Weight stays stable but waist drops over 12 weeks."</p>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Example Scenario</p>
-									<p class="italic">"Alex is 25, 78 kg at 17% body fat. He has been lifting for 4 months. A recomp approach puts him at maintenance calories (~2600 kcal) with 140 g protein. His weight stays roughly the same but his waist measurement drops over 12 weeks."</p>
+								<div class="flex flex-wrap items-center gap-2 text-xs">
+									<a href="/calculators/body-recomposition-calculator" class="button-primary text-xs">Recomp Calculator</a>
+									<a href="/guides/body-recomposition" class="button-secondary text-xs">Read the Recomp Guide</a>
 								</div>
-								<a href="/calculators/body-recomposition-calculator" class="inline-flex items-center gap-1 text-accent font-semibold hover:underline text-xs">Explore the recomp calculator →</a>
 							</div>
 						</div>
 
 						<!-- Maintain -->
-						<div class="mt-5 surface rounded-xl p-5 border border-border">
-							<div class="flex items-center gap-2.5 mb-3">
-								<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-muted-foreground/10 text-muted-foreground font-bold text-sm">M</span>
-								<h3 class="text-base font-black text-foreground">Maintenance</h3>
-							</div>
-							<div class="grid gap-3 text-xs">
-								<p><strong class="text-foreground">What it is:</strong> Eating at estimated TDEE (total daily energy expenditure) with no intentional surplus or deficit. The goal is weight stability while maintaining training quality.</p>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Best For</p>
-										<p>Between phases, post-cut recovery, during travel or high stress, or after reaching a goal.</p>
-									</div>
-									<div class="rounded-lg border border-border bg-muted/20 p-3">
-										<p class="font-bold text-foreground mb-1">Expected Timeline</p>
-										<p>Variable — as long as needed. Can last weeks or months.</p>
+						<div class="mt-5 relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+							<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-muted-foreground"></div>
+							<div class="p-5 sm:p-6 pl-6 sm:pl-7">
+								<div class="flex items-center gap-3 mb-4">
+									<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-muted-foreground/10 text-muted-foreground font-bold text-sm shrink-0">M</span>
+									<div>
+										<h3 class="text-lg font-black text-foreground">Maintenance</h3>
+										<span class="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold mt-0.5">At estimated TDEE</span>
 									</div>
 								</div>
-								<div class="grid sm:grid-cols-2 gap-2">
-									<div>
-										<p class="font-bold text-foreground mb-1">Advantages</p>
-										<ul class="pl-4 list-disc space-y-1">
+								<p class="text-sm text-muted-foreground leading-relaxed mb-4">
+									Eating at estimated total daily energy expenditure with no intentional surplus or deficit. The goal is weight stability while maintaining training quality and allowing diet fatigue to recover.
+								</p>
+								<div class="grid grid-cols-2 gap-2 mb-4">
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Best For</p>
+										<p class="text-muted-foreground mt-0.5">Between phases, post-cut recovery</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Pace</p>
+										<p class="text-muted-foreground mt-0.5">Weight stable (±0.5 kg)</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Duration</p>
+										<p class="text-muted-foreground mt-0.5">Variable — 4-8 weeks typical</p>
+									</div>
+									<div class="rounded-lg border border-border bg-muted/20 p-2.5 text-xs">
+										<p class="font-bold text-foreground">Protein</p>
+										<p class="text-muted-foreground mt-0.5">1.6-2.0 g/kg for maintenance</p>
+									</div>
+								</div>
+								<div class="grid sm:grid-cols-2 gap-3 mb-4 text-xs">
+									<div class="p-3 rounded-lg border border-success/20 bg-success/5">
+										<p class="font-bold text-success flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+											Advantages
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
 											<li>Allows diet fatigue to recover</li>
 											<li>Maintains training performance</li>
-											<li>No tracking pressure — sustainable</li>
+											<li>No tracking pressure</li>
 										</ul>
 									</div>
-									<div>
-										<p class="font-bold text-foreground mb-1">Limitations</p>
-										<ul class="pl-4 list-disc space-y-1">
-											<li>No active progress toward body comp change</li>
-											<li>Can feel directionless without a goal</li>
+									<div class="p-3 rounded-lg border border-warning/20 bg-warning/5">
+										<p class="font-bold text-warning flex items-center gap-1 text-xs mb-1.5">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+											Limitations
+										</p>
+										<ul class="space-y-1 text-muted-foreground list-disc pl-4">
+											<li>No active body comp change</li>
+											<li>Can feel directionless</li>
 										</ul>
 									</div>
 								</div>
-								<div>
-									<p class="font-bold text-foreground mb-1">Example Scenario</p>
-									<p class="italic">"Priya just finished a 12-week cut and reached her target body fat. She spends 6 weeks at maintenance (2200 kcal) to normalize hormones, restore training performance, and plan her next phase."</p>
+								<div class="rounded-xl border border-border bg-muted/20 p-3.5 text-xs mb-4">
+									<p class="font-bold text-foreground flex items-center gap-1.5 mb-1">
+										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+										Example Scenario
+									</p>
+									<p class="text-muted-foreground italic">"Priya just finished a 12-week cut and reached her target body fat. She spends 6 weeks at maintenance (2,200 kcal) to normalize hormones, restore training performance, and plan her next phase."</p>
 								</div>
-								<a href="/calculators/maintenance-calorie-calculator" class="inline-flex items-center gap-1 text-accent font-semibold hover:underline text-xs">Find your maintenance calories →</a>
+								<div class="flex flex-wrap items-center gap-2 text-xs">
+									<a href="/calculators/maintenance-calorie-calculator" class="button-primary text-xs">Find Your Maintenance</a>
+									<a href="/guides/maintenance-calories" class="button-secondary text-xs">Read the Maintenance Guide</a>
+								</div>
 							</div>
 						</div>
 					</section>
 
 					<!-- 4. Comparison Table -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. Cut vs Lean Bulk vs Recomp vs Maintain</h2>
+						<h2 id="comparison-table" class="text-xl font-bold text-foreground mb-3">4. Cut vs Lean Bulk vs Recomp vs Maintain</h2>
 						<p class="mb-4">This comparison table shows how the four strategies differ across key dimensions.</p>
 						<div class="overflow-x-auto">
 							<table class="w-full text-left text-xs border-collapse">
@@ -321,7 +495,7 @@ const schema = {
 										<th class="p-2.5">Dimension</th>
 										<th class="p-2.5 text-accent">Cut</th>
 										<th class="p-2.5 text-success">Lean Bulk</th>
-										<th class="p-2.5 text-purple-500">Recomp</th>
+										<th class="p-2.5" style="color:#8b5cf6">Recomp</th>
 										<th class="p-2.5">Maintain</th>
 									</tr>
 								</thead>
@@ -396,7 +570,7 @@ const schema = {
 
 					<!-- 5. How Body Fat Changes the Recommendation -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">5. How Body Fat Changes the Recommendation</h2>
+						<h2 id="body-fat-changes-recommendation" class="text-xl font-bold text-foreground mb-3">5. How Body Fat Changes the Recommendation</h2>
 						<p>
 							Your current body fat percentage is the single strongest signal for which strategy fits best.
 							Higher body fat shifts your biology toward fat storage; lower body fat shifts it toward muscle building.
@@ -439,14 +613,14 @@ const schema = {
 
 					<!-- 6. How the Strategy Finder Works -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">6. How the Strategy Finder Works</h2>
+						<h2 id="strategy-finder" class="text-xl font-bold text-foreground mb-3">6. How the Strategy Finder Works</h2>
 						<p>
 							The <a href="/assess" class="text-accent underline font-medium hover:no-underline">Strategy Finder</a>
 							is the platform's interactive assessment tool. It combines your inputs into a scoring system that recommends the most appropriate strategy.
 						</p>
 						<div class="mt-4 grid gap-3 sm:grid-cols-2">
 							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="text-[10px] font-bold uppercase text-accent tracking-wider mb-2">Inputs Used</p>
+								<p class="text-xs font-bold uppercase text-accent tracking-wider mb-2">Inputs Used</p>
 								<ul class="space-y-1.5 text-xs text-muted-foreground">
 									<li class="flex items-center gap-2"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Biological sex and age</li>
 									<li class="flex items-center gap-2"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Height, weight, and body fat %</li>
@@ -455,7 +629,7 @@ const schema = {
 								</ul>
 							</div>
 							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="text-[10px] font-bold uppercase text-accent tracking-wider mb-2">Outputs You Get</p>
+								<p class="text-xs font-bold uppercase text-accent tracking-wider mb-2">Outputs You Get</p>
 								<ul class="space-y-1.5 text-xs text-muted-foreground">
 									<li class="flex items-center gap-2"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Recommended strategy with confidence %</li>
 									<li class="flex items-center gap-2"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Alternative option</li>
@@ -473,34 +647,99 @@ const schema = {
 
 					<!-- 7. Common Mistakes -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">7. Common Strategy Mistakes</h2>
+						<h2 id="common-mistakes" class="text-xl font-bold text-foreground mb-3">7. Common Strategy Mistakes</h2>
 						<div class="space-y-3">
-							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="font-bold text-foreground text-xs flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Cutting too aggressively</p>
-								<p class="mt-1 text-xs text-muted-foreground">A deficit larger than 25% below maintenance accelerates muscle loss and triggers metabolic adaptation. Your body burns fewer calories at rest, making further fat loss harder. Stick to 15-20% below maintenance and prioritize protein.</p>
+							<div class="rounded-xl border border-border bg-card overflow-hidden">
+								<div class="flex">
+									<div class="hidden sm:flex w-10 shrink-0 items-start justify-center pt-4 bg-destructive/5">
+										<span class="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+										</span>
+									</div>
+									<div class="p-4 pl-4 sm:pl-3 flex-1">
+										<p class="font-bold text-foreground text-xs flex items-center gap-2 sm:hidden">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+											Cutting too aggressively
+										</p>
+										<p class="hidden sm:block font-bold text-foreground text-xs mb-1">Cutting too aggressively</p>
+										<p class="text-xs text-muted-foreground">A deficit larger than 25% below maintenance accelerates muscle loss and triggers metabolic adaptation. Your body burns fewer calories at rest, making further fat loss harder. Stick to 15-20% below maintenance and prioritize protein.</p>
+									</div>
+								</div>
 							</div>
-							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="font-bold text-foreground text-xs flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Bulking for too long</p>
-								<p class="mt-1 text-xs text-muted-foreground">Beyond 4-6 months of continuous surplus, fat gain accelerates and the extra weight impacts insulin sensitivity. Plan a maintenance break or cut after a dedicated bulk phase, especially if waist circumference increases significantly.</p>
+							<div class="rounded-xl border border-border bg-card overflow-hidden">
+								<div class="flex">
+									<div class="hidden sm:flex w-10 shrink-0 items-start justify-center pt-4 bg-destructive/5">
+										<span class="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+										</span>
+									</div>
+									<div class="p-4 pl-4 sm:pl-3 flex-1">
+										<p class="font-bold text-foreground text-xs flex items-center gap-2 sm:hidden">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+											Bulking for too long
+										</p>
+										<p class="hidden sm:block font-bold text-foreground text-xs mb-1">Bulking for too long</p>
+										<p class="text-xs text-muted-foreground">Beyond 4-6 months of continuous surplus, fat gain accelerates and the extra weight impacts insulin sensitivity. Plan a maintenance break or cut after a dedicated bulk phase, especially if waist circumference increases significantly.</p>
+									</div>
+								</div>
 							</div>
-							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="font-bold text-foreground text-xs flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Ignoring protein intake</p>
-								<p class="mt-1 text-xs text-muted-foreground">During a cut, inadequate protein accelerates muscle loss. During a bulk, it limits muscle synthesis. The general recommendation is 1.6-2.2 g per kg of body weight regardless of strategy. Use the <a href="/calculators/protein-calculator" class="text-accent underline hover:no-underline">Protein Calculator</a> to set your target.</p>
+							<div class="rounded-xl border border-border bg-card overflow-hidden">
+								<div class="flex">
+									<div class="hidden sm:flex w-10 shrink-0 items-start justify-center pt-4 bg-destructive/5">
+										<span class="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+										</span>
+									</div>
+									<div class="p-4 pl-4 sm:pl-3 flex-1">
+										<p class="font-bold text-foreground text-xs flex items-center gap-2 sm:hidden">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+											Ignoring protein intake
+										</p>
+										<p class="hidden sm:block font-bold text-foreground text-xs mb-1">Ignoring protein intake</p>
+										<p class="text-xs text-muted-foreground">During a cut, inadequate protein accelerates muscle loss. During a bulk, it limits muscle synthesis. The general recommendation is 1.6-2.2 g per kg of body weight regardless of strategy. Use the <a href="/calculators/protein-calculator" class="text-accent underline hover:no-underline">Protein Calculator</a> to set your target.</p>
+									</div>
+								</div>
 							</div>
-							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="font-bold text-foreground text-xs flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Expecting overnight results</p>
-								<p class="mt-1 text-xs text-muted-foreground">Fat loss averages 0.5-1% of body weight per week. Muscle gain averages 0.25-0.5% per week. If results seem slow, that is normal. Consistency over 8-16 weeks produces visible change. Daily fluctuations are noise — track trends, not single weigh-ins.</p>
+							<div class="rounded-xl border border-border bg-card overflow-hidden">
+								<div class="flex">
+									<div class="hidden sm:flex w-10 shrink-0 items-start justify-center pt-4 bg-destructive/5">
+										<span class="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+										</span>
+									</div>
+									<div class="p-4 pl-4 sm:pl-3 flex-1">
+										<p class="font-bold text-foreground text-xs flex items-center gap-2 sm:hidden">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+											Expecting overnight results
+										</p>
+										<p class="hidden sm:block font-bold text-foreground text-xs mb-1">Expecting overnight results</p>
+										<p class="text-xs text-muted-foreground">Fat loss averages 0.5-1% of body weight per week. Muscle gain averages 0.25-0.5% per week. If results seem slow, that is normal. Consistency over 8-16 weeks produces visible change. Daily fluctuations are noise — track trends, not single weigh-ins.</p>
+									</div>
+								</div>
 							</div>
-							<div class="rounded-xl border border-border bg-card p-4">
-								<p class="font-bold text-foreground text-xs flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Switching strategies too often</p>
-								<p class="mt-1 text-xs text-muted-foreground">Jumping between cut, bulk, and maintenance every few weeks prevents any phase from reaching its potential. Each transition requires metabolic adaptation. Commit to a strategy for at least 8-12 weeks before reassessing, unless your circumstances change significantly.</p>
+							<div class="rounded-xl border border-border bg-card overflow-hidden">
+								<div class="flex">
+									<div class="hidden sm:flex w-10 shrink-0 items-start justify-center pt-4 bg-destructive/5">
+										<span class="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+											<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+										</span>
+									</div>
+									<div class="p-4 pl-4 sm:pl-3 flex-1">
+										<p class="font-bold text-foreground text-xs flex items-center gap-2 sm:hidden">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+											Switching strategies too often
+										</p>
+										<p class="hidden sm:block font-bold text-foreground text-xs mb-1">Switching strategies too often</p>
+										<p class="text-xs text-muted-foreground">Jumping between cut, bulk, and maintenance every few weeks prevents any phase from reaching its potential. Each transition requires metabolic adaptation. Commit to a strategy for at least 8-12 weeks before reassessing, unless your circumstances change significantly.</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</section>
 
 					<!-- 8. FAQ -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">8. Frequently Asked Questions</h2>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">8. Frequently Asked Questions</h2>
 						<div class="space-y-3">
 							<div class="rounded-xl border border-border bg-card p-5">
 								<h3 class="font-bold text-sm text-foreground">Should beginners cut or bulk?</h3>
@@ -539,49 +778,62 @@ const schema = {
 
 					<!-- 9. Next Steps -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">9. Next Steps</h2>
+						<h2 id="next-steps" class="text-xl font-bold text-foreground mb-3">9. Next Steps</h2>
 						<p class="mb-4">Follow this workflow to go from knowing nothing to having a complete strategy with targets:</p>
 						<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-							<a href="/calculators/body-fat-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">1</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Estimate Body Fat</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">Use the Navy Method calculator</p>
+							<a href="/calculators/body-fat-calculator" class="group relative rounded-xl border border-border bg-card p-4 text-center hover:border-accent/40 hover:shadow-soft transition-all duration-200">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">1</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Estimate Body Fat</p>
+								<p class="mt-1 text-xs text-muted-foreground">Navy Method calculator</p>
 							</a>
-							<a href="/assess" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">2</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Run Strategy Finder</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">Get a personalized recommendation</p>
+							<div class="hidden lg:flex items-center justify-center -ml-2 -mr-2">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+							</div>
+							<a href="/assess" class="group relative rounded-xl border border-border bg-card p-4 text-center hover:border-accent/40 hover:shadow-soft transition-all duration-200">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">2</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Run Strategy Finder</p>
+								<p class="mt-1 text-xs text-muted-foreground">Personalized recommendation</p>
 							</a>
-							<a href="/calculators/calorie-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">3</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Calorie Target</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">Calculate your starting calories</p>
+							<div class="hidden lg:flex items-center justify-center -ml-2 -mr-2">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+							</div>
+							<a href="/calculators/calorie-calculator" class="group relative rounded-xl border border-border bg-card p-4 text-center hover:border-accent/40 hover:shadow-soft transition-all duration-200">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">3</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Calorie Target</p>
+								<p class="mt-1 text-xs text-muted-foreground">Starting calories</p>
 							</a>
-							<a href="/calculators/protein-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">4</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Protein Target</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">Ensure you preserve muscle</p>
+							<div class="hidden lg:flex items-center justify-center -ml-2 -mr-2">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+							</div>
+							<a href="/calculators/protein-calculator" class="group relative rounded-xl border border-border bg-card p-4 text-center hover:border-accent/40 hover:shadow-soft transition-all duration-200">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">4</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Protein Target</p>
+								<p class="mt-1 text-xs text-muted-foreground">Preserve muscle</p>
 							</a>
-							<a href="/calculators/goal-timeline-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">5</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Estimate Timeline</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">See when you will reach your goal</p>
+						</div>
+						<div class="mt-3 grid gap-3 sm:grid-cols-2">
+							<a href="/calculators/goal-timeline-calculator" class="group relative rounded-xl border border-border bg-card p-4 text-center hover:border-accent/40 hover:shadow-soft transition-all duration-200">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">5</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Estimate Timeline</p>
+								<p class="mt-1 text-xs text-muted-foreground">See when you will reach your goal</p>
 							</a>
-							<a href="/dashboard" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">6</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Track Progress</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">Log weekly check-ins</p>
+							<a href="/dashboard" class="group relative rounded-xl border border-border bg-card p-4 text-center hover:border-accent/40 hover:shadow-soft transition-all duration-200">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">6</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Track Progress</p>
+								<p class="mt-1 text-xs text-muted-foreground">Weekly check-ins</p>
 							</a>
-							<a href="/assess" class="surface border border-border rounded-xl p-4 text-center col-span-1 sm:col-span-2 lg:col-span-4 group hover:border-accent/40 transition-colors">
-								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">7</span>
-								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Reassess Every 4-6 Weeks</p>
-								<p class="mt-1 text-[10px] text-muted-foreground">Return to the Strategy Finder to update your plan based on progress</p>
+						</div>
+						<div class="mt-3">
+							<a href="/assess" class="group relative rounded-xl border-2 border-dashed border-border bg-muted/20 p-4 text-center hover:border-accent/40 hover:bg-accent/5 transition-all duration-200 block">
+								<span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-bold mx-auto group-hover:scale-110 transition-transform">7</span>
+								<p class="mt-2.5 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Reassess Every 4-6 Weeks</p>
+								<p class="mt-1 text-xs text-muted-foreground">Return to the Strategy Finder to update your plan based on progress</p>
 							</a>
 						</div>
 					</section>
 
 					<!-- YMYL Disclaimer -->
-					<div class="border-t border-border pt-6 text-[10px] text-muted-foreground">
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
 						<p><strong>YMYL Disclaimer:</strong> The information in this guide is for educational purposes only. Body composition strategies involve changes to diet and physical activity. Individuals with a history of metabolic disease, eating disorders, pregnancy, or other clinical concerns should consult a qualified medical professional before beginning any new nutrition or training program. All calculator outputs are estimates based on population-level formulas and may not reflect individual outcomes.</p>
 					</div>
 
@@ -590,12 +842,30 @@ const schema = {
 
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#what-is-body-composition" class="block text-muted-foreground hover:text-accent transition-colors">1. What Is Body Composition?</a>
+						<a href="#why-strategy-matters" class="block text-muted-foreground hover:text-accent transition-colors">2. Why Strategy Matters</a>
+						<a href="#four-main-strategies" class="block text-muted-foreground hover:text-accent transition-colors">3. The Four Strategies</a>
+						<a href="#comparison-table" class="block text-muted-foreground hover:text-accent transition-colors">4. Comparison Table</a>
+						<a href="#body-fat-changes-recommendation" class="block text-muted-foreground hover:text-accent transition-colors">5. Body Fat & Recommendation</a>
+						<a href="#strategy-finder" class="block text-muted-foreground hover:text-accent transition-colors">6. Strategy Finder</a>
+						<a href="#common-mistakes" class="block text-muted-foreground hover:text-accent transition-colors">7. Common Mistakes</a>
+						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">8. FAQ</a>
+						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">9. Next Steps →</a>
+					</nav>
+				</div>
+
+				<!-- 2. Strategic Tools -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Start Your Assessment</h3>
 					<p class="text-xs text-muted-foreground mt-2">Get a personalized strategy recommendation based on your stats and goals.</p>
 					<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Run Strategy Finder</a>
 				</div>
 
+				<!-- 3. Related Calculators -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
 					<div class="mt-3 space-y-2 text-xs">
@@ -603,10 +873,11 @@ const schema = {
 						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
 						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
 						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
-						<a href="/calculators/goal-timeline-calculator" class="block text-accent hover:underline">Goal Timeline Calculator</a>
+						<a href="/calculators/goal-timeline-calculator" class="block text-accent hover:underline">Goal Timeline</a>
 					</div>
 				</div>
 
+				<!-- 4. Related Guides -->
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
 					<div class="mt-3 space-y-2 text-xs">
@@ -614,10 +885,62 @@ const schema = {
 						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Guide</a>
 						<a href="/guides/maintenance-calories" class="block text-accent hover:underline">Maintenance Calories Guide</a>
 						<a href="/guides/protein-nutrition" class="block text-accent hover:underline">Protein Nutrition Guide</a>
-						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Measurement Guide</a>
+						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Guide</a>
 					</div>
 				</div>
-			</div>
+
+				<!-- 5. Quick Facts -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
+					<div class="mt-3 space-y-3 text-xs">
+						<div>
+							<p class="font-bold text-foreground">Cut Deficit</p>
+							<p class="text-muted-foreground mt-0.5">15-20% below maintenance</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Bulk Surplus</p>
+							<p class="text-muted-foreground mt-0.5">8-12% above maintenance</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Recomp Window</p>
+							<p class="text-muted-foreground mt-0.5">12-20% BF (M) / 20-30% BF (F)</p>
+						</div>
+						<div>
+							<p class="font-bold text-foreground">Phase Duration</p>
+							<p class="text-muted-foreground mt-0.5">8-16 weeks (cut), 12-24 (bulk)</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- 6. Article Info -->
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
+					<div class="mt-3 space-y-2.5 text-xs">
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+							<span class="text-muted-foreground">12 min read</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+							<span class="text-muted-foreground">Updated Jun 2026</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							<span class="text-muted-foreground">Editorial Board</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- 7. Key Takeaway -->
+				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
+					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Key Takeaway
+					</h3>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Your body fat percentage is the strongest signal for strategy selection. Cut when above 15% (M) / 24% (F), lean bulk when below. Beginners and the detrained benefit most from recomposition. Stay the course for 8-16 weeks before reassessing.</p>
+				</div>
+
+				</div>
 		</div>
 	</section>
 </Layout>

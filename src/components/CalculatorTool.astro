@@ -44,7 +44,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 			<p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">{description}</p>
 			{primaryInputs.length > 0 && (
 				<div class="mt-4 flex flex-wrap gap-1.5">
-					{primaryInputs.map((input) => <span class="text-[10px] font-semibold bg-muted px-2 py-0.5 rounded text-muted-foreground">{input}</span>)}
+					{primaryInputs.map((input) => <span class="text-xs font-semibold bg-muted px-2 py-0.5 rounded text-muted-foreground">{input}</span>)}
 				</div>
 			)}
 		</div>
@@ -222,20 +222,26 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		`).join('')}</div>`;
 	}
 	
+	function fieldVisible(el) {
+		if (!el) return false;
+		const parent = el.closest('.field');
+		return parent && !parent.classList.contains('hidden');
+	}
+
 	function readRawForm(f) {
 		return {
-			sex: f.sex?.value || 'male',
-			age: Number(f.age?.value || 32),
-			h: Number(f.height?.value || 175),
-			w: Number(f.weight?.value || 82),
-			bf: Number(f.bodyFat?.value || 0),
-			waist: Number(f.waist?.value || 0),
-			neck: Number(f.neck?.value || 0),
-			hip: Number(f.hip?.value || 0),
-			activity: Number(f.activity?.value || 1.55),
-			goal: f.goal?.value || 'maintain',
-			targetWeight: Number(f.targetWeight?.value || f.weight?.value || 82),
-			targetBodyFat: Number(f.targetBodyFat?.value || 0),
+			sex: fieldVisible(f.sex) ? (f.sex?.value || 'male') : 'male',
+			age: fieldVisible(f.age) ? Number(f.age?.value || 32) : 0,
+			h: fieldVisible(f.height) ? Number(f.height?.value || 175) : 0,
+			w: fieldVisible(f.weight) ? Number(f.weight?.value || 82) : 0,
+			bf: fieldVisible(f.bodyFat) ? Number(f.bodyFat?.value || 0) : 0,
+			waist: fieldVisible(f.waist) ? Number(f.waist?.value || 0) : 0,
+			neck: fieldVisible(f.neck) ? Number(f.neck?.value || 0) : 0,
+			hip: fieldVisible(f.hip) ? Number(f.hip?.value || 0) : 0,
+			activity: fieldVisible(f.activity) ? Number(f.activity?.value || 1.55) : 1.55,
+			goal: fieldVisible(f.goal) ? (f.goal?.value || 'maintain') : 'maintain',
+			targetWeight: fieldVisible(f.targetWeight) ? Number(f.targetWeight?.value || f.weight?.value || 82) : 0,
+			targetBodyFat: fieldVisible(f.targetBodyFat) ? Number(f.targetBodyFat?.value || 0) : 0,
 		};
 	}
 	
@@ -278,6 +284,17 @@ function fieldClass(key: keyof typeof fieldGroups) {
 	}
 	
 	document.querySelectorAll('[data-unit]').forEach((button) => button.addEventListener('click', () => setUnit(button.getAttribute('data-unit'))));
+
+	(function() {
+		const savedBf = localStorage.getItem('bodycompos.estimatedBodyFat');
+		if (savedBf) {
+			const input = document.getElementById('bodyFat') as HTMLInputElement;
+			if (input && !input.dataset.autofilled) {
+				input.value = savedBf;
+				input.dataset.autofilled = 'true';
+			}
+		}
+	})();
 	
 	const sexSelect = document.getElementById('sex');
 	const hipField = document.getElementById('hip-field');
@@ -564,10 +581,14 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		
 		const calcResult = document.querySelector('#calc-result');
 		calcResult.classList.add('has-result');
+		const formulaNote = bfVal
+			? 'Katch-McArdle formula (uses body fat)'
+			: 'Mifflin-St Jeor formula (no body fat provided)';
 		calcResult.innerHTML = `
 			<div class="result-content grid gap-6 lg:grid-cols-[1.2fr_0.8fr] text-left">
 				<div>
 					${makeRows(rows)}
+					<p class="mt-2 text-xs text-muted-foreground font-sans">Formula: ${formulaNote}</p>
 					${mathHtml}
 					<p class="mt-4 text-xs leading-relaxed text-muted-foreground font-sans">
 						Calculated starting point estimates. Energy output and metabolic speed fluctuate weekly. Reassess after tracking actual trend weight changes.
@@ -576,6 +597,9 @@ function fieldClass(key: keyof typeof fieldGroups) {
 						<a class="button-secondary text-sm" href="/assess">Plug into Strategy Finder</a>
 						<a class="button-ghost text-sm" href="/dashboard">Open Local Log</a>
 					</div>
+				</div>
+					${snapshotHtml}
+					<p class="mt-3 text-xs font-medium text-warning">These are educational estimates. Consult a healthcare professional before starting any diet or exercise program.</p>
 				</div>
 				${snapshotHtml}
 			</div>
