@@ -26,17 +26,21 @@ export function setStrategyUnit(
 
 	if (unit === 'imperial') {
 		form.height.value = String(round(cmToIn(height), 1));
-		form.weight.value = String(round(kgToLb(weight), 1));
+		if (form.weight.tagName !== 'SELECT') {
+			form.weight.value = String(round(kgToLb(weight), 1));
+		}
 		form.height.min = '47';
 		form.height.max = '91';
-		form.weight.min = '77';
+		form.weight.min = '44';
 		form.weight.max = '551';
 	} else {
 		form.height.value = String(round(inToCm(height), 1));
-		form.weight.value = String(round(lbToKg(weight), 1));
+		if (form.weight.tagName !== 'SELECT') {
+			form.weight.value = String(round(lbToKg(weight), 1));
+		}
 		form.height.min = '120';
 		form.height.max = '230';
-		form.weight.min = '35';
+		form.weight.min = '20';
 		form.weight.max = '250';
 	}
 
@@ -60,26 +64,30 @@ export function setStrategyUnitWithCircumferences(
 
 	if (unit === 'imperial') {
 		form.height.value = String(round(cmToIn(height), 1));
-		form.weight.value = String(round(kgToLb(weight), 1));
+		if (form.weight.tagName !== 'SELECT') {
+			form.weight.value = String(round(kgToLb(weight), 1));
+		}
 		if (waist) (form as any).waist.value = String(round(cmToIn(waist), 1));
 		if (neck) (form as any).neck.value = String(round(cmToIn(neck), 1));
 		if (hip) (form as any).hip.value = String(round(cmToIn(hip), 1));
 		form.height.min = '47';
 		form.height.max = '91';
-		form.weight.min = '77';
+		form.weight.min = '44';
 		form.weight.max = '551';
 		if ((form as any).waist) { (form as any).waist.min = '16'; (form as any).waist.max = '87'; }
 		if ((form as any).neck) { (form as any).neck.min = '8'; (form as any).neck.max = '31'; }
 		if ((form as any).hip) { (form as any).hip.min = '16'; (form as any).hip.max = '87'; }
 	} else {
 		form.height.value = String(round(inToCm(height), 1));
-		form.weight.value = String(round(lbToKg(weight), 1));
+		if (form.weight.tagName !== 'SELECT') {
+			form.weight.value = String(round(lbToKg(weight), 1));
+		}
 		if (waist) (form as any).waist.value = String(round(inToCm(waist), 1));
 		if (neck) (form as any).neck.value = String(round(inToCm(neck), 1));
 		if (hip) (form as any).hip.value = String(round(inToCm(hip), 1));
 		form.height.min = '120';
 		form.height.max = '230';
-		form.weight.min = '35';
+		form.weight.min = '20';
 		form.weight.max = '250';
 		if ((form as any).waist) { (form as any).waist.min = '40'; (form as any).waist.max = '220'; }
 		if ((form as any).neck) { (form as any).neck.min = '20'; (form as any).neck.max = '80'; }

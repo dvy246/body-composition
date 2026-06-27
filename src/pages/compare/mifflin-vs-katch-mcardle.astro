@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Mifflin-St Jeor vs Katch-McArdle Formula Comparison | BodyCompOS";
+const description = "Compare Mifflin-St Jeor and Katch-McArdle metabolic rate equations. Learn which formula is more accurate for your body composition.";
+const canonical = `${DOMAIN}/compare/mifflin-vs-katch-mcardle`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+				<span>/</span>
+				<span class="text-foreground">Mifflin vs Katch-McArdle</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Metabolic Formula Comparison</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Mifflin-St Jeor <br class="sm:hidden"/>vs <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Katch-McArdle</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					Which formula should you use to estimate Basal Metabolic Rate (BMR)? We break down the mathematical differences, inputs required, and accuracy profiles of the two industry-standard metabolic equations.
+				</p>
+			</div>
+
+			<!-- Comparison Table Grid -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_280px]">
+				<div class="space-y-8">
+					<!-- Table -->
+					<div class="surface rounded-2xl border border-border overflow-hidden">
+						<table class="w-full text-left text-xs border-collapse">
+							<thead>
+								<tr class="border-b border-border bg-muted/10">
+									<th class="p-4 font-bold text-foreground">Feature</th>
+									<th class="p-4 font-bold text-foreground">Mifflin-St Jeor</th>
+									<th class="p-4 font-bold text-foreground">Katch-McArdle</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-border/60">
+								<tr>
+									<td class="p-4 font-bold text-foreground">Primary Driver</td>
+									<td class="p-4 text-muted-foreground">Total body weight, height, age, sex</td>
+									<td class="p-4 text-muted-foreground">Lean Body Mass (LBM) only</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Accuracy (General)</td>
+									<td class="p-4 text-muted-foreground">Very high for standard populations</td>
+									<td class="p-4 text-muted-foreground">Extremely high for lean/athletic build</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Requires Body Fat %</td>
+									<td class="p-4 text-muted-foreground">No</td>
+									<td class="p-4 text-muted-foreground">Yes (mandatory)</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Accounts for Aging</td>
+									<td class="p-4 text-muted-foreground">Yes (subtracts calories as age increases)</td>
+									<td class="p-4 text-muted-foreground">Indirectly (through muscle mass changes)</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="prose-lite text-sm text-muted-foreground space-y-4">
+						<h3 class="text-lg font-bold text-foreground">Which Formula is Best for You?</h3>
+						<p>
+							Use <strong>Mifflin-St Jeor</strong> if you do not know your current body fat percentage. It uses easily measured demographic variables (height, weight, age, sex) to estimate resting metabolic rate with high reliability.
+						</p>
+						<p>
+							Choose <strong>Katch-McArdle</strong> if you have a reliable estimate of your body fat percentage (e.g. from skinfold calipers or DXA scans). Because it calculates metabolic rate based solely on lean tissue mass, it avoids over-estimating energy requirements for high-body-fat individuals and under-estimating requirements for highly muscular athletes.
+						</p>
+					</div>
+				</div>
+
+				<div class="space-y-6">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">TDEE calculator</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">
+							Our TDEE Calculator automatically selects Katch-McArdle when body fat inputs are supplied, falling back to Mifflin-St Jeor otherwise.
+						</p>
+						<a href="/calculators/tdee-calculator" class="button-primary w-full text-center text-xs mt-3 block">TDEE Calculator</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

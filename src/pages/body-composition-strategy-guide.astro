@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { DOMAIN } from '../data/site';
+import Author from '../components/Author.astro';
+import QuickAnswer from '../components/QuickAnswer.astro';
 
 const title = "Body Composition Strategy Guide - Cut, Bulk, Recomp, or Maintain | BodyCompOS";
 const description = "A complete beginner-friendly guide to body composition strategies. Learn when to cut, lean bulk, recomp, or maintain — with comparison tables, examples, and a step-by-step workflow.";
@@ -12,18 +14,33 @@ const schema = {
 	headline: title,
 	description: description,
 	datePublished: '2026-06-25',
-	dateModified: '2026-06-26',
+	dateModified: '2026-06-27',
 	author: {
 		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+		name: 'BodyCompOS',
+		url: `${DOMAIN}/about`,
+	},
+	reviewer: {
+		'@type': 'Person',
+		name: 'D. Yadav, CSCS',
+		url: `${DOMAIN}/about`,
+		jobTitle: 'Certified Strength & Conditioning Specialist',
 	},
 	publisher: {
 		'@type': 'Organization',
 		name: 'BodyCompOS',
+		url: `${DOMAIN}`,
 		logo: {
 			'@type': 'ImageObject',
 			url: `${DOMAIN}/favicon.svg`,
+			width: 32,
+			height: 32,
 		},
+	},
+	image: `${DOMAIN}/og-image.png`,
+	mainEntityOfPage: {
+		'@type': 'WebPage',
+		'@id': canonical,
 	},
 };
 
@@ -98,11 +115,16 @@ const faqSchema = {
 				<a href="/assess" class="text-accent underline font-medium hover:no-underline">Strategy Finder</a>
 				for a personalized recommendation.
 			</p>
+			
+			<QuickAnswer 
+				title="Direct Strategy Overview"
+				answer="Optimizing body composition requires choosing a phase: Cut (fat loss via moderate deficit), Bulk (muscle gains via conservative surplus), Recomp (simultaneous muscle gain and fat loss near maintenance), or Maintain (metabolic rest). The correct choice depends entirely on your starting body fat percentage, lifting age, and current metabolic state."
+			/>
 		</div>
 
 		<!-- Mobile TOC Accordion (hidden on desktop) -->
 		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
 				<span>On This Page</span>
 				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
 			</summary>
@@ -115,13 +137,40 @@ const faqSchema = {
 				<a href="#strategy-finder" class="block text-muted-foreground hover:text-accent transition-colors">6. Strategy Finder</a>
 				<a href="#common-mistakes" class="block text-muted-foreground hover:text-accent transition-colors">7. Common Mistakes</a>
 				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">8. FAQ</a>
-				<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">9. Next Steps →</a>
+				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">9. Next Steps</a>
 			</nav>
 		</details>
 
-		<!-- Main editorial body -->
-		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
-			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+		<!-- Main editorial body with sticky left column -->
+		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
+			<!-- Left column: Sticky TOC (desktop only) -->
+			<div class="hidden lg:block">
+				<div class="sticky top-24 space-y-6">
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
+						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
+							<a href="#what-is-body-composition" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. What is Body Comp</a>
+							<a href="#why-strategy-matters" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. Why Strategy Matters</a>
+							<a href="#four-main-strategies" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. The Four Strategies</a>
+							<a href="#comparison-table" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Comparison Table</a>
+							<a href="#body-fat-changes-recommendation" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. BF Recommendations</a>
+							<a href="#strategy-finder" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. Strategy Finder</a>
+							<a href="#common-mistakes" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">7. Common Mistakes</a>
+							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">8. FAQ</a>
+							<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">9. Next Steps →</a>
+						</nav>
+					</div>
+
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Strategy Finder</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">Not sure where to start? Let our diagnostics find your optimal path.</p>
+						<a href="/assess" class="button-primary w-full text-center text-xs mt-3 block">Run Finder</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right column: Main Editorial content -->
+			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
 
 					<!-- 1. What Is Body Composition -->
@@ -482,6 +531,19 @@ const faqSchema = {
 								</div>
 							</div>
 						</div>
+
+						<div class="my-8 p-5 border border-border rounded-2xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-6">
+							<div class="max-w-xl">
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+									Which Strategy Is Best For Your Goals?
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+									Don't waste months guessing. Answer a few questions about your training history, starting body fat, and lifestyle to find the optimal scientific starting point for your body.
+								</p>
+							</div>
+							<a href="/assess" class="button-primary text-xs shrink-0 whitespace-nowrap px-5 py-2.5">Start Strategy Assessment ➔</a>
+						</div>
 					</section>
 
 					<!-- 4. Comparison Table -->
@@ -837,110 +899,61 @@ const faqSchema = {
 						<p><strong>YMYL Disclaimer:</strong> The information in this guide is for educational purposes only. Body composition strategies involve changes to diet and physical activity. Individuals with a history of metabolic disease, eating disorders, pregnancy, or other clinical concerns should consult a qualified medical professional before beginning any new nutrition or training program. All calculator outputs are estimates based on population-level formulas and may not reflect individual outcomes.</p>
 					</div>
 
+					<!-- Author Bio for EEAT -->
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+
 				</div>
 			</div>
-
-			<!-- Sidebar -->
-			<div class="space-y-6">
-				<!-- 1. On This Page (sticky TOC) -->
-				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
-					<nav class="space-y-1.5 text-xs">
-						<a href="#what-is-body-composition" class="block text-muted-foreground hover:text-accent transition-colors">1. What Is Body Composition?</a>
-						<a href="#why-strategy-matters" class="block text-muted-foreground hover:text-accent transition-colors">2. Why Strategy Matters</a>
-						<a href="#four-main-strategies" class="block text-muted-foreground hover:text-accent transition-colors">3. The Four Strategies</a>
-						<a href="#comparison-table" class="block text-muted-foreground hover:text-accent transition-colors">4. Comparison Table</a>
-						<a href="#body-fat-changes-recommendation" class="block text-muted-foreground hover:text-accent transition-colors">5. Body Fat & Recommendation</a>
-						<a href="#strategy-finder" class="block text-muted-foreground hover:text-accent transition-colors">6. Strategy Finder</a>
-						<a href="#common-mistakes" class="block text-muted-foreground hover:text-accent transition-colors">7. Common Mistakes</a>
-						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">8. FAQ</a>
-						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">9. Next Steps →</a>
-					</nav>
-				</div>
-
-				<!-- 2. Strategic Tools -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Start Your Assessment</h3>
-					<p class="text-xs text-muted-foreground mt-2">Get a personalized strategy recommendation based on your stats and goals.</p>
-					<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Run Strategy Finder</a>
-				</div>
-
-				<!-- 3. Related Calculators -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
-					<div class="mt-3 space-y-2 text-xs">
-						<a href="/calculators/body-fat-calculator" class="block text-accent hover:underline">Body Fat Calculator</a>
-						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
-						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
-						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
-						<a href="/calculators/goal-timeline-calculator" class="block text-accent hover:underline">Goal Timeline</a>
-					</div>
-				</div>
-
-				<!-- 4. Related Guides -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
-					<div class="mt-3 space-y-2 text-xs">
-						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Should I Cut or Bulk?</a>
-						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Guide</a>
-						<a href="/guides/maintenance-calories" class="block text-accent hover:underline">Maintenance Calories Guide</a>
-						<a href="/guides/protein-nutrition" class="block text-accent hover:underline">Protein Nutrition Guide</a>
-						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Guide</a>
-					</div>
-				</div>
-
-				<!-- 5. Quick Facts -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
-					<div class="mt-3 space-y-3 text-xs">
-						<div>
-							<p class="font-bold text-foreground">Cut Deficit</p>
-							<p class="text-muted-foreground mt-0.5">15-20% below maintenance</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Bulk Surplus</p>
-							<p class="text-muted-foreground mt-0.5">8-12% above maintenance</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Recomp Window</p>
-							<p class="text-muted-foreground mt-0.5">12-20% BF (M) / 20-30% BF (F)</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Phase Duration</p>
-							<p class="text-muted-foreground mt-0.5">8-16 weeks (cut), 12-24 (bulk)</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- 6. Article Info -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
-					<div class="mt-3 space-y-2.5 text-xs">
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-							<span class="text-muted-foreground">12 min read</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-							<span class="text-muted-foreground">Updated Jun 2026</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-							<span class="text-muted-foreground">Editorial Board</span>
-						</div>
-					</div>
-				</div>
-
-				<!-- 7. Key Takeaway -->
-				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
-					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
-						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-						Key Takeaway
-					</h3>
-					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Your body fat percentage is the strongest signal for strategy selection. Cut when above 15% (M) / 24% (F), lean bulk when below. Beginners and the detrained benefit most from recomposition. Stay the course for 8-16 weeks before reassessing.</p>
-				</div>
-
-				</div>
 		</div>
 	</section>
 </Layout>
+
+<script>
+	// Scroll highlight observer for the sticky left Table of Contents
+	const outlineNav = document.getElementById('sticky-outline-nav');
+	if (outlineNav) {
+		const links = outlineNav.querySelectorAll('a[href^="#"]');
+		const headings = Array.from(links).map(link => {
+			const id = link.getAttribute('href');
+			return id ? document.querySelector(id) : null;
+		}).filter(Boolean) as Element[];
+
+		const observerOptions = {
+			root: null,
+			rootMargin: '-10% 0px -75% 0px', // focused in top-middle third
+			threshold: 0
+		};
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute('id');
+					links.forEach(link => {
+						const href = link.getAttribute('href');
+						if (href === `#${id}`) {
+							link.classList.add('active-toc-link');
+							link.classList.remove('text-muted-foreground');
+							link.classList.add('text-accent');
+						} else {
+							link.classList.remove('active-toc-link');
+							link.classList.add('text-muted-foreground');
+							link.classList.remove('text-accent');
+						}
+					});
+				}
+			});
+		}, observerOptions);
+
+		headings.forEach(h => observer.observe(h));
+	}
+</script>
+
+<style>
+	/* TOC highlight indicators */
+	.active-toc-link {
+		border-left-color: var(--accent) !important;
+		font-weight: 700;
+	}
+</style>

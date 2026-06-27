@@ -14,22 +14,22 @@ export type FormFields = {
 
 const METRIC_RANGES: Record<string, [number, number]> = {
 	height: [120, 230],
-	weight: [35, 250],
+	weight: [20, 250],
 	waist: [40, 220],
 	neck: [20, 80],
 	hip: [40, 220],
-	targetWeight: [35, 250],
-	goalWeight: [35, 250],
+	targetWeight: [20, 250],
+	goalWeight: [20, 250],
 };
 
 const IMPERIAL_RANGES: Record<string, [number, number]> = {
 	height: [47, 91],
-	weight: [77, 551],
+	weight: [44, 551],
 	waist: [16, 87],
 	neck: [8, 31],
 	hip: [16, 87],
-	targetWeight: [77, 551],
-	goalWeight: [77, 551],
+	targetWeight: [44, 551],
+	goalWeight: [44, 551],
 };
 
 export function convertFormUnits(
@@ -78,4 +78,32 @@ export function updateUnitLabels(
 	document.querySelectorAll(`[${attrs.weightLabel}]`).forEach((label) =>
 		label.textContent = unit === 'metric' ? '(kg)' : '(lb)'
 	);
+}
+
+export function rebuildWeightSelect(
+	select: HTMLSelectElement | null,
+	unit: 'metric' | 'imperial',
+	currentVal: number
+): void {
+	if (!select) return;
+	const min = unit === 'metric' ? 20 : 44;
+	const max = unit === 'metric' ? 250 : 550;
+	
+	let newVal = currentVal;
+	if (currentVal > 0) {
+		if (unit === 'imperial') {
+			newVal = Math.round(kgToLb(currentVal));
+		} else {
+			newVal = Math.round(lbToKg(currentVal));
+		}
+		newVal = Math.max(min, Math.min(max, newVal));
+	} else {
+		newVal = min;
+	}
+
+	let html = `<option value="0">Select Weight</option>`;
+	for (let w = min; w <= max; w++) {
+		html += `<option value="${w}" ${w === newVal ? 'selected' : ''}>${w}</option>`;
+	}
+	select.innerHTML = html;
 }

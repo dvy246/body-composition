@@ -1,0 +1,264 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { absoluteUrl } from '../data/site';
+
+const canonicalUrl = absoluteUrl('/faq');
+
+const faqList = [
+	{
+		q: "What is a calorie deficit?",
+		a: "A calorie deficit occurs when you consume fewer calories than your body burns to sustain life and physical activity. When this energy imbalance happens, your body is forced to mobilize energy from stored tissues, primarily body fat and glycogen, to cover the difference, resulting in weight loss."
+	},
+	{
+		q: "How to calculate a calorie deficit?",
+		a: "To calculate a calorie deficit, first estimate your Total Daily Energy Expenditure (TDEE) using a validated metabolic equation (such as Mifflin-St Jeor or Katch-McArdle). Next, subtract a moderate percentage — typically 15% to 20% below your maintenance calories. For example, if your TDEE is 2,500 kcal, a 20% deficit sets your target daily intake to 2,000 kcal."
+	},
+	{
+		q: "What is a calorie deficit calculator?",
+		a: "A calorie deficit calculator is an interactive digital tool that estimates your resting metabolic rate (BMR) and physical activity multipliers, calculates your daily maintenance needs (TDEE), and automatically subtracts the required energy target to provide daily calorie and macronutrient targets optimized for fat loss."
+	},
+	{
+		q: "Is Pilates good for weight loss?",
+		a: "Yes, Pilates is a valuable addition to a weight loss strategy. While Pilates burns fewer calories than high-intensity cardiovascular training, it builds core stability, deep abdominal strength, and active lean tissue. Combining Pilates with a calorie deficit and cardiovascular exercise yields high-quality body composition improvements."
+	},
+	{
+		q: "Does masturbation cause weight loss?",
+		a: "No, masturbation does not directly cause weight loss. The energy cost of masturbation is extremely low — approximately 3 to 10 calories per session, which is metabolically insignificant. Weight loss is driven entirely by achieving a sustained calorie deficit through nutrition and overall daily physical activity."
+	},
+	{
+		q: "What is protein?",
+		a: "Protein is one of three primary macronutrients, composed of amino acids linked together by peptide bonds. Amino acids serve as the fundamental structural blocks for muscle tissue, organs, hormones, skin, hair, and enzymes in the human body."
+	},
+	{
+		q: "What does protein do?",
+		a: "Protein plays a critical role in repairing, building, and maintaining skeletal muscle tissue, especially under the mechanical stress of weightlifting. It also supports immune function, enzyme production, and maintains cellular structures. In a calorie deficit, protein protects muscle from being broken down for energy."
+	},
+	{
+		q: "How much protein do I need?",
+		a: "For active individuals, scientific guidelines recommend between 1.6 and 2.2 grams of protein per kilogram of body weight (0.73 to 1.0 gram per pound) daily. Sedentary individuals require less, approximately 0.8 grams per kilogram, while lean athletes in a deficit require higher levels (up to 2.2 - 2.4 g/kg) to protect muscle tissue."
+	},
+	{
+		q: "How much protein should I eat a day?",
+		a: "Your daily protein requirement depends on your body composition and physical goals. An active 80 kg individual aiming to preserve or build muscle should consume between 128 and 176 grams of protein daily, distributed evenly across 3 to 5 meals."
+	},
+	{
+		q: "How much protein a day?",
+		a: "A general target for health and basic maintenance is at least 0.8g/kg of body mass. However, if you are actively lifting weights, training, or dieting to lose body fat, you should target 1.6 to 2.2 grams of protein per kilogram of body weight daily."
+	},
+	{
+		q: "How much protein do I need a day?",
+		a: "Your daily needs are determined by body weight and activity. For muscle hypertrophy or preservation during fat loss, shoot for 1.6 to 2.2 g/kg (approx. 0.8 to 1.0g per lb) of body weight each day."
+	},
+	{
+		q: "How much protein to build muscle?",
+		a: "To maximize muscle protein synthesis and promote hypertrophy, consume 1.6 to 2.2 grams of protein per kilogram of body weight daily, paired with progressive overload resistance training."
+	},
+	{
+		q: "How much protein in an egg?",
+		a: "A single large whole egg contains approximately 6 grams of high-quality, bioavailable protein, containing all nine essential amino acids required for muscle protein synthesis."
+	},
+	{
+		q: "What is TDEE?",
+		a: "TDEE stands for Total Daily Energy Expenditure. It represents the total number of calories your body burns in a 24-hour period, calculated as the sum of your Basal Metabolic Rate (BMR), Thermic Effect of Activity (TEA), Non-Exercise Activity Thermogenesis (NEAT), and Thermic Effect of Food (TEF)."
+	},
+	{
+		q: "What is my TDEE?",
+		a: "Your TDEE is the exact number of daily calories required to maintain your current body weight. Eating above your TDEE results in weight gain (surplus), while eating below your TDEE results in weight loss (deficit)."
+	},
+	{
+		q: "How to calculate TDEE?",
+		a: "To calculate TDEE, first calculate your Basal Metabolic Rate (BMR) using Mifflin-St Jeor or Katch-McArdle formulas. Then, multiply your BMR by a physical activity multiplier representing your weekly exercise frequency (ranging from 1.2 for sedentary up to 1.9 for competitive athletes)."
+	},
+	{
+		q: "What is my maintenance calories?",
+		a: "Your maintenance calories is the daily caloric intake required to keep your body weight stable. It is synonymous with your Total Daily Energy Expenditure (TDEE)."
+	},
+	{
+		q: "How to calculate maintenance calories?",
+		a: "Calculate your maintenance calories by determining your resting metabolic rate (using sex, age, height, and weight) and multiplying it by an activity factor corresponding to your lifestyle and weekly training density."
+	},
+	{
+		q: "What are my maintenance calories?",
+		a: "Your maintenance calories are the equivalent energy value of your TDEE. Consuming this amount daily maintains energy balance, keeping your weight stable."
+	},
+	{
+		q: "How to find maintenance calories?",
+		a: "You can find your maintenance calories using our scientific TDEE calculator, or track your food intake and morning weight daily for 2 to 3 weeks under stable activity conditions; the average calorie intake that keeps your weight stable is your actual maintenance baseline."
+	},
+	{
+		q: "How to calculate body fat?",
+		a: "Body fat can be calculated using anthropometric formulas like the US Navy Circumference Method (using waist, neck, and hip measurements), skinfold caliper tests, bioelectrical impedance analysis (BIA), or dual-energy X-ray absorptiometry (DEXA) scans."
+	},
+	{
+		q: "How to measure body fat?",
+		a: "To measure body fat at home with high reliability, use the US Navy Circumference Method. Wrap a tape measure horizontally around your neck and waist (and hips for females) under consistent morning conditions, and input the measurements into our Navy body fat calculator."
+	},
+	{
+		q: "How to calculate body fat percentage?",
+		a: "For males, use the formula: 86.010 * log10(waist - neck) - 70.041 * log10(height) + 36.76. For females, use: 163.205 * log10(waist + hip - neck) - 97.684 * log10(height) - 78.387 (all measurements in inches)."
+	},
+	{
+		q: "How to measure body fat percentage?",
+		a: "Use a flexible tape measure to take circumferences. Men measure waist at navel level and neck below the larynx. Women measure neck, waist at narrowest width, and hips at the widest gluteal projection."
+	},
+	{
+		q: "How to find body fat percentage?",
+		a: "Estimate your body fat percentage by entering neck, waist, height, and gender details into our US Navy calculator, or cross-reference with our visual estimator guides."
+	},
+	{
+		q: "How to check body fat percentage?",
+		a: "Track your body fat percentage over time by using the same measurement method under identical conditions (fasted, upon waking, post-washroom) to minimize error variances."
+	},
+	{
+		q: "How to lose body fat?",
+		a: "To lose body fat, establish a moderate calorie deficit (15-20% below TDEE), prioritize a high protein intake (1.6 - 2.2 g/kg), and perform regular resistance training to signal your body to retain muscle tissue while mobilizing stored fat."
+	},
+	{
+		q: "How to lower body fat percentage?",
+		a: "Lower your body fat percentage by losing fat and preserving (or gaining) muscle. Maintain a caloric deficit, hit your daily protein targets, and execute progressive overload lifting."
+	},
+	{
+		q: "What is a healthy body fat percentage?",
+		a: "A healthy body fat percentage for adult males is generally 10% to 20%, while athletic males may range lower (8% to 15%). For adult females, the healthy range is 18% to 28%, with female athletes ranging from 14% to 22%."
+	},
+	{
+		q: "What is body recomposition?",
+		a: "Body recomposition is the process of simultaneously building muscle mass and losing body fat. Unlike traditional bulk-and-cut cycles, recomposition aims to exchange fat for muscle over time while maintaining relatively stable scale weight."
+	},
+	{
+		q: "How does body recomposition work?",
+		a: "It works by consuming calories at or very close to maintenance (a minor 2-5% deficit), keeping protein intake high (2.0 - 2.2 g/kg) to provide amino acids for muscle protein synthesis, and performing progressive resistance training to stimulate muscle hypertrophy."
+	},
+	{
+		q: "How to do body recomposition female?",
+		a: "For females, set daily calories to a very small deficit (e.g. 100-200 kcal below TDEE) or maintenance, consume 1.8 to 2.2 grams of protein per kilogram of body weight, and perform heavy resistance training 3 to 4 times a week, focusing on compound lifts."
+	},
+	{
+		q: "How to calculate ffmi?",
+		a: "To calculate Fat-Free Mass Index (FFMI), determine your Lean Body Mass (LBM) in kg: Weight * (1 - BF/100). Next, divide LBM by your height in meters squared: FFMI = LBM / Height^2. Normalize it to 1.8m height baseline using: FFMI_norm = FFMI + 6.1 * (1.8 - Height_in_meters)."
+	},
+	{
+		q: "How to gain muscle mass fast?",
+		a: "To build muscle efficiently, consume a moderate calorie surplus (5-10% above TDEE) to support muscle synthesis, eat ample protein (1.6 - 2.2 g/kg), lift heavy weights using progressive overload, and get 7-9 hours of sleep nightly."
+	},
+	{
+		q: "What is my ideal weight?",
+		a: "Your ideal weight is subjective and depends on body composition goals. Clinically, it is estimated using formulas like Devine's or Robinson's, or by identifying the weight that yields a healthy BMI range (18.5 to 24.9) while maximizing lean body mass."
+	},
+	{
+		q: "How to calculate ideal body weight?",
+		a: "The classic Devine formula calculates ideal weight: Male = 50.0 kg + 2.3 kg per inch over 5 feet; Female = 45.5 kg + 2.3 kg per inch over 5 feet. It is best used as a general biological baseline rather than a strict individual target."
+	},
+	{
+		q: "How to calculate bmi?",
+		a: "Calculate Body Mass Index (BMI) by dividing your body weight in kilograms by your height in meters squared: BMI = Weight (kg) / Height (m)^2."
+	},
+	{
+		q: "What is my bmi?",
+		a: "Your BMI is a simple ratio screening your body weight relative to your height. A BMI between 18.5 and 24.9 is categorized as healthy, under 18.5 is underweight, and over 25.0 is overweight."
+	},
+	{
+		q: "Whats my bmi?",
+		a: "Your BMI is calculated as Weight (kg) / Height (m)^2. You can quickly find yours using our dynamic BMI calculator tool."
+	},
+	{
+		q: "Whats a healthy bmi?",
+		a: "A healthy BMI range is between 18.5 and 24.9, as defined by the World Health Organization (WHO) and the National Institutes of Health (NIH)."
+	},
+	{
+		q: "What is a good bmi for women?",
+		a: "For adult women, a good and healthy BMI is between 18.5 and 24.9. Note that BMI does not differentiate between fat and muscle mass."
+	},
+	{
+		q: "Is bmi accurate?",
+		a: "BMI is a reliable screening tool for general population statistics but inaccurate for individuals. It fails to distinguish between muscle mass and fat tissue, often classifying highly muscular athletes as 'overweight' or 'obese' despite low body fat."
+	}
+];
+
+const faqSchema = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	"mainEntity": faqList.map(item => ({
+		"@type": "Question",
+		"name": item.q,
+		"acceptedAnswer": {
+			"@type": "Answer",
+			"text": `<p>${item.a}</p>`
+		}
+	}))
+};
+---
+
+<Layout
+	title="Frequently Asked Questions — Science-Backed Body Composition FAQ | BodyCompOS"
+	description="Find answers to all your body composition questions. Clear, evidence-based answers covering calorie deficits, protein targets, TDEE, body fat, recomposition, and BMI."
+	canonical={canonicalUrl}
+	schema={[faqSchema]}
+>
+	<section class="site-container py-12 sm:py-16">
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<span class="text-foreground">FAQ</span>
+		</nav>
+
+		<div class="max-w-3xl mb-12">
+			<p class="eyebrow">Platform Knowledge Base</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">Frequently Asked Questions</h1>
+			<p class="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground">
+				Evidence-based physiological answers to the most common questions regarding calorie deficits, macronutrient splits, body fat, muscle building, and metabolic rate calculations.
+			</p>
+		</div>
+
+		<!-- FAQs Categories -->
+		<div class="grid gap-8 lg:grid-cols-2">
+			<div class="space-y-4">
+				{faqList.slice(0, Math.ceil(faqList.length / 2)).map((item, idx) => (
+					<details class="group rounded-xl border border-border bg-card p-5 transition-all duration-300 [&_summary::-webkit-details-marker]:hidden">
+						<summary class="flex cursor-pointer items-center justify-between gap-1.5 text-foreground">
+							<h3 class="font-bold text-sm text-foreground group-hover:text-accent transition-colors font-sans leading-snug">
+								{item.q}
+							</h3>
+							<span class="shrink-0 rounded-full bg-muted p-1 text-muted-foreground group-open:rotate-180 transition-transform duration-300">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+							</span>
+						</summary>
+						<p class="mt-3 text-xs text-muted-foreground leading-relaxed border-t border-border/40 pt-3">
+							{item.a}
+						</p>
+					</details>
+				))}
+			</div>
+
+			<div class="space-y-4">
+				{faqList.slice(Math.ceil(faqList.length / 2)).map((item, idx) => (
+					<details class="group rounded-xl border border-border bg-card p-5 transition-all duration-300 [&_summary::-webkit-details-marker]:hidden">
+						<summary class="flex cursor-pointer items-center justify-between gap-1.5 text-foreground">
+							<h3 class="font-bold text-sm text-foreground group-hover:text-accent transition-colors font-sans leading-snug">
+								{item.q}
+							</h3>
+							<span class="shrink-0 rounded-full bg-muted p-1 text-muted-foreground group-open:rotate-180 transition-transform duration-300">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+							</span>
+						</summary>
+						<p class="mt-3 text-xs text-muted-foreground leading-relaxed border-t border-border/40 pt-3">
+							{item.a}
+						</p>
+					</details>
+				))}
+			</div>
+		</div>
+
+		<!-- Bottom callout -->
+		<div class="mt-16 content-panel p-6 rounded-2xl border border-border text-center max-w-2xl mx-auto bg-muted/10">
+			<h4 class="font-bold text-foreground text-sm font-sans">Have a more specific question?</h4>
+			<p class="text-xs text-muted-foreground mt-1 leading-relaxed">
+				Run a full strategy assessment to get tailored caloric targets, protein guides, and progress timelines.
+			</p>
+			<div class="mt-4 flex flex-wrap justify-center gap-3">
+				<a href="/assess" class="button-primary text-xs">Run Strategy Finder ➔</a>
+				<a href="/calculators" class="button-secondary text-xs">Browse Calculators</a>
+			</div>
+		</div>
+	</section>
+</Layout>

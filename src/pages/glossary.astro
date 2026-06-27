@@ -1,0 +1,107 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { DOMAIN } from '../data/site';
+import { glossaryTerms } from '../data/glossary';
+
+const title = "Body Composition Strategy Glossary | BodyCompOS";
+const description = "Glossary of 30 key scientific body composition and metabolic terms, including BMR, TDEE, hypertrophy, and progressive overload.";
+const canonical = `${DOMAIN}/glossary`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<span class="text-foreground">Glossary</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8 text-center sm:text-left">
+				<p class="eyebrow">Scientific Terminology</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Strategy <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Glossary</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					Evidence-based sports science relies on precise definitions. Explore our glossary of metabolic equations, training parameters, and metrics.
+				</p>
+			</div>
+
+			<!-- Search & Filter Controls -->
+			<div class="flex flex-col sm:flex-row gap-4 mb-8">
+				<input type="text" id="glossary-search" placeholder="Search terms or definitions..." class="flex-1 bg-card border border-border rounded-xl px-4 py-2.5 text-xs text-foreground focus:outline-none focus:border-accent/50" />
+				
+				<div class="flex gap-2 overflow-x-auto pb-1" id="category-filters">
+					<button class="filter-btn active text-xs px-3.5 py-1.5 rounded-xl border border-border bg-card font-semibold text-muted-foreground hover:text-foreground transition-colors" data-cat="all">All</button>
+					<button class="filter-btn text-xs px-3.5 py-1.5 rounded-xl border border-border bg-card font-semibold text-muted-foreground hover:text-foreground transition-colors" data-cat="Metabolism">Metabolism</button>
+					<button class="filter-btn text-xs px-3.5 py-1.5 rounded-xl border border-border bg-card font-semibold text-muted-foreground hover:text-foreground transition-colors" data-cat="Hypertrophy">Hypertrophy</button>
+					<button class="filter-btn text-xs px-3.5 py-1.5 rounded-xl border border-border bg-card font-semibold text-muted-foreground hover:text-foreground transition-colors" data-cat="Nutrition">Nutrition</button>
+					<button class="filter-btn text-xs px-3.5 py-1.5 rounded-xl border border-border bg-card font-semibold text-muted-foreground hover:text-foreground transition-colors" data-cat="Metrics">Metrics</button>
+				</div>
+			</div>
+
+			<!-- Terms List -->
+			<div class="grid gap-4 sm:grid-cols-2" id="glossary-grid">
+				{glossaryTerms.map(t => (
+					<div class="surface border border-border p-5 rounded-2xl space-y-2 glossary-card" data-category={t.category}>
+						<div class="flex justify-between items-start gap-2">
+							<h3 class="font-bold text-sm text-foreground term-title">{t.term}</h3>
+							<span class="text-[9px] font-bold uppercase tracking-wider text-accent bg-accent/10 px-2 py-0.5 rounded">{t.category}</span>
+						</div>
+						<p class="text-xs text-muted-foreground leading-relaxed term-definition">{t.definition}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const searchInput = document.getElementById('glossary-search') as HTMLInputElement;
+	const filterBtns = document.querySelectorAll('.filter-btn');
+	const cards = document.querySelectorAll('.glossary-card') as NodeListOf<HTMLDivElement>;
+
+	let currentCat = 'all';
+	let searchQuery = '';
+
+	function applyFilters() {
+		cards.forEach(card => {
+			const cat = card.getAttribute('data-category');
+			const title = card.querySelector('.term-title')?.textContent?.toLowerCase() || '';
+			const def = card.querySelector('.term-definition')?.textContent?.toLowerCase() || '';
+			
+			const matchesCat = currentCat === 'all' || cat === currentCat;
+			const matchesSearch = title.includes(searchQuery) || def.includes(searchQuery);
+
+			if (matchesCat && matchesSearch) {
+				card.classList.remove('hidden');
+			} else {
+				card.classList.add('hidden');
+			}
+		});
+	}
+
+	searchInput?.addEventListener('input', (e) => {
+		searchQuery = (e.target as HTMLInputElement).value.toLowerCase();
+		applyFilters();
+	});
+
+	filterBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			filterBtns.forEach(b => b.classList.remove('active', 'text-accent', 'border-accent/40'));
+			btn.classList.add('active', 'text-accent', 'border-accent/40');
+			currentCat = btn.getAttribute('data-cat') || 'all';
+			applyFilters();
+		});
+	});
+</script>
+
+<style>
+	.filter-btn.active {
+		color: var(--accent);
+		border-color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 5%, var(--card));
+	}
+</style>

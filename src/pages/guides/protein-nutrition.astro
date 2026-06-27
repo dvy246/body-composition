@@ -1,10 +1,10 @@
----
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN, articleSchema } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import QuickAnswer from '../../components/QuickAnswer.astro';
 
 const title = "Daily Protein Intake Guide for Body Composition | BodyCompOS";
 const description = "An in-depth review of optimal daily protein ranges for fat loss, muscle retention, and tissue synthesis based on peer-reviewed ISSN position stands.";
-
 const canonical = `${DOMAIN}/guides/protein-nutrition`;
 
 const faqEntries = [
@@ -45,7 +45,7 @@ const schema = [
 		</nav>
 
 		<!-- Content Hero -->
-		<div class="max-w-3xl">
+		<div class="max-w-4xl">
 			<p class="eyebrow">Nutritional Science</p>
 			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
 				Daily Protein Intake Guide <br/>
@@ -54,23 +54,28 @@ const schema = [
 			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
 				Protein is the most important macronutrient for modifying body composition. This guide covers the science behind daily protein targets, protein quality metrics like PDCAAS, leucine thresholds for mTOR activation, timing strategies, and special population considerations — all backed by the ISSN position stand.
 			</p>
+
+			<QuickAnswer 
+				title="Direct Nutritional Answer"
+				answer="Evidence-based research dictates that active individuals seeking to optimize body composition target daily protein intakes between 1.6 to 2.2 g per kilogram of body weight (0.73-1.0 g/lb). Spreading this dosage across 3-5 meals (each containing 30-40 g of protein rich in leucine) maximizing muscle protein synthesis."
+			/>
+
 			<!-- Author / E-E-A-T Attribution -->
-			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
-				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
-				<div>
-					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Reviewed by certified sports nutrition researchers</p>
-					<p class="mt-0.5">Published June 2026 · Last reviewed June 2026 · References: ISSN Protein Position Stand 2017, Morton et al. 2018, Phillips et al. 2016, Schoenfeld et al. 2018</p>
-				</div>
-			</div>
-			<p class="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
-				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+			<AuthorAttribution 
+				role="Reviewed by certified sports nutrition researchers" 
+				references="ISSN Protein Position Stand 2017, Morton et al. 2018, Phillips et al. 2016, Schoenfeld et al. 2018" 
+				published="June 2026"
+				reviewed="June 27, 2026"
+			/>
+			<p class="mt-4 text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
 				10 min read
 			</p>
 		</div>
 
 		<!-- Mobile TOC Accordion (hidden on desktop) -->
 		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
 				<span>On This Page</span>
 				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
 			</summary>
@@ -88,14 +93,42 @@ const schema = [
 			</nav>
 		</details>
 
-		<!-- Main editorial body -->
-		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
-			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+		<!-- Main editorial body with sticky left column -->
+		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
+			<!-- Left column: Sticky TOC (desktop only) -->
+			<div class="hidden lg:block">
+				<div class="sticky top-24 space-y-6">
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
+						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
+							<a href="#why-protein-matters" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Why Protein Matters</a>
+							<a href="#issn-recommendations" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. ISSN Targets</a>
+							<a href="#leucine-threshold" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. Leucine & mTOR</a>
+							<a href="#protein-quality" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Quality Scores</a>
+							<a href="#protein-distribution" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Timing & Spread</a>
+							<a href="#animal-vs-plant" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. Animal vs Plant</a>
+							<a href="#special-populations" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">7. Special Populations</a>
+							<a href="#reassessment-changes" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">8. Reassessment</a>
+							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">9. FAQ</a>
+							<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">10. Next Steps →</a>
+						</nav>
+					</div>
+
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Protein Tool</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">Calculate your exact daily protein and meal distribution target.</p>
+						<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-3 block">Open Protein Tool</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right column: Main Editorial content -->
+			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
 
 					<!-- 1. Why Protein Matters -->
 					<section>
-						<h2 id="why-protein-matters" class="text-xl font-bold text-foreground mb-3">1. Why Protein Matters for Body Composition</h2>
+						<h2 id="why-protein-matters" class="text-xl font-bold text-foreground mb-3">1. Why Protein Matters</h2>rs for Body Composition</h2>
 						<p>
 							Unlike carbohydrates and fats, which serve primarily as fuel sources, dietary protein provides the amino acid building blocks for cellular repair and skeletal muscle tissue synthesis. When you resistance train, you create mechanical tension that signals your body to repair and reinforce muscle fibers — a process known as Muscle Protein Synthesis (MPS). Without a consistent supply of dietary amino acids, this repair process is incomplete, and over time, you lose the adaptive response to training.
 						</p>
@@ -172,11 +205,16 @@ const schema = [
 								</tbody>
 							</table>
 						</div>
-						<p>
-							The
-							<a href="/calculators/protein-calculator" class="text-accent underline font-medium hover:no-underline">Protein Calculator</a>
-							applies these evidence-based ranges to your specific body weight, activity level, and goal to generate a personalized daily target.
-						</p>
+						<div class="my-6 p-5 border border-border rounded-xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+									Determine Your Daily Protein Target
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Get precise daily protein recommendations customized for your body weight, training program, and nutritional goal.</p>
+							</div>
+							<a href="/calculators/protein-calculator" class="button-primary text-xs shrink-0 whitespace-nowrap">Protein Calculator ➔</a>
+						</div>
 					</section>
 
 					<!-- 3. Leucine Threshold & mTOR -->
@@ -374,6 +412,17 @@ const schema = [
 								Fretting over whether you ate protein 30 minutes versus 90 minutes after a workout while ignoring that you only ate 80 g of protein all day is misplaced effort. Prioritize the daily total before optimizing timing.
 							</p>
 						</div>
+
+						<div class="my-6 p-5 border border-border rounded-xl bg-success/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-success shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+									Map Out Your Daily Macros
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Determine how to distribute your proteins, carbohydrates, and fats across your training days for maximum recovery.</p>
+							</div>
+							<a href="/calculators/macro-calculator" class="button-primary text-xs shrink-0 whitespace-nowrap">Macro Calculator ➔</a>
+						</div>
 					</section>
 
 					<!-- 6. Protein Sources -->
@@ -494,6 +543,11 @@ const schema = [
 						<p><strong>Educational Disclaimer:</strong> The information in this guide is for educational purposes only. High protein intakes require healthy renal clearance. Individuals with pre-existing kidney disease, hepatic issues, or other clinical concerns should consult a qualified medical professional before starting a high-protein diet. All protein targets are estimates based on population-level research and may not reflect individual responses.</p>
 					</div>
 
+					<!-- Author Bio for EEAT -->
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+
 				</div>
 			</div>
 
@@ -516,87 +570,61 @@ const schema = [
 					</nav>
 				</div>
 
-				<!-- 2. Strategic Tools -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
-					<p class="text-xs text-muted-foreground mt-2">Calculate your personalized protein target based on evidence-based ranges.</p>
-					<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-4 block">Protein Calculator</a>
-				</div>
-
-				<!-- 3. Related Calculators -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
-					<div class="mt-3 space-y-2 text-xs">
-						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
-						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
-						<a href="/calculators/body-fat-calculator" class="block text-accent hover:underline">Body Fat Calculator</a>
-						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
+					<!-- Author Bio for EEAT -->
+					<div class="border-t border-border pt-6">
+						<Author />
 					</div>
-				</div>
 
-				<!-- 4. Related Guides -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
-					<div class="mt-3 space-y-2 text-xs">
-						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Cut or Bulk Matrix</a>
-						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
-						<a href="/guides/maintenance-calories" class="block text-accent hover:underline">TDEE & Maintenance</a>
-						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Guide</a>
-					</div>
 				</div>
-
-				<!-- 5. Quick Facts -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
-					<div class="mt-3 space-y-3 text-xs">
-						<div>
-							<p class="font-bold text-foreground">Optimal Intake</p>
-							<p class="text-muted-foreground mt-0.5">1.6-2.2 g/kg body weight</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Protein During a Cut</p>
-							<p class="text-muted-foreground mt-0.5">2.0-2.4 g/kg to spare muscle</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Leucine Threshold</p>
-							<p class="text-muted-foreground mt-0.5">~3 g per meal for MPS</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Meal Frequency</p>
-							<p class="text-muted-foreground mt-0.5">4-5 meals with 30-40 g each</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- 6. Article Info -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
-					<div class="mt-3 space-y-2.5 text-xs">
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-							<span class="text-muted-foreground">10 min read</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-							<span class="text-muted-foreground">Updated Jun 2026</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-							<span class="text-muted-foreground">Editorial Board</span>
-						</div>
-					</div>
-				</div>
-
-				<!-- 7. Key Takeaway -->
-				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
-					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
-						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-						Key Takeaway
-					</h3>
-					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Target 1.6-2.2 g/kg daily, distributed across 4-5 meals with ~3 g leucine each. Prioritize total daily intake over timing precision. Increase during cuts (2.0-2.4 g/kg) to defend muscle mass.</p>
-				</div>
-
 			</div>
 		</div>
 	</section>
 </Layout>
+
+<script>
+	// Scroll highlight observer for the sticky left Table of Contents
+	const outlineNav = document.getElementById('sticky-outline-nav');
+	if (outlineNav) {
+		const links = outlineNav.querySelectorAll('a[href^="#"]');
+		const headings = Array.from(links).map(link => {
+			const id = link.getAttribute('href');
+			return id ? document.querySelector(id) : null;
+		}).filter(Boolean) as Element[];
+
+		const observerOptions = {
+			root: null,
+			rootMargin: '-10% 0px -75% 0px', // focused in top-middle third
+			threshold: 0
+		};
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute('id');
+					links.forEach(link => {
+						const href = link.getAttribute('href');
+						if (href === `#${id}`) {
+							link.classList.add('active-toc-link');
+							link.classList.remove('text-muted-foreground');
+							link.classList.add('text-accent');
+						} else {
+							link.classList.remove('active-toc-link');
+							link.classList.add('text-muted-foreground');
+							link.classList.remove('text-accent');
+						}
+					});
+				}
+			});
+		}, observerOptions);
+
+		headings.forEach(h => observer.observe(h));
+	}
+</script>
+
+<style>
+	/* TOC highlight indicators */
+	.active-toc-link {
+		border-left-color: var(--accent) !important;
+		font-weight: 700;
+	}
+</style>

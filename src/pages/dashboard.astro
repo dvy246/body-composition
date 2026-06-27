@@ -1,13 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DashboardApp from '../components/DashboardApp.astro';
+import { DOMAIN } from '../data/site';
 ---
 
 <Layout
 	title="Local Dashboard | BodyCompOS"
 	description="Track saved assessments, weekly check-ins, body fat trend, adherence, and forecasted body composition progress locally."
 	noindex={true}
-	canonical="https://bodycompos.com/dashboard"
+	canonical={`${DOMAIN}/dashboard`}
 >
 	<DashboardApp />
 </Layout>

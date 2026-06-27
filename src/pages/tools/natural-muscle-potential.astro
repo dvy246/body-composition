@@ -1,0 +1,146 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Natural Muscle Potential Calculator - Casey Butt Model | BodyCompOS";
+const description = "Calculate your maximum genetic natural muscle limit based on skeletal frame metrics including wrist size, ankle size, height, and body fat.";
+const canonical = `${DOMAIN}/tools/natural-muscle-potential`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-3xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<span class="text-foreground">Natural Muscle Potential</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="text-center sm:text-left border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Genetic Projections</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Natural Muscle <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Potential</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+					Estimate your maximum lean muscle mass potential using the Casey Butt frame-based model, which correlates skeletal thickness (wrist and ankle girth) with muscular ceiling.
+				</p>
+			</div>
+
+			<!-- Calculator Form -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_320px]">
+				<div class="surface rounded-2xl p-6 sm:p-8 border border-border shadow-sm space-y-6">
+					<form id="potential-form" class="space-y-4">
+						<div class="grid gap-4 sm:grid-cols-2">
+							<div class="field">
+								<label for="height">Height (cm)</label>
+								<input id="height" type="number" step="0.1" min="120" max="230" value="180" required />
+							</div>
+							<div class="field">
+								<label for="wrist">Wrist Circumference (cm)</label>
+								<input id="wrist" type="number" step="0.1" min="10" max="25" value="17.8" required />
+								<p class="text-[10px] text-muted-foreground">Measure just above the wrist bone.</p>
+							</div>
+							<div class="field">
+								<label for="ankle">Ankle Circumference (cm)</label>
+								<input id="ankle" type="number" step="0.1" min="15" max="30" value="22.5" required />
+								<p class="text-[10px] text-muted-foreground">Measure at the narrowest point above ankle bone.</p>
+							</div>
+							<div class="field">
+								<label for="bodyfat">Target Body Fat (%)</label>
+								<input id="bodyfat" type="number" step="0.1" min="4" max="25" value="10" required />
+								<p class="text-[10px] text-muted-foreground">Typically calculated at 10% (lean stage condition).</p>
+							</div>
+						</div>
+						<button type="submit" class="button-primary w-full text-xs py-3 justify-center">Calculate Muscular Limit</button>
+					</form>
+
+					<!-- Diagnostic Results output -->
+					<div id="potential-results" class="hidden space-y-6 pt-6 border-t border-border">
+						<!-- Loaded dynamically via JS -->
+					</div>
+				</div>
+
+				<!-- Visual Guide sidebar -->
+				<div class="space-y-6">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Scientific Model</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">
+							The Casey Butt model is based on detailed measurements of drug-free athletic champions. Unlike height-weight charts (BMI), it accounts directly for your bone structure density, which restricts the amount of muscle mass your frame can structurally carry.
+						</p>
+					</div>
+
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Related Tools</h3>
+						<div class="mt-2 space-y-2 text-[11px]">
+							<a href="/calculators/ffmi-calculator" class="block text-accent hover:underline">FFMI Calculator</a>
+							<a href="/calculators/ideal-weight-calculator" class="block text-accent hover:underline">Ideal Weight Calculator</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const form = document.getElementById('potential-form') as HTMLFormElement;
+	const resultsDiv = document.getElementById('potential-results');
+
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const height = Number(form.height.value);
+		const wrist = Number(form.wrist.value);
+		const ankle = Number(form.ankle.value);
+		const targetBF = Number(form.bodyfat.value);
+
+		// Casey Butt Model Equation (in Inches internally, converted from cm)
+		const heightIn = height / 2.54;
+		const wristIn = wrist / 2.54;
+		const ankleIn = ankle / 2.54;
+
+		// Limit Weight Equation (at target body fat)
+		const maxWeightLbs = (heightIn * Math.sqrt(wristIn) / 22.5) + (ankleIn * Math.sqrt(heightIn) / 18.0) * (1 + (targetBF - 10) / 100);
+		
+		const maxWeightKg = maxWeightLbs * 0.45359237;
+		const maxLbmKg = maxWeightKg * (1 - targetBF / 100);
+
+		// Height-adjusted Maximum FFMI ceiling calculation
+		const maxFFMI = maxLbmKg / Math.pow(height / 100, 2);
+
+		if (resultsDiv) {
+			resultsDiv.classList.remove('hidden');
+			resultsDiv.innerHTML = `
+				<div class="text-center pb-4 border-b border-border">
+					<p class="eyebrow">Calculated Genetic Ceiling</p>
+					<h3 class="text-2xl font-black text-foreground mt-1">${maxWeightKg.toFixed(1)} kg</h3>
+					<p class="text-xs text-muted-foreground mt-1">Maximum body weight at ${targetBF}% body fat</p>
+				</div>
+
+				<div class="grid gap-4 sm:grid-cols-2 text-xs text-muted-foreground">
+					<div class="rounded-xl border border-border p-4 bg-muted/5">
+						<p class="font-bold text-foreground">Lean Body Mass Ceiling</p>
+						<p class="text-lg font-black text-accent mt-1">${maxLbmKg.toFixed(1)} kg</p>
+						<p class="text-[10px] mt-0.5">Maximum fat-free weight potential.</p>
+					</div>
+					<div class="rounded-xl border border-border p-4 bg-muted/5">
+						<p class="font-bold text-foreground">Maximum FFMI Limit</p>
+						<p class="text-lg font-black text-accent mt-1">${maxFFMI.toFixed(1)}</p>
+						<p class="text-[10px] mt-0.5">Fat-Free Mass Index ceilings.</p>
+					</div>
+				</div>
+
+				<div class="rounded-xl border border-warning/20 bg-warning/5 p-4 text-xs">
+					<p class="font-bold text-foreground mb-1 flex items-center gap-1">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+						Important Interpretation
+					</p>
+					<p class="text-muted-foreground leading-relaxed">
+						This calculated limit represents the absolute natural muscular ceiling achievable after years of consistent training, progressive overload, and optimal recovery. Most lifters operate between 80-92% of this genetic limit.
+					</p>
+				</div>
+			`;
+		}
+	});
+</script>

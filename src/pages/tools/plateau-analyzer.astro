@@ -1,0 +1,176 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Weight Loss Plateau Analyzer - Deficit Diagnostics | BodyCompOS";
+const description = "Answer questions about your calorie deficit, tracking precision, and daily activity to diagnose your fat loss plateau and get a step-by-step course correction plan.";
+const canonical = `${DOMAIN}/tools/plateau-analyzer`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-3xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<span class="text-foreground">Plateau Analyzer</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="text-center sm:text-left border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Deficit Diagnostic Engine</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Weight Loss <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Plateau Analyzer</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+					Are you stuck in a calorie deficit but not losing weight? Our diagnostic engine analyzes your tracking parameters, cortisol factors, and movement outputs to deliver possible explanations and planning steps.
+				</p>
+			</div>
+
+			<!-- Calculator Form & Details layout -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_320px]">
+				<div class="surface rounded-2xl p-6 sm:p-8 border border-border shadow-sm space-y-6">
+					<form id="plateau-analyzer-form" class="space-y-4">
+						<div class="grid gap-4 sm:grid-cols-2">
+							<div class="field">
+								<label for="stallWeeks">Stall Duration (weeks)</label>
+								<input id="stallWeeks" type="number" min="0" max="24" value="2" required />
+							</div>
+							<div class="field">
+								<label for="tracking">Tracking Accuracy</label>
+								<select id="tracking" class="w-full bg-card border border-border rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-accent/40">
+									<option value="weighed">Weigh everything on digital scale</option>
+									<option value="estimated">Estimate portion sizes / cups</option>
+									<option value="drift">Skip logging oils, sauces, or weekends</option>
+								</select>
+							</div>
+							<div class="field">
+								<label for="neat">Daily Steps (Average)</label>
+								<select id="neat" class="w-full bg-card border border-border rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-accent/40">
+									<option value="high">10,000+ steps/day (Active)</option>
+									<option value="moderate">6,000 - 9,999 steps/day</option>
+									<option value="low">Less than 6,000 steps/day (Sedentary)</option>
+								</select>
+							</div>
+							<div class="field">
+								<label for="stress">Stress & Sleep Levels</label>
+								<select id="stress" class="w-full bg-card border border-border rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-accent/40">
+									<option value="low">Low stress, 7-8 hours sleep</option>
+									<option value="high">High stress / poor sleep (&lt;6 hours)</option>
+								</select>
+							</div>
+						</div>
+						<button type="submit" class="button-primary w-full text-xs py-3 justify-center">Analyze Deficit Status</button>
+					</form>
+
+					<!-- Results Panel -->
+					<div id="analyzer-results" class="hidden space-y-6 pt-6 border-t border-border">
+						<!-- Dynamically populated via JS -->
+					</div>
+				</div>
+
+				<!-- Educational sidebar -->
+				<div class="space-y-6">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Diagnostic Guidelines</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">
+							This analyzer provides educational estimates based on population-level metabolic rate research. It is designed to identify possible variables causing stalls and does not constitute medical advice or diagnostics.
+						</p>
+					</div>
+
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Supporting Guides</h3>
+						<div class="mt-2 space-y-2 text-[11px]">
+							<a href="/guides/weight-loss-plateau-guide" class="block text-accent hover:underline">Plateau Diagnostic Guide</a>
+							<a href="/guides/maintenance-calories" class="block text-accent hover:underline">TDEE & Maintenance Calories</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const form = document.getElementById('plateau-analyzer-form') as HTMLFormElement;
+	const resultsDiv = document.getElementById('analyzer-results');
+
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const stallWeeks = Number(form.stallWeeks.value);
+		const tracking = form.tracking.value;
+		const neat = form.neat.value;
+		const stress = form.stress.value;
+
+		let status = 'steady';
+		let explanation = '';
+		let actionSteps: string[] = [];
+
+		if (stallWeeks < 3) {
+			status = 'water-mask';
+			explanation = 'A stall of less than 3 weeks is typically not a true metabolic plateau. It is highly likely that temporary water weight fluctuations (often driven by high stress or training inflammation) are masking active fat loss on the scale.';
+			actionSteps = [
+				'Stay the course for another 1-2 weeks before changing calories.',
+				'Track weekly averages instead of daily weights.',
+				'Incorporate stress reduction techniques and target 7-8 hours of sleep.'
+			];
+		} else {
+			if (tracking !== 'weighed') {
+				status = 'tracking-drift';
+				explanation = 'Your stall has lasted 3+ weeks and you are estimating portions or skipping log inputs. Portion distortion and hidden calories (cooking oils, salad dressings, sauces, or weekend meals) are likely narrowing or completely erasing your calorie deficit.';
+				actionSteps = [
+					'Use a digital food scale to weigh all solid foods for 14 days.',
+					'Track liquid calories, cooking oils, spreads, and condiments precisely.',
+					'Maintain log adherence during weekends.'
+				];
+			} else if (neat === 'low') {
+				status = 'neat-compensation';
+				explanation = 'Your stall has lasted 3+ weeks despite precise weighing. Because your daily step count is low, it is highly likely your body has unconsciously reduced Non-Exercise Activity Thermogenesis (NEAT) to defend energy reserves.';
+				actionSteps = [
+					'Set a daily step target of 8,000 - 10,000 steps to maintain TDEE.',
+					'Audit daily sitting time and incorporate brief walks.',
+					'Ensure protein intake remains high (2.0 - 2.2 g/kg) to support recovery.'
+				];
+			} else if (stress === 'high') {
+				status = 'stress-cortisol';
+				explanation = 'High stress and poor sleep elevate cortisol, a hormone that regulates fluid balance. Chronic cortisol elevation causes significant water retention that can mask weeks of fat loss.';
+				actionSteps = [
+					'Increase sleep to 7-8 hours daily.',
+					'Introduce a 3-5 day diet break by eating at maintenance calories.',
+					'Maintain training intensity but reduce volume slightly to allow systemic recovery.'
+				];
+			} else {
+				status = 'metabolic-adaptation';
+				explanation = 'Your stall has lasted 3+ weeks despite precise tracking and high activity. Because you have lost weight, your body is now smaller and requires fewer calories to function. Your maintenance TDEE has drifted downward, narrowing your calorie deficit.';
+				actionSteps = [
+					'Introduce a 7-day diet break at estimated maintenance calories to restore hormone baselines.',
+					'Reduce daily calorie target by a small 100-150 kcal increment after the break.',
+					'Verify you are not losing strength on compound lifts.'
+				];
+			}
+		}
+
+		if (resultsDiv) {
+			resultsDiv.classList.remove('hidden');
+			resultsDiv.innerHTML = `
+				<div class="border-b border-border pb-4">
+					<p class="eyebrow">Diagnostic Assessment</p>
+					<h3 class="text-xl font-black text-foreground capitalize mt-1">${status.replace(/-/g, ' ')}</h3>
+					<p class="text-xs text-muted-foreground mt-2 leading-relaxed">${explanation}</p>
+				</div>
+
+				<div class="space-y-3">
+					<h4 class="text-xs font-bold text-foreground">Recommended Action Steps</h4>
+					<ul class="list-disc pl-4 space-y-1 text-xs text-muted-foreground">
+						${actionSteps.map(step => `<li>${step}</li>`).join('')}
+					</ul>
+				</div>
+
+				<div class="rounded-xl border border-border bg-muted/10 p-4 text-[10px] text-muted-foreground leading-relaxed">
+					<strong>Note:</strong> All results represent educational planning guidance and are not medical determinations. Consult a medical professional for clinical diagnosis.
+				</div>
+			`;
+		}
+	});
+</script>

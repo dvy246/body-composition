@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN, articleSchema } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import QuickAnswer from '../../components/QuickAnswer.astro';
 
 const title = "How to Calculate Maintenance Calories - Metabolic Adaptation Guide | BodyCompOS";
 const description = "Learn how to establish your baseline maintenance calories (TDEE), understand metabolic adaptation, and verify your true energy needs using Mifflin-St Jeor and Katch-McArdle formulas.";
@@ -8,7 +10,7 @@ const description = "Learn how to establish your baseline maintenance calories (
 const canonical = `${DOMAIN}/guides/maintenance-calories`;
 
 const faqEntries = [
-	['How often should I recalculate maintenance calories?', 'Recalculate after every 5-7 kg of body weight change, or every 4-6 weeks during a cut or bulk. As you lose or gain weight, your TDEE drifts — the formula that worked at 80 kg will over- or under-estimate at 75 kg. Use the Maintenance Calorie Calculator for updated numbers.'],
+	['How often should I recalculate maintenance calories?', 'Recalculate after every 5-7 kg of body weight change, or every 4-6 weeks during a cut or bulk. As you lose or gain weight, your TDEE drifts — the formula that worked at 80 kg will over- or under-estimate at 75 kg. Use the TDEE Calculator for updated numbers.'],
 	['Does metabolic adaptation ever reverse?', 'Yes. When you return to maintenance or surplus calories after a cut, metabolic rate gradually recovers over 4-8 weeks. This is called reverse dieting. The recovery is not always complete — some degree of metabolic suppression may persist, particularly after very long deficits. A maintenance break between phases helps restore baseline expenditure.'],
 	['Which activity multiplier should I use?', 'Most people overestimate their activity level. Unless you have a physically demanding job and train 5+ days per week, use "lightly active" (1.375) or "moderately active" (1.55). Sedentary is for desk workers who do not exercise. Very active is for athletes and manual laborers. It is better to underestimate and adjust upward than to overestimate and overshoot.'],
 	['Why does TDEE decrease when I lose weight?', 'Three reasons: (1) A smaller body requires fewer calories to function — this is expected and mechanical. (2) Metabolic adaptation reduces energy expenditure beyond what weight loss alone predicts. (3) NEAT (non-exercise activity) unconsciously decreases as the body conserves energy. The combination can reduce TDEE by 10-15% more than expected from weight loss alone.'],
@@ -45,7 +47,7 @@ const schema = [
 		</nav>
 
 		<!-- Content Hero -->
-		<div class="max-w-3xl">
+		<div class="max-w-4xl">
 			<p class="eyebrow">Metabolic Science</p>
 			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
 				How to Calculate Maintenance Calories <br/>
@@ -54,23 +56,28 @@ const schema = [
 			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
 				Maintenance calories represent the daily energy intake needed to maintain your body weight. This guide explains how to calculate your maintenance baseline using the Mifflin-St Jeor and Katch-McArdle formulas, how to adjust for activity levels, how to verify your true TDEE through tracking, and what to do when metabolic adaptation sets in.
 			</p>
+
+			<QuickAnswer 
+				title="Direct Metabolic Answer"
+				answer="Your baseline maintenance calories (TDEE) represents the exact caloric equilibrium where energy consumed matches total energy burned. It can be estimated mathematically by multiplying your BMR (resting rate) by an activity factor from 1.2 to 1.9, but must be verified through 2-3 weeks of structured body weight trend tracking."
+			/>
+
 			<!-- Author / E-E-A-T Attribution -->
-			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
-				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
-				<div>
-					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Reviewed by certified sports nutrition researchers</p>
-					<p class="mt-0.5">Published June 2026 · Last reviewed June 2026 · References: Mifflin et al. 1990, Katch-McArdle, Trexler et al. 2014, ACSM Guidelines</p>
-				</div>
-			</div>
-			<p class="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
-				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+			<AuthorAttribution 
+				role="Reviewed by certified sports nutrition researchers" 
+				references="Mifflin et al. 1990, Katch-McArdle, Trexler et al. 2014, ACSM Guidelines" 
+				published="June 2026"
+				reviewed="June 27, 2026"
+			/>
+			<p class="mt-4 text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
 				9 min read
 			</p>
 		</div>
 
 		<!-- Mobile TOC Accordion (hidden on desktop) -->
 		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
 				<span>On This Page</span>
 				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
 			</summary>
@@ -84,18 +91,46 @@ const schema = [
 				<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors">7. Reverse Dieting</a>
 				<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors">8. Recalculation Rules</a>
 				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
-				<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
+				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">10. Next Steps</a>
 			</nav>
 		</details>
 
-		<!-- Main editorial body -->
-		<div class="mt-6 lg:mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
-			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+		<!-- Main editorial body with sticky left column -->
+		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
+			<!-- Left column: Sticky TOC (desktop only) -->
+			<div class="hidden lg:block">
+				<div class="sticky top-24 space-y-6">
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
+						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
+							<a href="#understanding-maintenance" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Understanding Baseline</a>
+							<a href="#tdee-components" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. Components of TDEE</a>
+							<a href="#bmr-formulas" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. BMR Formulas</a>
+							<a href="#activity-factor" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Activity Factor</a>
+							<a href="#verification-protocol" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Verification Protocol</a>
+							<a href="#metabolic-adaptation" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. Metabolic Adaptation</a>
+							<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">7. Reverse Dieting</a>
+							<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">8. Recalculation Rules</a>
+							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">9. FAQ</a>
+							<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">10. Next Steps →</a>
+						</nav>
+					</div>
+
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">TDEE Tool</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">Calculate your custom maintenance calories baseline instantly.</p>
+						<a href="/calculators/tdee-calculator" class="button-primary w-full text-center text-xs mt-3 block">Open TDEE Tool</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right column: Main Editorial content -->
+			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
 
 					<!-- 1. Understanding Maintenance Energy -->
 					<section>
-						<h2 id="understanding-maintenance" class="text-xl font-bold text-foreground mb-3">1. Understanding Maintenance Energy</h2>
+						<h2 id="understanding-maintenance" class="text-xl font-bold text-foreground mb-3">1. Understanding Maintenance Calories</h2>
 						<p>
 							Your maintenance calories, or Total Daily Energy Expenditure (TDEE), is the total number of calories your body burns in a 24-hour period. When your daily caloric intake equals your TDEE, you are in energy balance: body weight remains stable because energy in equals energy out.
 						</p>
@@ -185,11 +220,16 @@ const schema = [
 						<p class="mt-3">
 							The Katch-McArdle formula is more precise because it uses fat-free mass, which is the primary driver of metabolic rate. However, it requires an accurate body fat estimate — garbage in, garbage out. If your body fat estimate from the Navy Method has a ±3% error, the resulting BMR from Katch-McArdle will also have some margin of error.
 						</p>
-						<p class="mt-3">
-							In practice, the two formulas usually agree within 50-150 kcal for most people. The
-							<a href="/calculators/calorie-calculator" class="text-accent underline font-medium hover:no-underline">Calorie Calculator</a>
-							uses the Mifflin-St Jeor equation as its default (since most users do not know their exact body fat) but offers a toggle to use Katch-McArdle if you have your body fat estimate.
-						</p>
+						<div class="my-6 p-5 border border-border rounded-xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+									Compare BMR Formulas Live
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Input your height, weight, age, and optional body fat percentage to calculate your BMR using Mifflin-St Jeor and Katch-McArdle.</p>
+							</div>
+							<a href="/calculators/maintenance-calorie-calculator" class="button-primary text-xs shrink-0 whitespace-nowrap">Maintenance Calculator ➔</a>
+						</div>
 					</section>
 
 					<!-- 4. Activity Factor Guide -->
@@ -253,6 +293,17 @@ const schema = [
 							<p class="mt-1 text-muted-foreground">
 								People who train 4-5x per week but sit at a desk for 8 hours often select "very active" when "moderately active" or even "lightly active" is more accurate. Your job and commute matter as much as your workouts for total daily expenditure.
 							</p>
+						</div>
+
+						<div class="my-6 p-5 border border-border rounded-xl bg-success/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-success shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+									Estimate Your Total Daily Energy Expenditure (TDEE)
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Combine your BMR with your custom activity multiplier, lifestyle factors, and exercise routines to build your active calorie budget.</p>
+							</div>
+							<a href="/calculators/tdee-calculator" class="button-primary text-xs shrink-0 whitespace-nowrap">TDEE Calculator ➔</a>
 						</div>
 					</section>
 
@@ -399,6 +450,11 @@ const schema = [
 						<p><strong>Educational Disclaimer:</strong> This guide is for educational purposes only. Daily caloric expenditures are estimated and can vary based on individual thyroid function, health conditions, and activity. Individuals with a history of metabolic disease, eating disorders, or other clinical concerns should consult a qualified healthcare professional before making significant dietary changes. All calculator outputs are estimates and may not reflect individual outcomes.</p>
 					</div>
 
+					<!-- Author Bio for EEAT -->
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+
 				</div>
 			</div>
 
@@ -421,87 +477,61 @@ const schema = [
 					</nav>
 				</div>
 
-				<!-- 2. Strategic Tools -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Strategic Tools</h3>
-					<p class="text-xs text-muted-foreground mt-2">Calculate your maintenance calories based on your stats and activity level.</p>
-					<a href="/calculators/maintenance-calorie-calculator" class="button-primary w-full text-center text-xs mt-4 block">Maintenance Calculator</a>
-				</div>
-
-				<!-- 3. Related Calculators -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Related Calculators</h3>
-					<div class="mt-3 space-y-2 text-xs">
-						<a href="/calculators/maintenance-calorie-calculator" class="block text-accent hover:underline">Maintenance Calculator</a>
-						<a href="/calculators/calorie-calculator" class="block text-accent hover:underline">Calorie Calculator</a>
-						<a href="/calculators/tdee-calculator" class="block text-accent hover:underline">TDEE Calculator</a>
-						<a href="/calculators/protein-calculator" class="block text-accent hover:underline">Protein Calculator</a>
+					<!-- Author Bio for EEAT -->
+					<div class="border-t border-border pt-6">
+						<Author />
 					</div>
-				</div>
 
-				<!-- 4. Related Guides -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Related Guides</h3>
-					<div class="mt-3 space-y-2 text-xs">
-						<a href="/guides/should-i-cut-or-bulk" class="block text-accent hover:underline">Cut or Bulk Matrix</a>
-						<a href="/guides/body-recomposition" class="block text-accent hover:underline">Body Recomposition Science</a>
-						<a href="/guides/protein-nutrition" class="block text-accent hover:underline">Protein Nutrition Guide</a>
-						<a href="/guides/body-fat-percentage" class="block text-accent hover:underline">Body Fat Guide</a>
-					</div>
 				</div>
-
-				<!-- 5. Quick Facts -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Quick Facts</h3>
-					<div class="mt-3 space-y-3 text-xs">
-						<div>
-							<p class="font-bold text-foreground">BMR Component</p>
-							<p class="text-muted-foreground mt-0.5">60-75% of TDEE</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">NEAT Variability</p>
-							<p class="text-muted-foreground mt-0.5">Can differ by 500+ kcal/day</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Metabolic Adaptation</p>
-							<p class="text-muted-foreground mt-0.5">Up to 15% beyond weight loss</p>
-						</div>
-						<div>
-							<p class="font-bold text-foreground">Recalculate After</p>
-							<p class="text-muted-foreground mt-0.5">5-7 kg body weight change</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- 6. Article Info -->
-				<div class="surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground">Article Info</h3>
-					<div class="mt-3 space-y-2.5 text-xs">
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-							<span class="text-muted-foreground">9 min read</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-							<span class="text-muted-foreground">Updated Jun 2026</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted-foreground shrink-0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-							<span class="text-muted-foreground">Editorial Board</span>
-						</div>
-					</div>
-				</div>
-
-				<!-- 7. Key Takeaway -->
-				<div class="surface border border-border p-5 rounded-2xl bg-accent/5">
-					<h3 class="font-bold text-sm text-foreground flex items-center gap-1.5">
-						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-						Key Takeaway
-					</h3>
-					<p class="mt-2 text-xs text-muted-foreground leading-relaxed">Start with Mifflin-St Jeor, verify with 2 weeks of daily weighing, adjust in 150 kcal increments. Recalculate after every 5-7 kg of weight change. Watch for metabolic adaptation — it can silently reduce TDEE by 10-15% during a cut.</p>
-				</div>
-
 			</div>
 		</div>
 	</section>
 </Layout>
+
+<script>
+	// Scroll highlight observer for the sticky left Table of Contents
+	const outlineNav = document.getElementById('sticky-outline-nav');
+	if (outlineNav) {
+		const links = outlineNav.querySelectorAll('a[href^="#"]');
+		const headings = Array.from(links).map(link => {
+			const id = link.getAttribute('href');
+			return id ? document.querySelector(id) : null;
+		}).filter(Boolean) as Element[];
+
+		const observerOptions = {
+			root: null,
+			rootMargin: '-10% 0px -75% 0px', // focused in top-middle third
+			threshold: 0
+		};
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute('id');
+					links.forEach(link => {
+						const href = link.getAttribute('href');
+						if (href === `#${id}`) {
+							link.classList.add('active-toc-link');
+							link.classList.remove('text-muted-foreground');
+							link.classList.add('text-accent');
+						} else {
+							link.classList.remove('active-toc-link');
+							link.classList.add('text-muted-foreground');
+							link.classList.remove('text-accent');
+						}
+					});
+				}
+			});
+		}, observerOptions);
+
+		headings.forEach(h => observer.observe(h));
+	}
+</script>
+
+<style>
+	/* TOC highlight indicators */
+	.active-toc-link {
+		border-left-color: var(--accent) !important;
+		font-weight: 700;
+	}
+</style>

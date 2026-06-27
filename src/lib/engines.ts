@@ -572,9 +572,10 @@ export function strategyMultiplier(mode: string, goal: string): number {
 		'lean-bulk': 1.08,
 		recomp: 0.98,
 	};
-	if (mode === 'deficit') return goalMap['fat-loss'] ?? 0.85;
-	if (mode === 'surplus' || mode === 'muscle') return goalMap['lean-bulk'] ?? 1.08;
+	if (mode === 'deficit' || mode === 'deficit-calories' || mode === 'weight-loss-calories') return goalMap['fat-loss'] ?? 0.85;
+	if (mode === 'surplus' || mode === 'surplus-calories' || mode === 'weight-gain-calories' || mode === 'muscle') return goalMap['lean-bulk'] ?? 1.08;
 	if (mode === 'recomp') return goalMap.recomp;
+	if (mode === 'maintenance-calories' || mode === 'daily-needs') return 1;
 	return goalMap[goal] ?? 1;
 }
 

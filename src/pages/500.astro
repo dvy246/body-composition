@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { absoluteUrl } from '../data/site';
+
+interface Props {
+	error: unknown;
+}
+
+const { error } = Astro.props;
+const canonicalUrl = absoluteUrl('/500');
+
+// Safely format error text for development/debugging log
+const errorMsg = error instanceof Error ? error.message : String(error);
+---
+
+<Layout
+	title="System Malfunction (500) | BodyCompOS"
+	description="An unexpected server-side malfunction occurred. Return to BodyCompOS to recalculate your fitness strategy."
+	canonical={canonicalUrl}
+>
+	<section class="site-container py-24 flex flex-col items-center justify-center text-center min-h-[70vh]">
+		<div class="max-w-md animate-fade-in">
+			<div class="inline-flex mb-6">
+				<span class="badge badge-accent bg-destructive/10 text-destructive border-destructive/20">
+					500 ERROR
+				</span>
+			</div>
+			
+			<h1 class="text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Metabolic Strobe.
+			</h1>
+			
+			<p class="mt-6 text-sm leading-relaxed text-muted-foreground">
+				An unexpected execution error occurred on our server. Don't worry — your local weight logs, custom assessments, and calorie check-ins are safe.
+			</p>
+
+			<!-- Hidden Debug details -->
+			<!-- Debug details: {errorMsg} -->
+			
+			<div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+				<a href="/" class="button-primary text-xs">Return to Strategy Finder ➔</a>
+				<a href="/contact" class="button-secondary text-xs">Report Problem</a>
+			</div>
+		</div>
+	</section>
+</Layout>

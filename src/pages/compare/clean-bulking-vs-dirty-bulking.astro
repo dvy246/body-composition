@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Clean Bulking vs Dirty Bulking Strategy Comparison | BodyCompOS";
+const description = "Understand the tradeoffs of a controlled surplus (clean bulking) vs. an unconstrained surplus (dirty bulking) for lean muscle growth.";
+const canonical = `${DOMAIN}/compare/clean-bulking-vs-dirty-bulking`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+				<span>/</span>
+				<span class="text-foreground">Clean vs Dirty Bulking</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Hypertrophy Tradeoffs</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Clean Bulking vs <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Dirty Bulking</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					Should you control your surplus to minimize fat accumulation, or eat with unconstrained calories to push maximum muscle hypertrophy? Side-by-side strategy details.
+				</p>
+			</div>
+
+			<!-- Core comparison structure -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_280px]">
+				<div class="space-y-8">
+					<div class="surface rounded-2xl border border-border overflow-hidden">
+						<table class="w-full text-left text-xs border-collapse">
+							<thead>
+								<tr class="border-b border-border bg-muted/10">
+									<th class="p-4 font-bold text-foreground">Variable</th>
+									<th class="p-4 font-bold text-foreground">Clean Bulking</th>
+									<th class="p-4 font-bold text-foreground">Dirty Bulking</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-border/60">
+								<tr>
+									<td class="p-4 font-bold text-foreground">Daily Caloric Surplus</td>
+									<td class="p-4 text-muted-foreground">+200 to +300 kcal/day (5-8% surplus)</td>
+									<td class="p-4 text-muted-foreground">+500 to +1000+ kcal/day (unconstrained)</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Rate of Muscle Gain</td>
+									<td class="p-4 text-muted-foreground">Optimal (limited by genetic growth speed)</td>
+									<td class="p-4 text-muted-foreground">Slightly higher raw speed but with high fat carry</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Fat Spillover</td>
+									<td class="p-4 text-muted-foreground">Minimal (highly controlled)</td>
+									<td class="p-4 text-muted-foreground">High (requires long cutting phases later)</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="prose-lite text-sm text-muted-foreground space-y-4">
+						<h3 class="text-lg font-bold text-foreground">Hypertrophy Partitioning</h3>
+						<p>
+							Muscle synthesis is an energy-intensive process, but there is a limit to how fast your body can synthesize new protein tissue (controlled by training age and genetics). Any caloric surplus beyond this threshold is stored as body fat.
+						</p>
+						<p>
+							<strong>Clean bulking</strong> prioritizes muscle retention with minimal fat carry, saving you from having to do long, exhausting fat loss cuts afterwards.
+						</p>
+					</div>
+				</div>
+
+				<div class="space-y-6">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Muscle potential</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">
+							Estimate your maximum genetic muscular potential to plan your lean bulking targets.
+						</p>
+						<a href="/tools/natural-muscle-potential" class="button-primary w-full text-center text-xs mt-3 block">Muscle Potential</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

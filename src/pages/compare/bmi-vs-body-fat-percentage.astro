@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
 
 const title = 'BMI vs. Body Fat Percentage - Side-by-Side Comparison | BodyCompOS';
 const description = 'Compare Body Mass Index (BMI) with Body Fat Percentage. Understand the formula differences, the muscular-athlete caveat, and which metric is best for tracking your body composition.';
@@ -12,10 +13,16 @@ const schema = {
 	headline: title,
 	description: description,
 	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
+	dateModified: '2026-06-26',
 	author: {
-		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+		'@type': 'Person',
+		name: 'D. Yadav, CSCS',
+		url: `${DOMAIN}/about`,
+	},
+	reviewer: {
+		'@type': 'Person',
+		name: 'D. Yadav, CSCS',
+		url: `${DOMAIN}/about`,
 	},
 	publisher: {
 		'@type': 'Organization',
@@ -47,14 +54,25 @@ const schema = {
 				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Height-Weight Ratio or True Composition?</span>
 			</h1>
 			<!-- EEAT Attribution -->
-			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
-				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
-				<div>
-					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Clinical anthropometry research comparison</p>
-					<p class="mt-0.5">Published June 2026 · References: World Health Organization (WHO), Hodgdon & Beckett 1984</p>
-				</div>
-			</div>
+			<AuthorAttribution 
+				role="Clinical anthropometry research comparison" 
+				references="World Health Organization (WHO), Hodgdon & Beckett 1984" 
+			/>
 		</div>
+
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#concept-calculation" class="block text-muted-foreground hover:text-accent transition-colors">1. The Concept and Calculation</a>
+				<a href="#side-by-side" class="block text-muted-foreground hover:text-accent transition-colors">2. Side-by-Side Comparison</a>
+				<a href="#muscle-athlete-caveat" class="block text-muted-foreground hover:text-accent transition-colors">3. The Muscle-Athlete Caveat</a>
+				<a href="#how-to-use-both" class="block text-muted-foreground hover:text-accent transition-colors">4. How to Use Both Metrics Effectively</a>
+			</nav>
+		</details>
 
 		<!-- Grid Layout -->
 		<div class="mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
@@ -62,7 +80,7 @@ const schema = {
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
 					
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. The Concept and Calculation</h2>
+						<h2 id="concept-calculation" class="text-xl font-bold text-foreground mb-3">1. The Concept and Calculation</h2>
 						<p>
 							Both <strong>Body Mass Index (BMI)</strong> and <strong>Body Fat Percentage</strong> are anthropometric tools used to evaluate weight and health risks. However, they analyze your physical body from different perspectives.
 						</p>
@@ -76,7 +94,7 @@ const schema = {
 
 					<!-- Side-by-Side Table -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Comparison</h2>
+						<h2 id="side-by-side" class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Comparison</h2>
 						<div class="overflow-x-auto rounded-xl border border-border">
 							<table class="w-full text-left border-collapse text-xs">
 								<thead>
@@ -128,7 +146,7 @@ const schema = {
 					</section>
 
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. The Muscle-Athlete Caveat (Overweight vs. Overfat)</h2>
+						<h2 id="muscle-athlete-caveat" class="text-xl font-bold text-foreground mb-3">3. The Muscle-Athlete Caveat (Overweight vs. Overfat)</h2>
 						<p>
 							The primary limitation of BMI is its inability to distinguish between muscle mass and fat mass. Because muscle tissue is highly dense, muscular individuals and strength athletes often weigh more than the population average for their height. 
 						</p>
@@ -138,7 +156,7 @@ const schema = {
 					</section>
 
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. How to Use Both Metrics Effectively</h2>
+						<h2 id="how-to-use-both" class="text-xl font-bold text-foreground mb-3">4. How to Use Both Metrics Effectively</h2>
 						<p>
 							Instead of discarding BMI, sports science recommends using both metrics together:
 						</p>
@@ -147,6 +165,20 @@ const schema = {
 							<li>Use <strong>Body Fat Percentage</strong> and <strong>FFMI (Fat-Free Mass Index)</strong> to choose your fitness strategy. If your BMI is 26 but your body fat is 12%, you do not need to cut; a lean bulk or recomposition is appropriate.</li>
 							<li>For strength athletes, Normalized FFMI (Kouri et al., 1995) is a far more useful index than BMI, as it tracks lean muscle mass normalized to height.</li>
 						</ul>
+
+						<div class="my-6 p-5 border border-border rounded-xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+									Check Your Own Statistics
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Calculate your standard BMI and compare it against your estimated body fat percentage using the US Navy Method.</p>
+							</div>
+							<div class="flex gap-2 shrink-0 flex-wrap">
+								<a href="/calculators/bmi-calculator" class="button-primary text-xs whitespace-nowrap">BMI Calculator ➔</a>
+								<a href="/calculators/body-fat-calculator" class="button-secondary text-xs whitespace-nowrap">Body Fat % Tool ➔</a>
+							</div>
+						</div>
 					</section>
 
 					<!-- YMYL Warning -->
@@ -159,6 +191,17 @@ const schema = {
 
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#concept-calculation" class="block text-muted-foreground hover:text-accent transition-colors">1. The Concept and Calculation</a>
+						<a href="#side-by-side" class="block text-muted-foreground hover:text-accent transition-colors">2. Side-by-Side Comparison</a>
+						<a href="#muscle-athlete-caveat" class="block text-muted-foreground hover:text-accent transition-colors">3. The Muscle-Athlete Caveat</a>
+						<a href="#how-to-use-both" class="block text-muted-foreground hover:text-accent transition-colors">4. How to Use Both Metrics Effectively</a>
+					</nav>
+				</div>
+
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Interactive Analysis</h3>
 					<p class="text-xs text-muted-foreground mt-2">Let our algorithm evaluate your biological metrics and suggest the optimal strategy.</p>

@@ -1,0 +1,313 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Should I Cut or Bulk? Interactive Strategy Quiz | BodyCompOS";
+const description = "Answer 5 simple questions to determine whether you should focus on fat loss (cutting), muscle growth (bulking), or building muscle while losing fat (recomposing).";
+const canonical = `${DOMAIN}/tools/cut-or-bulk`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-3xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<span class="text-foreground">Cut or Bulk Quiz</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="text-center sm:text-left border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Interactive Diagnostics</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Should You <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Cut or Bulk?</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+					Establish your optimal body composition phase. Our diagnostic engine evaluates body fat percentage, lifting age, training strength, and aesthetic goals to recommend your highest probability path.
+				</p>
+			</div>
+
+			<!-- Quiz Card -->
+			<div class="surface rounded-2xl p-6 sm:p-10 border border-border shadow-md">
+				<!-- Progress Bar -->
+				<div class="w-full bg-border rounded-full h-1.5 mb-8 overflow-hidden">
+					<div id="quiz-progress" class="bg-accent h-1.5 w-1/5 transition-all duration-300"></div>
+				</div>
+
+				<form id="cut-or-bulk-quiz" class="space-y-8">
+					<!-- Step 1: Sex -->
+					<div class="quiz-step" data-step="1">
+						<h3 class="text-lg font-bold text-foreground mb-4">Step 1: Select biological sex (for body fat scaling)</h3>
+						<div class="grid grid-cols-2 gap-4">
+							<label class="relative flex flex-col items-center justify-center p-5 rounded-2xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all select-none">
+								<input type="radio" name="sex" value="male" class="absolute top-4 right-4 accent-accent" checked />
+								<span class="text-sm font-bold text-foreground">Male</span>
+							</label>
+							<label class="relative flex flex-col items-center justify-center p-5 rounded-2xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all select-none">
+								<input type="radio" name="sex" value="female" class="absolute top-4 right-4 accent-accent" />
+								<span class="text-sm font-bold text-foreground">Female</span>
+							</label>
+						</div>
+					</div>
+
+					<!-- Step 2: Body Fat -->
+					<div class="quiz-step hidden" data-step="2">
+						<h3 class="text-lg font-bold text-foreground mb-1">Step 2: Estimate current body fat percentage</h3>
+						<p class="text-xs text-muted-foreground mb-4">If unsure, use your waist size relative to height as a proxy.</p>
+						<div class="grid gap-3" id="bf-options-container">
+							<!-- Populated via JS -->
+						</div>
+					</div>
+
+					<!-- Step 3: Lifting Experience -->
+					<div class="quiz-step hidden" data-step="3">
+						<h3 class="text-lg font-bold text-foreground mb-4">Step 3: Training experience level</h3>
+						<div class="grid gap-3">
+							<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+								<input type="radio" name="experience" value="beginner" class="accent-accent" checked />
+								<div>
+									<p class="text-sm font-bold text-foreground">Beginner (&lt;1 year)</p>
+									<p class="text-[10px] text-muted-foreground">New to structured lifting, rapid progress potential.</p>
+								</div>
+							</label>
+							<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+								<input type="radio" name="experience" value="intermediate" class="accent-accent" />
+								<div>
+									<p class="text-sm font-bold text-foreground">Intermediate (1-3 years)</p>
+									<p class="text-[10px] text-muted-foreground">Consistent lifting history, steady strength gains.</p>
+								</div>
+							</label>
+							<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+								<input type="radio" name="experience" value="advanced" class="accent-accent" />
+								<div>
+									<p class="text-sm font-bold text-foreground">Advanced (3+ years)</p>
+									<p class="text-[10px] text-muted-foreground">Near genetic potential, gains require careful planning.</p>
+								</div>
+							</label>
+						</div>
+					</div>
+
+					<!-- Step 4: Primary Motivation -->
+					<div class="quiz-step hidden" data-step="4">
+						<h3 class="text-lg font-bold text-foreground mb-4">Step 4: Primary aesthetic / performance focus</h3>
+						<div class="grid gap-3">
+							<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+								<input type="radio" name="goal" value="lean" class="accent-accent" checked />
+								<div>
+									<p class="text-sm font-bold text-foreground">Get leaner / define abs</p>
+									<p class="text-[10px] text-muted-foreground">Prioritizing localized fat loss above all else.</p>
+								</div>
+							</label>
+							<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+								<input type="radio" name="goal" value="size" class="accent-accent" />
+								<div>
+									<p class="text-sm font-bold text-foreground">Gain muscle mass & strength</p>
+									<p class="text-[10px] text-muted-foreground">Prioritizing tissue hypertrophy and raw power.</p>
+								</div>
+							</label>
+							<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+								<input type="radio" name="goal" value="both" class="accent-accent" />
+								<div>
+									<p class="text-sm font-bold text-foreground">Improve overall definition (balance)</p>
+									<p class="text-[10px] text-muted-foreground">Willing to accept slower, simultaneous changes.</p>
+								</div>
+							</label>
+						</div>
+					</div>
+
+					<!-- Navigation Buttons -->
+					<div class="flex items-center justify-between border-t border-border pt-6 mt-8">
+						<button type="button" id="prev-step-btn" class="button-secondary text-xs px-4 py-2 min-h-10 disabled:opacity-50" disabled>
+							Back
+						</button>
+						<button type="button" id="next-step-btn" class="button-primary text-xs px-5 py-2 min-h-10">
+							Next Step
+						</button>
+					</div>
+				</form>
+
+				<!-- Dynamic Result Display -->
+				<div id="quiz-result-container" class="hidden mt-8 space-y-6">
+					<!-- Populated dynamically via JS -->
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const steps = document.querySelectorAll('.quiz-step');
+	const progressBar = document.getElementById('quiz-progress');
+	const prevBtn = document.getElementById('prev-step-btn') as HTMLButtonElement;
+	const nextBtn = document.getElementById('next-step-btn') as HTMLButtonElement;
+	const form = document.getElementById('cut-or-bulk-quiz') as HTMLFormElement;
+	const resultContainer = document.getElementById('quiz-result-container');
+	const bfOptionsContainer = document.getElementById('bf-options-container');
+
+	let currentStep = 1;
+
+	const bfOptions = {
+		male: [
+			{ val: 'very-lean', label: 'Very Lean (<10% BF)', desc: 'Striated shoulders, clear lower abs visible without flexing.' },
+			{ val: 'lean', label: 'Lean (10-14% BF)', desc: 'Upper and middle abs visible, athletic silhouette.' },
+			{ val: 'moderate', label: 'Moderate (15-20% BF)', desc: 'Soft outline, abs hidden but waist line flat.' },
+			{ val: 'overweight', label: 'High (20%+ BF)', desc: 'Soft midsection, noticeable waist carry.' }
+		],
+		female: [
+			{ val: 'very-lean', label: 'Very Lean (<18% BF)', desc: 'Athletic muscle outlines, minimal soft tissue carry.' },
+			{ val: 'lean', label: 'Lean (18-22% BF)', desc: 'Flat midsection, clear outline tone.' },
+			{ val: 'moderate', label: 'Moderate (23-28% BF)', desc: 'Soft outline, curves visible, flat waist.' },
+			{ val: 'overweight', label: 'High (29%+ BF)', desc: 'Noticeable soft tissue carry around hips/waist.' }
+		]
+	};
+
+	function updateBfOptions() {
+		if (!bfOptionsContainer) return;
+		const selectedSex = (form.elements.namedItem('sex') as RadioNodeList).value as 'male' | 'female';
+		const options = bfOptions[selectedSex] || bfOptions.male;
+
+		bfOptionsContainer.innerHTML = options.map((opt, idx) => `
+			<label class="flex items-center gap-3 p-4 rounded-xl border border-border bg-card cursor-pointer hover:border-accent/40 transition-all">
+				<input type="radio" name="bodyfat" value="${opt.val}" class="accent-accent" ${idx === 2 ? 'checked' : ''} />
+				<div>
+					<p class="text-sm font-bold text-foreground">${opt.label}</p>
+					<p class="text-[10px] text-muted-foreground">${opt.desc}</p>
+				</div>
+			</label>
+		`).join('');
+	}
+
+	function renderStep() {
+		steps.forEach((step, idx) => {
+			if (idx + 1 === currentStep) {
+				step.classList.remove('hidden');
+			} else {
+				step.classList.add('hidden');
+			}
+		});
+
+		if (progressBar) {
+			progressBar.style.width = `${(currentStep / steps.length) * 100}%`;
+		}
+
+		prevBtn.disabled = currentStep === 1;
+		if (currentStep === steps.length) {
+			nextBtn.textContent = 'Get Diagnostic Result';
+		} else {
+			nextBtn.textContent = 'Next Step';
+		}
+	}
+
+	prevBtn?.addEventListener('click', () => {
+		if (currentStep > 1) {
+			currentStep--;
+			renderStep();
+		}
+	});
+
+	nextBtn?.addEventListener('click', () => {
+		if (currentStep < steps.length) {
+			if (currentStep === 1) {
+				updateBfOptions();
+			}
+			currentStep++;
+			renderStep();
+		} else {
+			evaluateQuiz();
+		}
+	});
+
+	function evaluateQuiz() {
+		const sex = (form.elements.namedItem('sex') as RadioNodeList).value;
+		const bf = (form.elements.namedItem('bodyfat') as RadioNodeList).value;
+		const experience = (form.elements.namedItem('experience') as RadioNodeList).value;
+		const goal = (form.elements.namedItem('goal') as RadioNodeList).value;
+
+		form.classList.add('hidden');
+		prevBtn.classList.add('hidden');
+		nextBtn.classList.add('hidden');
+		progressBar?.parentElement?.classList.add('hidden');
+
+		let strategy = 'recomp';
+		let reasoning = '';
+		let actionSteps: string[] = [];
+
+		if (bf === 'very-lean') {
+			strategy = 'lean-bulk';
+			reasoning = 'You are starting at a low body fat percentage, which means your insulin sensitivity is high and your body is in an optimal hormonal environment to partition calories toward muscle synthesis rather than fat storage.';
+			actionSteps = [
+				'Eat a conservative calorie surplus of 150-300 kcal/day.',
+				'Maintain protein intake at 1.8-2.2 g per kilogram of body weight.',
+				'Focus on progressive overload on major compound lifts.',
+				'Aim for a weight gain velocity of roughly 0.5-1 kg per month to minimize fat accumulation.'
+			];
+		} else if (bf === 'overweight') {
+			strategy = 'fat-loss';
+			reasoning = 'Because your body fat is in the higher range, your primary focus should be to optimize metabolic health and cardiovascular markers by reducing fat mass first. This defends lean muscle tissue while utilizing stored body fat for daily energy needs.';
+			actionSteps = [
+				'Establish a moderate 15-20% daily calorie deficit.',
+				'Elevate protein intake to 2.2 g per kilogram to protect muscle tissue in a deficit.',
+				'Prioritize resistance training over excessive cardio to signal tissue retention.',
+				'Recalculate your maintenance calories after every 5 kg of weight lost.'
+			];
+		} else {
+			// Moderate or Lean body fat levels
+			if (experience === 'beginner') {
+				strategy = 'recomp';
+				reasoning = 'As a beginner with moderate body fat, you are in the prime window for "newbie gains". Your body is highly sensitive to stimulus, allowing you to build muscle mass while losing fat simultaneously.';
+				actionSteps = [
+					'Eat at exact maintenance calories or a tiny 5% deficit.',
+					'Aim for high protein intake at 2.0-2.2 g per kilogram of body weight daily.',
+					'Prioritize consistent, structured resistance training 3-4 times per week.',
+					'Focus on body composition measurements (waist vs weight) rather than scale weight alone.'
+				];
+			} else {
+				// Experienced lifters with moderate body fat
+				if (goal === 'lean') {
+					strategy = 'fat-loss';
+					reasoning = 'You have a solid base of lifting experience but want to get leaner. A dedicated, structured cut will reveal your existing muscle definition most efficiently.';
+					actionSteps = [
+						'Create a conservative 15% calorie deficit.',
+						'Keep training intensity high to retain strength variables.',
+						'Log daily weights to calculate weekly moving averages.'
+					];
+				} else {
+					strategy = 'lean-bulk';
+					reasoning = 'With moderate body fat and lifting experience, a clean lean bulk is optimal to build further mass. Building new tissue requires an energy surplus for seasoned lifters.';
+					actionSteps = [
+						'Maintain a clean 200 kcal daily calorie surplus.',
+						'Monitor strength gains weekly.',
+						'Limit fat accumulation by keeping surplus conservative.'
+					];
+				}
+			}
+		}
+
+		if (resultContainer) {
+			resultContainer.classList.remove('hidden');
+			resultContainer.innerHTML = `
+				<div class="text-center pb-6 border-b border-border">
+					<p class="eyebrow">Diagnostic Result</p>
+					<h2 class="text-3xl font-black capitalize text-accent mt-2">${strategy.replace(/-/g, ' ')} Strategy</h2>
+					<p class="text-sm text-muted-foreground mt-3 max-w-lg mx-auto">${reasoning}</p>
+				</div>
+
+				<div class="space-y-4">
+					<h3 class="text-sm font-bold text-foreground">Your 4-Step Action Plan</h3>
+					<ol class="space-y-2 text-xs text-muted-foreground list-decimal pl-5">
+						${actionSteps.map(step => `<li>${step}</li>`).join('')}
+					</ol>
+				</div>
+
+				<div class="grid gap-3 sm:grid-cols-2 pt-6 border-t border-border">
+					<a href="/assess" class="button-primary text-center text-xs py-3 justify-center">Run Full Strategy Finder</a>
+					<a href="/calculators/calorie-calculator" class="button-secondary text-center text-xs py-3 justify-center">Calorie Target Calculator</a>
+				</div>
+				<div class="text-center pt-2">
+					<button onclick="window.location.reload()" class="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors underline">Take Quiz Again</button>
+				</div>
+			`;
+		}
+	}
+</script>

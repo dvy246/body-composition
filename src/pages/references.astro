@@ -1,0 +1,294 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE, absoluteUrl } from '../data/site';
+
+const pageTitle = 'Scientific References & Citations | BodyCompOS';
+const pageDescription = 'The complete catalog of peer-reviewed clinical research studies, position stands, and formulas behind the BodyCompOS platform.';
+const canonicalUrl = absoluteUrl('/references');
+
+// Define references list
+const references = [
+	{
+		id: 'ref-mifflin',
+		authors: 'Mifflin, M. D., St Jeor, S. T., Hill, L. A., et al.',
+		year: 1990,
+		title: 'A new predictive equation for resting energy expenditure in healthy individuals',
+		journal: 'The American Journal of Clinical Nutrition',
+		volume: '51(2)',
+		pages: '241-247',
+		category: 'energy',
+		link: 'https://doi.org/10.1093/ajcn/51.2.241',
+		annotation: 'Used in BMR, TDEE, and calorie calculators as the default resting metabolic rate baseline estimation for the general population.',
+	},
+	{
+		id: 'ref-katch',
+		authors: 'Katch, F. I., & McArdle, W. D.',
+		year: 1996,
+		title: 'Nutrition and Energy Transfer (Nutrition in Exercise and Sport)',
+		journal: 'Williams & Wilkins',
+		volume: 'Book',
+		pages: 'N/A',
+		category: 'energy',
+		link: 'https://archive.org/details/nutritionenergyt00katc',
+		annotation: 'Leveraged as the primary BMR calculation engine when a reliable body fat percentage is supplied, calculating energy expenditure from fat-free mass.',
+	},
+	{
+		id: 'ref-trexler',
+		authors: 'Trexler, E. T., Smith-Ryan, A. E., & Norton, L. E.',
+		year: 2014,
+		title: 'Metabolic adaptation to weight loss: implications for the athlete',
+		journal: 'Journal of the International Society of Sports Nutrition',
+		volume: '11(1)',
+		pages: '7',
+		category: 'energy',
+		link: 'https://doi.org/10.1186/1550-2783-11-7',
+		annotation: 'Informs our non-linear weight forecasting timeline engine, accounting for adaptative thermogenesis (metabolic slowdown) during caloric restriction.',
+	},
+	{
+		id: 'ref-acsm',
+		authors: 'Thomas, D. T., Erdman, K. A., & Burke, L. M.',
+		year: 2016,
+		title: 'American College of Sports Medicine Joint Position Statement: Nutrition and Athletic Performance',
+		journal: 'Medicine & Science in Sports & Exercise',
+		volume: '48(3)',
+		pages: '543-568',
+		category: 'energy',
+		link: 'https://doi.org/10.1249/MSS.0000000000000852',
+		annotation: 'Used to size caloric deficits and surpluses, establishing safe weekly weight loss and weight gain percentages for athletic performance.',
+	},
+	{
+		id: 'ref-iraki',
+		authors: 'Iraki, J., Fitschen, P., Espinar, S., et al.',
+		year: 2019,
+		title: 'Nutrition Recommendations for Bodybuilders in the Off-Season: A Narrative Review',
+		journal: 'Sports',
+		volume: '7(7)',
+		pages: '154',
+		category: 'energy',
+		link: 'https://doi.org/10.3390/sports7070154',
+		annotation: 'Cited in bulking calculators to size a controlled, hypertrophy-focused caloric surplus (10% to 15% above maintenance).',
+	},
+	{
+		id: 'ref-issn-protein',
+		authors: 'Jäger, R., Kerksick, C. M., Campbell, B. I., et al.',
+		year: 2017,
+		title: 'International Society of Sports Nutrition Position Stand: protein and exercise',
+		journal: 'Journal of the International Society of Sports Nutrition',
+		volume: '14(1)',
+		pages: '20',
+		category: 'protein',
+		link: 'https://doi.org/10.1186/s12970-017-0177-8',
+		annotation: 'The clinical foundation for our daily protein intake suggestions of 1.6 to 2.2 g/kg body weight to maximize muscle protein synthesis.',
+	},
+	{
+		id: 'ref-helms',
+		authors: 'Helms, E. R., Zinn, C., Rowlands, D. S., & Brown, S. R.',
+		year: 2014,
+		title: 'A systematic review of dietary protein during caloric restriction in active, resistance-trained humans',
+		journal: 'International Journal of Sport Nutrition and Exercise Metabolism',
+		volume: '24(2)',
+		pages: '127-138',
+		category: 'protein',
+		link: 'https://doi.org/10.1123/ijsnem.2013-0054',
+		annotation: 'Informs our elevated protein targets (2.3 to 3.1 g/kg of fat-free mass) for lean, training individuals in deep deficits to defend muscle mass.',
+	},
+	{
+		id: 'ref-morton',
+		authors: 'Morton, R. W., Murphy, K. T., McKellar, S. R., et al.',
+		year: 2018,
+		title: 'A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength in healthy adults',
+		journal: 'British Journal of Sports Medicine',
+		volume: '52(6)',
+		pages: '376-384',
+		category: 'protein',
+		link: 'https://doi.org/10.1136/bjsports-2017-097608',
+		annotation: 'Comprehensive meta-analysis cited in our protein calculator confirming the daily protein intake breakpoint of ~1.62 g/kg.',
+	},
+	{
+		id: 'ref-schoenfeld',
+		authors: 'Schoenfeld, B. J., & Aragon, A. A.',
+		year: 2018,
+		title: 'How much protein can the body use in a single meal for muscle-building? Implications for daily protein distribution',
+		journal: 'Journal of the International Society of Sports Nutrition',
+		volume: '15(1)',
+		pages: '10',
+		category: 'protein',
+		link: 'https://doi.org/10.1186/s12970-018-0215-1',
+		annotation: 'Underpins our protein distribution and timing guides, advising 0.40 to 0.55 g/kg/meal spread evenly throughout the day.',
+	},
+	{
+		id: 'ref-kouri',
+		authors: 'Kouri, E. M., Pope, H. G., et al.',
+		year: 1995,
+		title: 'Fat-free mass index in users and nonusers of anabolic-androgenic steroids',
+		journal: 'Clinical Journal of Sport Medicine',
+		volume: '5(4)',
+		pages: '223-228',
+		category: 'composition',
+		link: 'https://pubmed.ncbi.nlm.nih.gov/7614078/',
+		annotation: 'The clinical foundation for our height-normalized Fat-Free Mass Index (FFMI) calculator and natural hypertrophy limits.',
+	},
+	{
+		id: 'ref-navy',
+		authors: 'Hodgdon, J. A., & Beckett, M. B.',
+		year: 1984,
+		title: 'Prediction of percent body fat for U.S. Navy men and women from body circumferences and height',
+		journal: 'Naval Health Research Center Report',
+		volume: '84(29)',
+		pages: 'N/A',
+		category: 'composition',
+		link: 'https://archive.org/details/DTIC_ADA150808',
+		annotation: 'The mathematical equations used in our Body Fat Calculator to estimate body fat percentage using neck, waist, and hip circumferences.',
+	},
+	{
+		id: 'ref-garthe',
+		authors: 'Garthe, I., Raastad, T., Refsnes, P. E., et al.',
+		year: 2011,
+		title: 'Effect of two different weight-gain rates on body composition and strength and power-related performance in elite athletes',
+		journal: 'European Journal of Sport Science',
+		volume: '13(2)',
+		pages: '224-232',
+		category: 'composition',
+		link: 'https://doi.org/10.1080/17461391.2011.617380',
+		annotation: 'Cited in our Bulking comparison guide, showing that a slower, controlled surplus (lean bulk) minimizes body fat storage.',
+	},
+	{
+		id: 'ref-barakat',
+		authors: 'Barakat, C., Pearson, J., Escalante, G., et al.',
+		year: 2020,
+		title: 'Body Recomposition: Can trained individuals build muscle and lose fat at the same time?',
+		journal: 'Strength and Conditioning Journal',
+		volume: '42(5)',
+		pages: '7-21',
+		category: 'composition',
+		link: 'https://doi.org/10.1519/SSC.0000000000000584',
+		annotation: 'The primary literature citation supporting our Body Recomposition Strategy, detailing fat loss and muscle gain parameters.',
+	},
+];
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	name: pageTitle,
+	description: pageDescription,
+	url: canonicalUrl,
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} canonical={canonicalUrl} schema={schema}>
+	<section class="site-container py-10 sm:py-16">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<span class="text-foreground">References</span>
+		</nav>
+
+		<!-- Hero Section -->
+		<div class="max-w-3xl animate-fade-in">
+			<p class="eyebrow">Evidence Catalog</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">Scientific References</h1>
+			<p class="mt-5 text-sm leading-relaxed text-muted-foreground">
+				Transparency is a fundamental tenet of BodyCompOS. Every calculator logic, strategy guideline, and metabolic decay timeline is mapped directly to peer-reviewed studies, clinical reviews, and professional position stands. Here we catalog our academic foundations.
+			</p>
+		</div>
+
+		<!-- Category Filter Tabs -->
+		<div class="mt-10 flex flex-wrap gap-2 animate-fade-in" id="filter-tabs" role="tablist" aria-label="Reference categories">
+			<button class="button-primary text-xs" data-filter="all" role="tab" aria-selected="true">All References</button>
+			<button class="button-secondary text-xs" data-filter="energy" role="tab" aria-selected="false">Energy & Metabolism</button>
+			<button class="button-secondary text-xs" data-filter="protein" role="tab" aria-selected="false">Macronutrients & Protein</button>
+			<button class="button-secondary text-xs" data-filter="composition" role="tab" aria-selected="false">Body Composition</button>
+		</div>
+
+		<!-- References Catalog -->
+		<div class="mt-8 space-y-4 animate-fade-in-up" id="references-catalog">
+			{references.map((ref) => (
+				<div class="content-panel rounded-xl border border-border bg-card/30 p-5 sm:p-6 transition-all hover:border-accent/40" data-category={ref.category}>
+					<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+						<span class="text-[10px] font-black uppercase tracking-wider text-accent bg-accent/10 px-2.5 py-0.5 rounded-full w-max">
+							{ref.category === 'energy' ? 'Energy & Metabolism' : ref.category === 'protein' ? 'Macronutrients & Protein' : 'Body Composition'}
+						</span>
+						<span class="text-xs text-muted-foreground font-semibold">Published: {ref.year}</span>
+					</div>
+
+					<h3 class="text-base font-bold text-foreground leading-snug">
+						"{ref.title}"
+					</h3>
+					
+					<p class="text-xs font-semibold text-muted-foreground mt-2">
+						{ref.authors} ({ref.year}). <span class="italic">{ref.journal}</span>{ref.volume !== 'Book' && `, ${ref.volume}`}{ref.pages !== 'N/A' && `, ${ref.pages}`}.
+					</p>
+
+					<!-- Annotation -->
+					<div class="source-block mt-4 border-l-2">
+						<p class="text-xs text-muted-foreground">
+							<strong class="text-foreground">Application:</strong> {ref.annotation}
+						</p>
+					</div>
+
+					<div class="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs">
+						<span class="text-muted-foreground">Source Database: PubMed/CrossRef</span>
+						<a href={ref.link} target="_blank" rel="noopener noreferrer" class="font-bold text-accent hover:underline flex items-center gap-1">
+							View Source Paper
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+						</a>
+					</div>
+				</div>
+			))}
+		</div>
+
+		<!-- Reassurance banner -->
+		<div class="mt-16 rounded-2xl bg-muted/20 border border-border p-6 flex flex-col sm:flex-row items-center justify-between gap-5 max-w-4xl">
+			<div class="flex gap-4 items-start text-left">
+				<div class="w-10 h-10 rounded-full bg-success/10 text-success flex items-center justify-center shrink-0 mt-1">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+				</div>
+				<div>
+					<h4 class="font-bold text-sm text-foreground">Committed to Accuracy</h4>
+					<p class="text-xs text-muted-foreground leading-relaxed mt-1">
+						Notice an outdated citation or a calculation variance? Let our editorial board know through our Contact page. We review and update formulas continuously.
+					</p>
+				</div>
+			</div>
+			<a class="button-secondary shrink-0 text-xs" href="/contact?category=correction">Report Calculation Issue</a>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const tabButtons = document.querySelectorAll('#filter-tabs button');
+		const referenceCards = document.querySelectorAll('#references-catalog > div');
+
+		tabButtons.forEach((button) => {
+			button.addEventListener('click', () => {
+				const filter = button.getAttribute('data-filter');
+				if (!filter) return;
+
+				// Toggle active tab buttons layout styles
+				tabButtons.forEach((btn) => {
+					btn.classList.remove('button-primary');
+					btn.classList.add('button-secondary');
+					btn.setAttribute('aria-selected', 'false');
+				});
+				button.classList.remove('button-secondary');
+				button.classList.add('button-primary');
+				button.setAttribute('aria-selected', 'true');
+
+				// Filter list of card elements
+				referenceCards.forEach((card) => {
+					const cardCategory = card.getAttribute('data-category');
+					
+					if (filter === 'all' || cardCategory === filter) {
+						(card as HTMLElement).style.display = 'block';
+						(card as HTMLElement).classList.add('animate-fade-in');
+					} else {
+						(card as HTMLElement).style.display = 'none';
+						(card as HTMLElement).classList.remove('animate-fade-in');
+					}
+				});
+			});
+		});
+	});
+</script>

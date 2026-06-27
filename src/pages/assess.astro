@@ -48,138 +48,366 @@ const assessSchema = {
 					</div>
 				</div>
 
-				<form id="strategy-form" class="mt-5 grid gap-3 sm:grid-cols-2">
-					<!-- Section: Personal -->
-					<div class="sm:col-span-2">
-						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Personal Information</p>
-						<div class="border-t border-border/30 mt-1.5"></div>
-					</div>
-
-					<div class="field">
-						<label for="sex">Biological Sex</label>
-						<div class="select-wrap">
-							<select id="sex" required>
-								<option value="male">Male</option>
-								<option value="female">Female</option>
-							</select>
+				<!-- Wizard Progress Stepper -->
+				<div class="mb-8 mt-6">
+					<div class="flex items-center justify-between relative max-w-md mx-auto" style="position: relative; max-width: 28rem; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: space-between;">
+						<!-- Progress Line Wrapper -->
+						<div class="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-0.5 -z-10 pointer-events-none" style="position: absolute; left: 1rem; right: 1rem; top: 50%; transform: translateY(-50%); height: 2px; z-index: -10; pointer-events: none;">
+							<div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: var(--border);"></div>
+							<div id="step-progress-line" style="position: absolute; left: 0; top: 0; bottom: 0; background-color: var(--accent); transition: all 0.3s ease; width: 0%;"></div>
+						</div>
+						
+						<!-- Step 1 -->
+						<div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" data-step="1">
+							<div id="step-badge-1" class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm border-2 border-accent transition-all duration-300">1</div>
+							<span id="step-text-1" class="text-[10px] font-bold text-foreground">Biometrics</span>
+						</div>
+						<!-- Step 2 -->
+						<div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" data-step="2">
+							<div id="step-badge-2" class="w-8 h-8 rounded-full bg-card text-muted-foreground flex items-center justify-center font-bold text-sm border-2 border-border transition-all duration-300">2</div>
+							<span id="step-text-2" class="text-[10px] font-semibold text-muted-foreground">Composition</span>
+						</div>
+						<!-- Step 3 -->
+						<div class="step-indicator flex flex-col items-center gap-1.5 cursor-pointer" data-step="3">
+							<div id="step-badge-3" class="w-8 h-8 rounded-full bg-card text-muted-foreground flex items-center justify-center font-bold text-sm border-2 border-border transition-all duration-300">3</div>
+							<span id="step-text-3" class="text-[10px] font-semibold text-muted-foreground">Lifestyle</span>
 						</div>
 					</div>
-					<div class="field">
-						<label for="age">Age (years)</label>
-						<input id="age" type="number" min="18" max="90" placeholder="e.g. 32" required />
-					</div>
-					<div class="field">
-						<label for="height">Height <span data-strategy-height-unit>(cm)</span></label>
-						<input id="height" type="number" min="120" max="230" placeholder="e.g. 175" required />
-					</div>
-					<div class="field">
-						<label for="weight">Weight <span data-strategy-weight-unit>(kg)</span></label>
-						<input id="weight" type="number" min="35" max="250" step="0.1" placeholder="e.g. 82" required />
-					</div>
+				</div>
 
-					<!-- Section: Body Composition -->
-					<div class="sm:col-span-2 mt-2">
-						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Body Composition</p>
-						<div class="border-t border-border/30 mt-1.5"></div>
-					</div>
+				<form id="strategy-form" class="mt-5">
+					<!-- STEP 1: Biometrics -->
+					<div id="form-step-1" class="grid gap-3 sm:grid-cols-2">
+						<div class="sm:col-span-2">
+							<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Personal Information</p>
+							<div class="border-t border-border/30 mt-1.5"></div>
+						</div>
 
-					<div class="field sm:col-span-2">
-						<label class="flex items-center gap-2.5 font-semibold cursor-pointer">
-							<input type="checkbox" id="use-navy-bf" class="rounded border-border text-accent focus:ring-accent" />
-							<span class="text-xs text-foreground select-none">Estimate Body Fat using Navy Circumference Method</span>
-						</label>
-					</div>
-
-					<div id="navy-inputs" class="grid gap-3 grid-cols-2 sm:col-span-2 hidden">
 						<div class="field">
-							<label for="waist">Waist <span data-strategy-height-unit>(cm)</span></label>
-							<input id="waist" type="number" min="40" max="220" step="0.1" placeholder="e.g. 88" />
+							<label for="sex">Biological Sex</label>
+							<div class="select-wrap">
+								<select id="sex" name="sex" required>
+									<option value="male">Male</option>
+									<option value="female">Female</option>
+								</select>
+							</div>
 						</div>
 						<div class="field">
-							<label for="neck">Neck <span data-strategy-height-unit>(cm)</span></label>
-							<input id="neck" type="number" min="20" max="80" step="0.1" placeholder="e.g. 38" />
+							<label for="age">Age (years)</label>
+							<div class="select-wrap">
+								<select id="age" name="age" required>
+									<option value="">Select Age</option>
+									{Array.from({ length: 76 }, (_, i) => i + 15).map(age => (
+										<option value={age} selected={age === 32}>{age}</option>
+									))}
+								</select>
+							</div>
 						</div>
-						<div id="hip-field" class="field col-span-2 hidden">
-							<label for="hip">Hip <span data-strategy-height-unit>(cm)</span></label>
-							<input id="hip" type="number" min="40" max="220" step="0.1" placeholder="e.g. 95" />
+						<div class="field">
+							<label for="height">Height <span data-strategy-height-unit>(cm)</span></label>
+							<input id="height" name="height" type="number" min="120" max="230" placeholder="e.g. 175" required />
 						</div>
-					</div>
-
-					<div class="field sm:col-span-2">
-						<label for="bodyFat">Estimated Body Fat %</label>
-						<input id="bodyFat" type="number" min="3" max="60" step="0.1" placeholder="e.g. 22" required />
-						<p class="text-xs text-muted-foreground leading-relaxed mt-1">
-							Body fat percentage estimates the proportion of your body weight from fat tissue.
-							<a href="/calculators/body-fat-calculator" class="text-accent underline font-medium hover:no-underline">Use our Body Fat Calculator</a>
-							if you're unsure.
-						</p>
-						<a href="/calculators/body-fat-calculator"
-						   class="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent/80 transition-colors mt-1">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-							Estimate Body Fat
-						</a>
-					</div>
-
-					<!-- Section: Training & Activity -->
-					<div class="sm:col-span-2 mt-2">
-					<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Training &amp; Activity</p>
-						<div class="border-t border-border/30 mt-1.5"></div>
-					</div>
-
-					<div class="field">
-						<label for="activity">Daily Activity Level</label>
-						<div class="select-wrap">
-							<select id="activity" required>
-								<option value="sedentary">Sedentary (desk-job)</option>
-								<option value="light">Lightly Active (active-job/walks)</option>
-								<option value="moderate" selected>Moderately Active (trains 3-5x/week)</option>
-								<option value="active">Highly Active (trains 6-7x/week)</option>
-								<option value="athlete">Competitive Athlete</option>
-							</select>
-						</div>
-					</div>
-					<div class="field">
-						<label for="trainingAge">Lifting Experience</label>
-						<div class="select-wrap">
-							<select id="trainingAge" required>
-								<option value="beginner">Beginner (&lt; 1 year lifting)</option>
-								<option value="intermediate">Intermediate (1-3 years lifting)</option>
-								<option value="advanced">Advanced (3+ years lifting)</option>
-							</select>
+						<div class="field">
+							<label for="weight">Weight <span data-strategy-weight-unit>(kg)</span></label>
+							<div class="select-wrap">
+								<select id="weight" name="weight" required>
+									<option value="0">Select Weight</option>
+									{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
+										<option value={w} selected={w === 82}>{w}</option>
+									))}
+								</select>
+							</div>
 						</div>
 					</div>
 
-					<!-- Section: Goals -->
-					<div class="sm:col-span-2 mt-2">
-					<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Goals</p>
-						<div class="border-t border-border/30 mt-1.5"></div>
-					</div>
+					<!-- STEP 2: Body Composition -->
+					<div id="form-step-2" class="grid gap-3 sm:grid-cols-2 hidden">
+						<div class="sm:col-span-2">
+							<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Body Composition</p>
+							<div class="border-t border-border/30 mt-1.5"></div>
+						</div>
 
-					<div class="field">
-						<label for="goalBias">Preferred Strategy Direction</label>
-						<div class="select-wrap">
-							<select id="goalBias" required>
-								<option value="fat-loss">Fat Loss Focused</option>
-								<option value="recomp" selected>Body Recomposition</option>
-								<option value="lean-bulk">Lean Muscle Bulk</option>
-								<option value="aggressive-bulk">Aggressive Mass Gain</option>
-								<option value="maintain">Weight Maintenance</option>
-							</select>
+						<div class="field sm:col-span-2">
+							<label class="flex items-center gap-2.5 font-semibold cursor-pointer">
+								<input type="checkbox" id="use-navy-bf" name="useNavyBf" class="rounded border-border text-accent focus:ring-accent" />
+								<span class="text-xs text-foreground select-none">Estimate Body Fat using Navy Circumference Method</span>
+							</label>
+						</div>
+
+						<div id="navy-inputs" class="grid gap-3 grid-cols-1 min-[400px]:grid-cols-2 sm:col-span-2 hidden">
+							<div class="field">
+								<label for="waist">Waist <span data-strategy-height-unit>(cm)</span></label>
+								<input id="waist" name="waist" type="number" min="40" max="220" step="0.1" placeholder="e.g. 88" />
+							</div>
+							<div class="field">
+								<label for="neck">Neck <span data-strategy-height-unit>(cm)</span></label>
+								<input id="neck" name="neck" type="number" min="20" max="80" step="0.1" placeholder="e.g. 38" />
+							</div>
+							<div id="hip-field" class="field col-span-2 hidden">
+								<label for="hip">Hip <span data-strategy-height-unit>(cm)</span></label>
+								<input id="hip" name="hip" type="number" min="40" max="220" step="0.1" placeholder="e.g. 95" />
+							</div>
+						</div>
+
+						<div class="field sm:col-span-2" id="bf-direct-input-container">
+							<label for="bodyFat">Estimated Body Fat %</label>
+							<input id="bodyFat" name="bodyFat" type="number" min="3" max="60" step="0.1" placeholder="e.g. 22" required />
+							<p class="text-xs text-muted-foreground leading-relaxed mt-1">
+								Body fat percentage estimates the proportion of your body weight from fat tissue.
+								<a href="/calculators/body-fat-calculator" class="text-accent underline font-medium hover:no-underline">Use our Body Fat Calculator</a>
+								if you're unsure.
+							</p>
 						</div>
 					</div>
-					<div class="field">
-						<label for="protein">Daily Protein (grams, optional)</label>
-						<input id="protein" type="number" min="0" max="400" placeholder="e.g., 140" />
+
+					<!-- STEP 3: Lifestyle & Goals -->
+					<div id="form-step-3" class="grid gap-3 sm:grid-cols-2 hidden">
+						<div class="sm:col-span-2">
+							<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Training &amp; Activity</p>
+							<div class="border-t border-border/30 mt-1.5"></div>
+						</div>
+
+						<div class="field">
+							<label for="activity">Daily Activity Level</label>
+							<div class="select-wrap">
+								<select id="activity" name="activity" required>
+									<option value="sedentary">Sedentary (desk-job)</option>
+									<option value="light">Lightly Active (active-job/walks)</option>
+									<option value="moderate" selected>Moderately Active (trains 3-5x/week)</option>
+									<option value="active">Highly Active (trains 6-7x/week)</option>
+									<option value="athlete">Competitive Athlete</option>
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label for="trainingAge">Lifting Experience</label>
+							<div class="select-wrap">
+								<select id="trainingAge" name="trainingAge" required>
+									<option value="beginner">Beginner (&lt; 1 year lifting)</option>
+									<option value="intermediate">Intermediate (1-3 years lifting)</option>
+									<option value="advanced">Advanced (3+ years lifting)</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="sm:col-span-2 mt-2">
+							<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Goals</p>
+							<div class="border-t border-border/30 mt-1.5"></div>
+						</div>
+
+						<div class="field">
+							<label for="goalBias">Preferred Strategy Direction</label>
+							<div class="select-wrap">
+								<select id="goalBias" name="goalBias" required>
+									<option value="fat-loss">Fat Loss Focused</option>
+									<option value="recomp" selected>Body Recomposition</option>
+									<option value="lean-bulk">Lean Muscle Bulk</option>
+									<option value="aggressive-bulk">Aggressive Mass Gain</option>
+									<option value="maintain">Weight Maintenance</option>
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label for="protein">Daily Protein (grams, optional)</label>
+							<input id="protein" name="protein" type="number" min="0" max="400" placeholder="e.g., 140" />
+						</div>
 					</div>
 
-					<button class="button-primary sm:col-span-2 mt-2" type="submit">Calculate Strategy Recommendation</button>
+					<!-- Wizard Buttons -->
+					<div class="flex items-center justify-between mt-6 pt-4 border-t border-border/60 sm:col-span-2">
+						<button type="button" id="prev-step-btn" class="button-secondary text-xs hidden">
+							← Back
+						</button>
+						<div class="flex-1"></div>
+						<button type="button" id="next-step-btn" class="button-primary text-xs">
+							Next Step →
+						</button>
+						<button type="submit" id="submit-step-btn" class="button-primary text-xs hidden">
+							Calculate Strategy Recommendation
+						</button>
+					</div>
 				</form>
 
 				<div id="strategy-result" class="result-container mt-6 border-t border-border pt-5" aria-live="polite" tabindex="-1">
-					<div class="result-placeholder">
+					<!-- Placeholder (shown initially) -->
+					<div id="res-placeholder" class="result-placeholder">
 						<svg class="text-muted-foreground" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
 						<p class="mt-2 text-sm font-semibold text-foreground">Awaiting Assessment Inputs</p>
 						<p class="mt-1 text-xs text-muted-foreground max-w-xs">Fill in your physical statistics and goals to generate your strategic plan.</p>
+					</div>
+
+					<!-- Result Content (hidden initially) -->
+					<div id="res-content" class="result-content grid gap-4 text-left hidden">
+						<div class="flex items-start justify-between gap-3">
+							<div>
+								<p class="text-xs font-bold uppercase text-accent tracking-wider">Assessment Result</p>
+								<p id="res-recommended" class="mt-1 text-2xl font-black text-foreground"></p>
+							</div>
+							<span id="res-confidence" class="badge badge-accent shrink-0 mt-1"></span>
+						</div>
+
+						<div class="grid gap-3 sm:grid-cols-2">
+							<div class="result-card">
+								<p class="text-xs font-bold uppercase text-muted-foreground">Alternative Strategy</p>
+								<p id="res-alternative" class="mt-1 text-base font-bold text-foreground"></p>
+								<div class="flex items-center gap-2 mt-1.5">
+									<span id="res-alt-confidence" class="text-xs text-muted-foreground"></span>
+									<div class="mini-bar flex-1 max-w-20"><span id="res-alt-confidence-bar"></span></div>
+								</div>
+							</div>
+							<div class="result-card">
+								<p class="text-xs font-bold uppercase text-muted-foreground">Strategy Confidence</p>
+								<p id="res-confidence-label" class="mt-1 text-xl font-black text-foreground"></p>
+								<div class="mini-bar mt-2"><span id="res-confidence-bar"></span></div>
+							</div>
+						</div>
+
+						<div class="grid gap-3 sm:grid-cols-2">
+							<div class="result-card bg-accent/5 border-accent/20 flex flex-col justify-between">
+								<div>
+									<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Starting Calories</p>
+									<p class="mt-1 text-xl font-black text-foreground"><span id="res-target">0</span> <span class="text-xs font-normal text-muted-foreground">kcal/day</span></p>
+									<p id="res-maintenance" class="text-xs text-muted-foreground mt-0.5 font-sans"></p>
+								</div>
+								<div class="mt-2.5">
+									<div class="mini-bar"><span id="res-calories-bar" style="width: 0%"></span></div>
+								</div>
+							</div>
+							<div class="result-card bg-success/5 border-success/20 flex flex-col justify-between">
+								<div>
+									<p class="text-xs font-bold uppercase text-success tracking-wider font-sans">Protein Range</p>
+									<p class="mt-1 text-xl font-black text-foreground"><span id="res-protein-low">0</span>–<span id="res-protein-high">0</span> <span class="text-xs font-normal text-muted-foreground">g/day</span></p>
+									<p class="text-xs text-muted-foreground mt-0.5 font-sans">Based on 1.6 - 2.2 g/kg weight</p>
+								</div>
+								<div class="mt-2.5">
+									<div class="mini-bar"><span id="res-protein-bar" style="width: 0%"></span></div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Rich Macro Distribution breakdown -->
+						<div class="result-card border border-border bg-card/60 p-4">
+							<p class="text-xs font-bold uppercase text-muted-foreground tracking-wider mb-3">Daily Macronutrient Targets</p>
+							<div class="grid grid-cols-3 gap-2.5 text-center">
+								<div class="p-2 bg-accent/5 rounded-xl border border-accent/10">
+									<p class="text-[10px] font-bold text-accent uppercase tracking-wide">Protein</p>
+									<p class="mt-1.5 text-lg font-black text-foreground"><span id="res-macro-protein">0</span>g</p>
+									<p class="text-[9px] text-muted-foreground mt-0.5"><span id="res-macro-protein-kcal">0</span> kcal</p>
+								</div>
+								<div class="p-2 bg-success/5 rounded-xl border border-success/10">
+									<p class="text-[10px] font-bold text-success uppercase tracking-wide">Carbs</p>
+									<p class="mt-1.5 text-lg font-black text-foreground"><span id="res-macro-carbs">0</span>g</p>
+									<p class="text-[9px] text-muted-foreground mt-0.5"><span id="res-macro-carbs-kcal">0</span> kcal</p>
+								</div>
+								<div class="p-2 bg-warning/5 rounded-xl border border-warning/10">
+									<p class="text-[10px] font-bold text-warning uppercase tracking-wide">Fats</p>
+									<p class="mt-1.5 text-lg font-black text-foreground"><span id="res-macro-fats">0</span>g</p>
+									<p class="text-[9px] text-muted-foreground mt-0.5"><span id="res-macro-fats-kcal">0</span> kcal</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="grid gap-3 sm:grid-cols-2">
+							<div class="result-card">
+								<p class="text-xs font-bold uppercase text-muted-foreground">Estimated Weekly Pace</p>
+								<p id="res-pace" class="mt-1 text-base font-black text-foreground"></p>
+								<p class="text-xs text-muted-foreground mt-0.5">Accounts for metabolic adaptation</p>
+							</div>
+							<div class="result-card">
+								<p class="text-xs font-bold uppercase text-muted-foreground">Adaptation Timeline</p>
+								<p id="res-timeline" class="mt-1 text-base font-black text-foreground"></p>
+								<p class="text-xs text-muted-foreground mt-0.5">Compounding velocity decay model</p>
+							</div>
+						</div>
+
+						<div class="rounded-xl border border-border bg-muted/20 p-4 text-xs">
+							<p class="font-bold text-foreground mb-2 flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+								Strategic Assessment Details
+							</p>
+							<ul id="res-details" class="space-y-1.5 pl-5 list-disc text-muted-foreground">
+							</ul>
+						</div>
+
+						<div class="rounded-xl border border-border bg-muted/20 p-4 text-xs">
+							<p class="font-bold text-foreground mb-2 flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+								Strategy Reasoning
+							</p>
+							<ul id="res-reasons" class="space-y-1.5 pl-5 list-disc text-muted-foreground">
+							</ul>
+						</div>
+
+						<!-- Contextual Action Pathway card -->
+						<div class="result-card border border-border bg-card p-4">
+							<p class="text-xs font-bold uppercase text-accent tracking-wider mb-3 flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+								Next-Steps Strategic Pathway
+							</p>
+							<div class="relative pl-5 space-y-4 before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-[1px] before:bg-border">
+								<!-- Step 1 -->
+								<div class="relative">
+									<span class="absolute -left-[21px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent text-[8px] font-bold text-white">1</span>
+									<p class="text-xs font-bold text-foreground">Prepare Your Environment</p>
+									<p class="text-[11px] text-muted-foreground mt-0.5">Pick a calorie tracker app, get a digital food scale, and establish a baseline weighing protocol (weighing daily fasted).</p>
+								</div>
+								<!-- Step 2 -->
+								<div class="relative">
+									<span class="absolute -left-[21px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent text-[8px] font-bold text-white">2</span>
+									<p class="text-xs font-bold text-foreground">Read Your Custom Strategy Roadmap</p>
+									<p class="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+										Understand the science and gotchas. Read the <a id="pathway-strategy-guide-link" href="#" class="text-accent underline font-semibold hover:no-underline"></a> or review the <a id="pathway-compare-link" href="#" class="text-accent underline font-semibold hover:no-underline"></a>.
+									</p>
+								</div>
+								<!-- Step 3 -->
+								<div class="relative">
+									<span class="absolute -left-[21px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent text-[8px] font-bold text-white">3</span>
+									<p class="text-xs font-bold text-foreground">Execute and Monitor Trends</p>
+									<p class="text-[11px] text-muted-foreground mt-0.5">Stay consistent for 3 weeks before adjusting anything. Follow weight trends, not individual daily fluctuations.</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="rounded-xl border border-border bg-card p-4 text-xs">
+							<p class="font-bold text-foreground mb-2 flex items-center gap-1.5">
+								<svg class="text-accent" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+								Tactical Dietary & Behavioral Guidelines
+							</p>
+							<div class="grid gap-3 sm:grid-cols-2 text-[11px] text-muted-foreground leading-relaxed">
+								<div>
+									<p class="font-bold text-foreground mb-0.5">High-Satiety Volume</p>
+									Focus on high-fiber whole foods (leafy greens, cruciferous vegetables, berries) to manage hunger signaling during deficit periods.
+								</div>
+								<div>
+									<p class="font-bold text-foreground mb-0.5">Protein Pacing</p>
+									Distribute daily protein across 4-5 servings of 30-40g each to maximize muscle protein synthesis.
+								</div>
+								<div>
+									<p class="font-bold text-foreground mb-0.5">Hydration Preloading</p>
+									Drink 350-500ml of water 15-30 minutes before main meals to regulate natural satiety signals.
+								</div>
+								<div>
+									<p class="font-bold text-foreground mb-0.5">NEAT Baseline</p>
+									Maintain 8,000-10,000 daily steps to defend metabolic rate against adaptive slowdowns.
+								</div>
+							</div>
+							<div class="mt-3 border-t border-border pt-2.5 text-xs text-muted-foreground flex gap-1.5 items-start">
+								<svg class="shrink-0 text-accent mt-0.5" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+								<span><strong>Reassessment:</strong> If weight does not shift by at least 0.5kg/1lb after 3 weeks of consistent tracking, metabolic adaptation is likely. Adjust targets by 100-150 kcal.</span>
+							</div>
+						</div>
+
+						<div class="flex flex-col sm:flex-row gap-3 pt-1">
+							<a class="button-primary flex-1 text-center text-sm" href="/dashboard">Track Progress & Forecast</a>
+							<button id="save-local-btn" class="button-secondary flex-1 text-sm">
+								<span id="save-btn-text">Save to local profile</span>
+							</button>
+						</div>
+
+						<p class="text-center text-xs text-muted-foreground">
+							Use as an estimate. Adjust targets only after tracking 2-4 weeks of consistent weight trends.
+						</p>
+						<p class="text-center text-xs font-medium text-warning">Educational estimates — consult a healthcare professional before starting.</p>
 					</div>
 				</div>
 			</div>
@@ -195,6 +423,7 @@ const assessSchema = {
 <script>
 	import {
 		mifflin as engineMifflin,
+		katch,
 		strategyRecommendation,
 		calorieTarget,
 		activityFactors as engineActivityFactors,
@@ -203,37 +432,311 @@ const assessSchema = {
 		clamp,
 		calculateNavyBodyFat as engineNavyBF,
 		paceAndTimeline,
+		inToCm,
+		lbToKg,
 	} from '../lib/engines';
 	import { autoFillBodyFat, setStrategyUnitWithCircumferences as setUnit, saveAssessment } from '../lib/strategyForm';
+	import { rebuildWeightSelect } from '../lib/units';
 
 	const activityFactors = engineActivityFactors;
 	const labels = goalLabels;
-	let strategyUnit = 'metric';
+	let strategyUnit = typeof localStorage !== 'undefined' ? localStorage.getItem('bodycompos.preferredUnit') || 'metric' : 'metric';
+	let currentStep = 1;
+
+	// Initial imperial conversion if saved unit is imperial
+	if (strategyUnit === 'imperial') {
+		const form = document.querySelector('#strategy-form') as HTMLFormElement | null;
+		const weightSelect = document.getElementById('weight') as HTMLSelectElement | null;
+		if (form && weightSelect) {
+			form.height.min = '47';
+			form.height.max = '91';
+			form.height.placeholder = 'e.g. 70';
+			form.height.value = '69';
+			document.querySelectorAll('[data-strategy-unit]').forEach(b => b.setAttribute('aria-pressed', String(b.getAttribute('data-strategy-unit') === strategyUnit)));
+			document.querySelectorAll('[data-strategy-height-unit]').forEach(l => l.textContent = '(in)');
+			document.querySelectorAll('[data-strategy-weight-unit]').forEach(l => l.textContent = '(lb)');
+			
+			const waistLabel = form.querySelector('label[for="waist"] span[data-strategy-height-unit]');
+			const neckLabel = form.querySelector('label[for="neck"] span[data-strategy-height-unit]');
+			const hipLabel = form.querySelector('label[for="hip"] span[data-strategy-height-unit]');
+			if (waistLabel) waistLabel.textContent = '(in)';
+			if (neckLabel) neckLabel.textContent = '(in)';
+			if (hipLabel) hipLabel.textContent = '(in)';
+			
+			rebuildWeightSelect(weightSelect, 'imperial', 180);
+		}
+	}
+
+	const form = document.querySelector('#strategy-form') as HTMLFormElement;
+	const prevBtn = document.getElementById('prev-step-btn') as HTMLButtonElement;
+	const nextBtn = document.getElementById('next-step-btn') as HTMLButtonElement;
+	const submitBtn = document.getElementById('submit-step-btn') as HTMLButtonElement;
+
+	function showStep(step: number) {
+		currentStep = step;
+		// Show/hide step elements
+		document.getElementById('form-step-1')?.classList.toggle('hidden', step !== 1);
+		document.getElementById('form-step-2')?.classList.toggle('hidden', step !== 2);
+		document.getElementById('form-step-3')?.classList.toggle('hidden', step !== 3);
+
+		// Button states
+		prevBtn?.classList.toggle('hidden', step === 1);
+		nextBtn?.classList.toggle('hidden', step === 3);
+		submitBtn?.classList.toggle('hidden', step !== 3);
+
+		// Stepper progress indicator
+		const lineProgress = document.getElementById('step-progress-line');
+		if (lineProgress) {
+			lineProgress.style.width = `${(step - 1) * 50}%`;
+		}
+
+		for (let i = 1; i <= 3; i++) {
+			const badge = document.getElementById(`step-badge-${i}`);
+			const text = document.getElementById(`step-text-${i}`);
+			if (!badge || !text) continue;
+
+			if (i < step) {
+				// Completed
+				badge.className = 'w-8 h-8 rounded-full bg-success text-white flex items-center justify-center font-bold text-sm border-2 border-success transition-all duration-300 shadow-sm';
+				badge.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+				text.className = 'text-[10px] font-bold text-success';
+			} else if (i === step) {
+				// Active
+				badge.className = 'w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm border-2 border-accent transition-all duration-300 shadow-md shadow-accent/20';
+				badge.textContent = String(i);
+				text.className = 'text-[10px] font-bold text-foreground';
+			} else {
+				// Pending
+				badge.className = 'w-8 h-8 rounded-full bg-card text-muted-foreground flex items-center justify-center font-bold text-sm border-2 border-border transition-all duration-300';
+				badge.textContent = String(i);
+				text.className = 'text-[10px] font-semibold text-muted-foreground';
+			}
+		}
+	}
+
+	// Trigger stepper click navigations (only for steps we already passed/visited)
+	document.querySelectorAll('.step-indicator').forEach((indicator) => {
+		indicator.addEventListener('click', () => {
+			const targetStep = Number(indicator.getAttribute('data-step'));
+			if (targetStep < currentStep) {
+				showStep(targetStep);
+			} else if (targetStep > currentStep) {
+				// Validate intermediate steps
+				let walkStep = currentStep;
+				while (walkStep < targetStep) {
+					if (!validateStep(walkStep)) {
+						showStep(walkStep);
+						return;
+					}
+					walkStep++;
+				}
+				showStep(targetStep);
+			}
+		});
+	});
+
+	prevBtn?.addEventListener('click', () => {
+		if (currentStep > 1) {
+			showStep(currentStep - 1);
+		}
+	});
+
+	nextBtn?.addEventListener('click', () => {
+		if (validateStep(currentStep)) {
+			showStep(currentStep + 1);
+		}
+	});
+
+	// Custom Inline Validation Checks
+	function showError(inputId: string, errorMsg: string) {
+		const input = document.getElementById(inputId) as HTMLInputElement | HTMLSelectElement;
+		if (!input) return;
+		
+		input.classList.add('border-destructive');
+		
+		// Remove existing error span if any
+		const parent = input.closest('.field');
+		parent?.querySelector('.error-msg')?.remove();
+
+		// Add new error span
+		const span = document.createElement('p');
+		span.className = 'error-msg text-xs text-destructive mt-1.5 font-medium';
+		span.textContent = errorMsg;
+		parent?.appendChild(span);
+	}
+
+	function clearError(inputId: string) {
+		const input = document.getElementById(inputId) as HTMLInputElement | HTMLSelectElement;
+		if (!input) return;
+		input.classList.remove('border-destructive');
+		input.closest('.field')?.querySelector('.error-msg')?.remove();
+	}
+
+	// Setup listeners to clear error on input change/type
+	const allFields = ['age', 'height', 'weight', 'bodyFat', 'waist', 'neck', 'hip', 'protein'];
+	allFields.forEach(fieldId => {
+		const el = document.getElementById(fieldId);
+		el?.addEventListener('input', () => clearError(fieldId));
+		el?.addEventListener('change', () => clearError(fieldId));
+	});
+
+	function validateStep(stepIndex: number): boolean {
+		let isValid = true;
+		if (stepIndex === 1) {
+			const ageInput = document.getElementById('age') as HTMLInputElement;
+			const age = Number(ageInput.value);
+			if (!ageInput.value || age < 15 || age > 90) {
+				showError('age', 'Please enter a valid age between 15 and 90.');
+				isValid = false;
+			} else {
+				clearError('age');
+			}
+
+			const heightInput = document.getElementById('height') as HTMLInputElement;
+			const height = Number(heightInput.value);
+			const hMin = strategyUnit === 'metric' ? 120 : 47;
+			const hMax = strategyUnit === 'metric' ? 230 : 91;
+			if (!heightInput.value || height < hMin || height > hMax) {
+				showError('height', `Height must be between ${hMin} and ${hMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
+				isValid = false;
+			} else {
+				clearError('height');
+			}
+
+			const weightInput = document.getElementById('weight') as HTMLInputElement;
+			const weight = Number(weightInput.value);
+			const wMin = strategyUnit === 'metric' ? 20 : 44;
+			const wMax = strategyUnit === 'metric' ? 250 : 551;
+			if (!weightInput.value || weight < wMin || weight > wMax) {
+				showError('weight', `Weight must be between ${wMin} and ${wMax} ${strategyUnit === 'metric' ? 'kg' : 'lbs'}.`);
+				isValid = false;
+			} else {
+				clearError('weight');
+			}
+		} else if (stepIndex === 2) {
+			const useNavy = useNavyCheckbox?.checked;
+			if (useNavy) {
+				const waistInput = document.getElementById('waist') as HTMLInputElement;
+				const waist = Number(waistInput.value);
+				const waMin = strategyUnit === 'metric' ? 40 : 16;
+				const waMax = strategyUnit === 'metric' ? 220 : 87;
+				if (!waistInput.value || waist < waMin || waist > waMax) {
+					showError('waist', `Waist must be between ${waMin} and ${waMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
+					isValid = false;
+				} else {
+					clearError('waist');
+				}
+
+				const neckInput = document.getElementById('neck') as HTMLInputElement;
+				const neck = Number(neckInput.value);
+				const nMin = strategyUnit === 'metric' ? 20 : 8;
+				const nMax = strategyUnit === 'metric' ? 80 : 31;
+				if (!neckInput.value || neck < nMin || neck > nMax) {
+					showError('neck', `Neck must be between ${nMin} and ${nMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
+					isValid = false;
+				} else {
+					clearError('neck');
+				}
+
+				const sex = sexSelect?.value;
+				if (sex === 'female') {
+					const hipInput = document.getElementById('hip') as HTMLInputElement;
+					const hip = Number(hipInput.value);
+					const hiMin = strategyUnit === 'metric' ? 40 : 16;
+					const hiMax = strategyUnit === 'metric' ? 220 : 87;
+					if (!hipInput.value || hip < hiMin || hip > hiMax) {
+						showError('hip', `Hip must be between ${hiMin} and ${hiMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
+						isValid = false;
+					} else {
+						clearError('hip');
+					}
+				}
+			} else {
+				const bfInput = document.getElementById('bodyFat') as HTMLInputElement;
+				const bf = Number(bfInput.value);
+				if (!bfInput.value || bf < 3 || bf > 60) {
+					showError('bodyFat', 'Please enter a valid body fat percentage between 3% and 60%.');
+					isValid = false;
+				} else {
+					clearError('bodyFat');
+				}
+			}
+		} else if (stepIndex === 3) {
+			const proteinInput = document.getElementById('protein') as HTMLInputElement;
+			if (proteinInput.value) {
+				const protein = Number(proteinInput.value);
+				if (protein < 0 || protein > 400) {
+					showError('protein', 'Please enter a valid protein target between 0 and 400g.');
+					isValid = false;
+				} else {
+					clearError('protein');
+				}
+			}
+		}
+		return isValid;
+	}
+
+	function animateCounter(element: HTMLElement, start: number, end: number, duration: number = 800) {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			element.textContent = String(end);
+			return;
+		}
+		
+		let startTime: number | null = null;
+		
+		function step(timestamp: number) {
+			if (!startTime) startTime = timestamp;
+			const progress = Math.min((timestamp - startTime) / duration, 1);
+			const easeProgress = progress * (2 - progress); // outQuad
+			const current = Math.floor(start + easeProgress * (end - start));
+			element.textContent = String(current);
+			if (progress < 1) {
+				window.requestAnimationFrame(step);
+			} else {
+				element.textContent = String(end);
+			}
+		}
+		
+		window.requestAnimationFrame(step);
+	}
 
 	autoFillBodyFat();
+	showStep(1); // Initialize Stepper on load
 
 	document.querySelectorAll('[data-strategy-unit]').forEach((button) => {
 		button.addEventListener('click', () => {
 			const form = document.querySelector('#strategy-form') as HTMLFormElement;
-			strategyUnit = setUnit(button.getAttribute('data-strategy-unit'), strategyUnit, form);
+			const targetUnit = button.getAttribute('data-strategy-unit') ?? 'metric';
+			const weightSelect = document.getElementById('weight') as HTMLSelectElement | null;
+			const currentWeightVal = weightSelect ? Number(weightSelect.value) : 0;
+
+			strategyUnit = setUnit(targetUnit, strategyUnit, form);
+			if (typeof localStorage !== 'undefined') {
+				localStorage.setItem('bodycompos.preferredUnit', strategyUnit);
+			}
+
+			// Rebuild weight select dropdown dynamically
+			rebuildWeightSelect(weightSelect, targetUnit as 'metric' | 'imperial', currentWeightVal);
+
+			allFields.forEach(clearError); // clear any active validation checks
 		});
 	});
 
 	// Input toggle logic
 	const useNavyCheckbox = document.getElementById('use-navy-bf') as HTMLInputElement;
 	const navyInputsDiv = document.getElementById('navy-inputs');
-	const bodyFatField = document.getElementById('bodyFat')?.closest('.field');
+	const bfDirectContainer = document.getElementById('bf-direct-input-container');
 
 	useNavyCheckbox?.addEventListener('change', () => {
 		if (useNavyCheckbox.checked) {
 			navyInputsDiv?.classList.remove('hidden');
-			bodyFatField?.classList.add('hidden');
+			bfDirectContainer?.classList.add('hidden');
 			(document.getElementById('bodyFat') as HTMLInputElement).required = false;
 			(document.getElementById('waist') as HTMLInputElement).required = true;
 			(document.getElementById('neck') as HTMLInputElement).required = true;
 		} else {
 			navyInputsDiv?.classList.add('hidden');
-			bodyFatField?.classList.remove('hidden');
+			bfDirectContainer?.classList.remove('hidden');
 			(document.getElementById('bodyFat') as HTMLInputElement).required = true;
 			(document.getElementById('waist') as HTMLInputElement).required = false;
 			(document.getElementById('neck') as HTMLInputElement).required = false;
@@ -261,6 +764,11 @@ const assessSchema = {
 	document.querySelector('#strategy-form')?.addEventListener('submit', (event) => {
 		event.preventDefault();
 		const form = event.currentTarget as HTMLFormElement;
+
+		// Final Step 3 validation check
+		if (!validateStep(3)) {
+			return;
+		}
 
 		const rawInput = {
 			sex: form.sex.value,
@@ -291,7 +799,10 @@ const assessSchema = {
 
 		const proteinAdequate = rawInput.protein ? rawInput.protein >= rawInput.weightKg * 1.6 : false;
 		const rec = strategyRecommendation({ ...rawInput, proteinAdequate });
-		const bmr = engineMifflin({ sex: rawInput.sex as 'male' | 'female', age: rawInput.age, heightCm: rawInput.heightCm, weightKg: rawInput.weightKg });
+		const hasBf = rawInput.bodyFat && rawInput.bodyFat > 0;
+		const bmr = hasBf
+			? katch(rawInput.weightKg, rawInput.bodyFat)
+			: engineMifflin({ sex: rawInput.sex as 'male' | 'female', age: rawInput.age, heightCm: rawInput.heightCm, weightKg: rawInput.weightKg });
 		const maintenance = round(bmr * activityFactors[rawInput.activity as keyof typeof activityFactors]);
 		const target = calorieTarget(maintenance, rec.recommended);
 		const proteinLow = round(rawInput.weightKg * 1.6);
@@ -303,129 +814,229 @@ const assessSchema = {
 		const { paceText, timelineText } = paceAndTimeline(rec.recommended, rawInput.weightKg, strategyUnit as 'metric' | 'imperial');
 		
 		const outputContainer = document.querySelector('#strategy-result');
-		if (outputContainer) {
+		const placeholder = document.getElementById('res-placeholder');
+		const content = document.getElementById('res-content');
+
+		if (outputContainer && placeholder && content) {
 			outputContainer.classList.add('has-result');
-			outputContainer.innerHTML = `
-				<div class="result-content grid gap-4 text-left">
-					<div class="flex items-start justify-between gap-3">
-						<div>
-							<p class="text-xs font-bold uppercase text-accent tracking-wider">Assessment Result</p>
-							<p class="mt-1 text-2xl font-black text-foreground">${labels[rec.recommended]}</p>
-						</div>
-						<span class="badge badge-accent shrink-0 mt-1">${rec.confidence}% Confidence</span>
-					</div>
+			placeholder.classList.add('hidden');
+			content.classList.remove('hidden');
 
-					<div class="grid gap-3 sm:grid-cols-2">
-						<div class="result-card">
-							<p class="text-xs font-bold uppercase text-muted-foreground">Alternative Strategy</p>
-							<p class="mt-1 text-base font-bold text-foreground">${labels[rec.alternative]}</p>
-							<div class="flex items-center gap-2 mt-1.5">
-								<span class="text-xs text-muted-foreground">Confidence: ${rec.alternativeConfidence}%</span>
-								<div class="mini-bar flex-1 max-w-20"><span style="width:${rec.alternativeConfidence}%"></span></div>
-							</div>
-						</div>
-						<div class="result-card">
-							<p class="text-xs font-bold uppercase text-muted-foreground">Strategy Confidence</p>
-							<p class="mt-1 text-xl font-black text-foreground">${rec.confidence}%</p>
-							<div class="mini-bar mt-2"><span style="width:${rec.confidence}%"></span></div>
-						</div>
-					</div>
+			// Recommended Strategy & Confidence
+			const recEl = document.getElementById('res-recommended');
+			if (recEl) recEl.textContent = labels[rec.recommended];
+			
+			const confEl = document.getElementById('res-confidence');
+			if (confEl) confEl.textContent = `${rec.confidence}% Confidence`;
 
-					<div class="grid gap-3 sm:grid-cols-2">
-						<div class="result-card bg-accent/5 border-accent/20">
-							<p class="text-xs font-bold uppercase text-accent tracking-wider">Starting Calories</p>
-							<p class="mt-1 text-xl font-black text-foreground">${target} <span class="text-xs font-normal text-muted-foreground">kcal/day</span></p>
-							<p class="text-xs text-muted-foreground mt-0.5">Maintenance TDEE: ${maintenance} kcal</p>
-						</div>
-						<div class="result-card bg-success/5 border-success/20">
-							<p class="text-xs font-bold uppercase text-success tracking-wider">Protein Range</p>
-							<p class="mt-1 text-xl font-black text-foreground">${proteinLow} - ${proteinHigh} <span class="text-xs font-normal text-muted-foreground">g/day</span></p>
-							<p class="text-xs text-muted-foreground mt-0.5">Based on 1.6 - 2.2 g/kg weight</p>
-						</div>
-					</div>
+			// Alternative Strategy & Confidence Bar
+			const altEl = document.getElementById('res-alternative');
+			if (altEl) altEl.textContent = labels[rec.alternative];
+			
+			const altConfLabel = document.getElementById('res-alt-confidence');
+			if (altConfLabel) altConfLabel.textContent = `Confidence: ${rec.alternativeConfidence}%`;
+			
+			const altBar = document.getElementById('res-alt-confidence-bar');
+			if (altBar) {
+				setTimeout(() => {
+					altBar.style.width = `${rec.alternativeConfidence}%`;
+				}, 50);
+			}
 
-					<div class="grid gap-3 sm:grid-cols-2">
-						<div class="result-card">
-							<p class="text-xs font-bold uppercase text-muted-foreground">Estimated Weekly Pace</p>
-							<p class="mt-1 text-base font-black text-foreground">${paceText}</p>
-							<p class="text-xs text-muted-foreground mt-0.5">Accounts for metabolic adaptation</p>
-						</div>
-						<div class="result-card">
-							<p class="text-xs font-bold uppercase text-muted-foreground">Adaptation Timeline</p>
-							<p class="mt-1 text-base font-black text-foreground">${timelineText}</p>
-							<p class="text-xs text-muted-foreground mt-0.5">Compounding velocity decay model</p>
-						</div>
-					</div>
+			// Strategy Confidence & Bar
+			const confLabel = document.getElementById('res-confidence-label');
+			if (confLabel) {
+				animateCounter(confLabel, 0, rec.confidence, 800);
+			}
+			
+			const confBar = document.getElementById('res-confidence-bar');
+			if (confBar) {
+				setTimeout(() => {
+					confBar.style.width = `${rec.confidence}%`;
+				}, 50);
+			}
 
-					<div class="rounded-xl border border-border bg-muted/20 p-4 text-xs">
-						<p class="font-bold text-foreground mb-2 flex items-center gap-1.5">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-							Strategic Assessment Details
-						</p>
-						<ul class="space-y-1.5 pl-5 list-disc text-muted-foreground">
-							<li>Estimated body fat is <strong>${rawInput.bodyFat}%</strong>${useNavy ? ' (Calculated via Navy Circumference Method)' : ' (User entered)'}.</li>
-							<li>Classified training status: <strong>${rawInput.trainingAge}</strong>.</li>
-							<li>${proteinAdequate ? 'Your reported protein intake is sufficient to preserve active muscle tissue.' : 'Your reported protein is low. We advise elevating protein to prevent lean muscle loss.'}</li>
-						</ul>
-					</div>
+			// Calories & Protein
+			const targetCalEl = document.getElementById('res-target');
+			if (targetCalEl) {
+				animateCounter(targetCalEl, 0, target, 800);
+			}
+			
+			const maintCalEl = document.getElementById('res-maintenance');
+			if (maintCalEl) maintCalEl.textContent = `Maintenance TDEE: ${maintenance} kcal`;
 
-					<div class="rounded-xl border border-border bg-card p-4 text-xs">
-						<p class="font-bold text-foreground mb-2 flex items-center gap-1.5">
-							<svg class="text-accent" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-							Tactical Dietary & Behavioral Guidelines
-						</p>
-						<div class="grid gap-3 sm:grid-cols-2 text-[11px] text-muted-foreground leading-relaxed">
-							<div>
-								<p class="font-bold text-foreground mb-0.5">High-Satiety Volume</p>
-								Focus on high-fiber whole foods (leafy greens, cruciferous vegetables, berries) to manage hunger signaling during deficit periods.
-							</div>
-							<div>
-								<p class="font-bold text-foreground mb-0.5">Protein Pacing</p>
-								Distribute daily protein across 4-5 servings of 30-40g each to maximize muscle protein synthesis.
-							</div>
-							<div>
-								<p class="font-bold text-foreground mb-0.5">Hydration Preloading</p>
-								Drink 350-500ml of water 15-30 minutes before main meals to regulate natural satiety signals.
-							</div>
-							<div>
-								<p class="font-bold text-foreground mb-0.5">NEAT Baseline</p>
-								Maintain 8,000-10,000 daily steps to defend metabolic rate against adaptive slowdowns.
-							</div>
-						</div>
-						<div class="mt-3 border-t border-border pt-2.5 text-xs text-muted-foreground flex gap-1.5 items-start">
-							<svg class="shrink-0 text-accent mt-0.5" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-							<span><strong>Reassessment:</strong> If weight does not shift by at least 0.5kg/1lb after 3 weeks of consistent tracking, metabolic adaptation is likely. Adjust targets by 100-150 kcal.</span>
-						</div>
-					</div>
+			const pLowEl = document.getElementById('res-protein-low');
+			if (pLowEl) animateCounter(pLowEl, 0, proteinLow, 800);
 
-					<div class="flex flex-col sm:flex-row gap-3 pt-1">
-						<a class="button-primary flex-1 text-center text-sm" href="/dashboard">Track Progress & Forecast</a>
-						<button id="save-local-btn" class="button-secondary flex-1 text-sm">
-							<span id="save-btn-text">Save to local profile</span>
-						</button>
-					</div>
+			const pHighEl = document.getElementById('res-protein-high');
+			if (pHighEl) animateCounter(pHighEl, 0, proteinHigh, 800);
 
-					<p class="text-center text-xs text-muted-foreground">
-						Use as an estimate. Adjust targets only after tracking 2-4 weeks of consistent weight trends.
-					</p>
-					<p class="text-center text-xs font-medium text-warning">Educational estimates — consult a healthcare professional before starting.</p>
-				</div>
-			`;
+			// Macro targets calculations
+			const avgProtein = round((proteinLow + proteinHigh) / 2);
+			const proteinKcal = avgProtein * 4;
+			
+			const fatPct = rec.recommended === 'fat-loss' ? 0.20 : 0.25;
+			const fatKcal = round(target * fatPct);
+			const fatGrams = round(fatKcal / 9);
+			
+			const carbKcal = Math.max(0, target - proteinKcal - fatKcal);
+			const carbGrams = round(carbKcal / 4);
 
-			const saveBtn = document.getElementById('save-local-btn');
-			saveBtn?.addEventListener('click', () => {
-				const btnText = document.getElementById('save-btn-text');
-				if (btnText) {
-					btnText.innerHTML = 'Saved Successfully ✓';
-					saveBtn.classList.remove('button-secondary');
-					saveBtn.classList.add('bg-success', 'text-white', 'border-success');
-					setTimeout(() => {
-						btnText.innerHTML = 'Save to local profile';
-						saveBtn.classList.remove('bg-success', 'text-white', 'border-success');
-						saveBtn.classList.add('button-secondary');
-					}, 2500);
+			// Render macros values with animations
+			const macroProteinEl = document.getElementById('res-macro-protein');
+			const macroProteinKcalEl = document.getElementById('res-macro-protein-kcal');
+			const macroCarbsEl = document.getElementById('res-macro-carbs');
+			const macroCarbsKcalEl = document.getElementById('res-macro-carbs-kcal');
+			const macroFatsEl = document.getElementById('res-macro-fats');
+			const macroFatsKcalEl = document.getElementById('res-macro-fats-kcal');
+
+			if (macroProteinEl && macroProteinKcalEl) {
+				animateCounter(macroProteinEl, 0, avgProtein, 800);
+				animateCounter(macroProteinKcalEl, 0, proteinKcal, 800);
+			}
+			if (macroCarbsEl && macroCarbsKcalEl) {
+				animateCounter(macroCarbsEl, 0, carbGrams, 800);
+				animateCounter(macroCarbsKcalEl, 0, carbKcal, 800);
+			}
+			if (macroFatsEl && macroFatsKcalEl) {
+				animateCounter(macroFatsEl, 0, fatGrams, 800);
+				animateCounter(macroFatsKcalEl, 0, fatKcal, 800);
+			}
+
+			// Progress bars animation
+			const caloriesBar = document.getElementById('res-calories-bar');
+			if (caloriesBar) {
+				const pct = Math.min(100, Math.round((target / maintenance) * 100));
+				setTimeout(() => {
+					caloriesBar.style.width = `${pct}%`;
+				}, 50);
+			}
+
+			const proteinBar = document.getElementById('res-protein-bar');
+			if (proteinBar) {
+				const pct = Math.min(100, Math.round((avgProtein / 220) * 100));
+				setTimeout(() => {
+					proteinBar.style.width = `${pct}%`;
+				}, 50);
+			}
+
+			// Pace & Timeline
+			const paceEl = document.getElementById('res-pace');
+			if (paceEl) paceEl.textContent = paceText;
+
+			const timelineEl = document.getElementById('res-timeline');
+			if (timelineEl) timelineEl.textContent = timelineText;
+
+			// Strategic Assessment Details (programmatic list item creation to prevent innerHTML injection)
+			const detailsUl = document.getElementById('res-details');
+			if (detailsUl) {
+				detailsUl.innerHTML = ''; // safe clear
+				
+				// Item 1: Body fat
+				const li1 = document.createElement('li');
+				li1.textContent = 'Estimated body fat is ';
+				const strong1 = document.createElement('strong');
+				strong1.textContent = `${round(rawInput.bodyFat, 1)}%`;
+				li1.appendChild(strong1);
+				li1.appendChild(document.createTextNode(useNavy ? ' (Calculated via Navy Circumference Method).' : ' (User entered).'));
+				detailsUl.appendChild(li1);
+
+				// Item 2: Training status
+				const li2 = document.createElement('li');
+				li2.textContent = 'Classified training status: ';
+				const strong2 = document.createElement('strong');
+				strong2.textContent = rawInput.trainingAge;
+				li2.appendChild(strong2);
+				li2.appendChild(document.createTextNode('.'));
+				detailsUl.appendChild(li2);
+
+				// Item 3: Protein adequacy
+				const li3 = document.createElement('li');
+				li3.textContent = proteinAdequate 
+					? 'Your reported protein intake is sufficient to preserve active muscle tissue.' 
+					: 'Your reported protein is low. We advise elevating protein to prevent lean muscle loss.';
+				detailsUl.appendChild(li3);
+			}
+
+			// Strategy Reasoning list (rec.reasons)
+			const reasonsUl = document.getElementById('res-reasons');
+			if (reasonsUl) {
+				reasonsUl.innerHTML = '';
+				rec.reasons.forEach(reasonText => {
+					const li = document.createElement('li');
+					li.textContent = reasonText;
+					reasonsUl.appendChild(li);
+				});
+			}
+
+			// Contextual pathway links based on recommended strategy
+			const strategyGuides = {
+				'fat-loss': {
+					guide: 'Should I Cut or Bulk Guide',
+					guideUrl: '/guides/should-i-cut-or-bulk',
+					compare: 'Cut vs. Recomp Comparison',
+					compareUrl: '/compare/cut-vs-recomp'
+				},
+				'lean-bulk': {
+					guide: 'Should I Cut or Bulk Guide',
+					guideUrl: '/guides/should-i-cut-or-bulk',
+					compare: 'Lean vs. Aggressive Bulk Comparison',
+					compareUrl: '/compare/lean-bulk-vs-aggressive-bulk'
+				},
+				'aggressive-bulk': {
+					guide: 'Should I Cut or Bulk Guide',
+					guideUrl: '/guides/should-i-cut-or-bulk',
+					compare: 'Lean vs. Aggressive Bulk Comparison',
+					compareUrl: '/compare/lean-bulk-vs-aggressive-bulk'
+				},
+				recomp: {
+					guide: 'Science of Body Recomposition',
+					guideUrl: '/guides/body-recomposition',
+					compare: 'Cut vs. Recomp Comparison',
+					compareUrl: '/compare/cut-vs-recomp'
+				},
+				maintain: {
+					guide: 'Maintenance Calories Guide',
+					guideUrl: '/guides/maintenance-calories',
+					compare: 'BMI vs. Body Fat Comparison',
+					compareUrl: '/compare/bmi-vs-body-fat-percentage'
 				}
-			});
+			};
+
+			const guideInfo = strategyGuides[rec.recommended as keyof typeof strategyGuides] || strategyGuides['recomp'];
+			
+			const guideLink = document.getElementById('pathway-strategy-guide-link') as HTMLAnchorElement;
+			const compareLink = document.getElementById('pathway-compare-link') as HTMLAnchorElement;
+
+			if (guideLink) {
+				guideLink.textContent = guideInfo.guide;
+				guideLink.href = guideInfo.guideUrl;
+			}
+			if (compareLink) {
+				compareLink.textContent = guideInfo.compare;
+				compareLink.href = guideInfo.compareUrl;
+			}
+
+			// Setup Save Button listener
+			const saveBtn = document.getElementById('save-local-btn');
+			if (saveBtn) {
+				const newSaveBtn = saveBtn.cloneNode(true) as HTMLButtonElement;
+				saveBtn.parentNode?.replaceChild(newSaveBtn, saveBtn);
+				
+				newSaveBtn.addEventListener('click', () => {
+					const btnText = document.getElementById('save-btn-text');
+					if (btnText) {
+						btnText.textContent = 'Saved Successfully ✓';
+						newSaveBtn.classList.remove('button-secondary');
+						newSaveBtn.classList.add('bg-success', 'text-white', 'border-success');
+						setTimeout(() => {
+							btnText.textContent = 'Save to local profile';
+							newSaveBtn.classList.remove('bg-success', 'text-white', 'border-success');
+							newSaveBtn.classList.add('button-secondary');
+						}, 2500);
+					}
+				});
+			}
 
 			outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 			(outputContainer as HTMLElement).focus();

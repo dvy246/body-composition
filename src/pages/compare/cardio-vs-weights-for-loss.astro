@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "Cardio vs Weights for Fat Loss - Training Breakdown | BodyCompOS";
+const description = "Compare weights (resistance training) vs cardio for body composition fat loss and muscle retention.";
+const canonical = `${DOMAIN}/compare/cardio-vs-weights-for-loss`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+				<span>/</span>
+				<span class="text-foreground">Cardio vs Weights</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Exercise Modalities Compared</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Cardio vs <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Weights</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					Which training type burns more fat and preserves lean body mass? We analyze the metabolic differences between aerobic cardiovascular work and heavy resistance lifting.
+				</p>
+			</div>
+
+			<!-- Core comparison structure -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_280px]">
+				<div class="space-y-8">
+					<div class="surface rounded-2xl border border-border overflow-hidden">
+						<table class="w-full text-left text-xs border-collapse">
+							<thead>
+								<tr class="border-b border-border bg-muted/10">
+									<th class="p-4 font-bold text-foreground">Variable</th>
+									<th class="p-4 font-bold text-foreground">Weights (Resistance)</th>
+									<th class="p-4 font-bold text-foreground">Cardio (Aerobic)</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-border/60">
+								<tr>
+									<td class="p-4 font-bold text-foreground">Calories Burned (Active)</td>
+									<td class="p-4 text-muted-foreground">Moderate (200-350 kcal/hr depending on intensity)</td>
+									<td class="p-4 text-muted-foreground">High (400-600+ kcal/hr depending on speed/pace)</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Post-Exercise Burn (EPOC)</td>
+									<td class="p-4 text-muted-foreground">High (elevated metabolism up to 24-48 hours)</td>
+									<td class="p-4 text-muted-foreground">Minimal (returns to baseline quickly)</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Muscle Tissue Impact</td>
+									<td class="p-4 text-muted-foreground">Builds & preserves lean body mass (anabolic)</td>
+									<td class="p-4 text-muted-foreground">Neutral or catabolic (if volume is excessive in deficit)</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="prose-lite text-sm text-muted-foreground space-y-4">
+						<h3 class="text-lg font-bold text-foreground">The Verdict on Exercise for Body Composition</h3>
+						<p>
+							During a caloric deficit, your body is looking to conserve energy by metabolizing costly tissues. Muscle is highly active metabolically, while fat tissue is passive storage. Without the intense stimulus of heavy lifting (weights), your body will catabolize muscle tissue for fuel.
+						</p>
+						<p>
+							To optimize body composition, make <strong>weights (resistance training)</strong> the core foundation of your program, and use <strong>cardio</strong> primarily as a tool for cardiovascular health and auxiliary calorie burn.
+						</p>
+					</div>
+				</div>
+
+				<div class="space-y-6">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Protein target</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">
+							Protect muscle tissue further by estimating your daily protein target ranges.
+						</p>
+						<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-3 block">Protein Target</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

@@ -12,16 +12,16 @@ const { mode, title, description, primaryInputs = [], formula = 'Uses the standa
 
 // Map fields to modes to control display
 const fieldGroups = {
-	sex: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition', 'ideal'],
-	age: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition'],
-	height: ['tdee', 'maintenance', 'bodyfat', 'ffmi', 'ideal', 'bmi', 'whtr', 'composition', 'bmr'],
-	weight: ['tdee', 'calorie', 'protein', 'timeline', 'bodyfat', 'ffmi', 'lbm', 'macro', 'maintenance', 'bmi', 'composition', 'deficit', 'surplus', 'target', 'muscle', 'recomp', 'bmr'],
-	bodyFat: ['tdee', 'bodyfat', 'ffmi', 'lbm', 'composition', 'target', 'recomp', 'bmr'],
+	sex: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition', 'ideal', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'daily-needs', 'weight-loss-calories', 'weight-gain-calories'],
+	age: ['tdee', 'maintenance', 'bmr', 'bodyfat', 'composition', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'daily-needs', 'weight-loss-calories', 'weight-gain-calories'],
+	height: ['tdee', 'maintenance', 'bodyfat', 'ffmi', 'ideal', 'bmi', 'whtr', 'composition', 'bmr', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'daily-needs', 'weight-loss-calories', 'weight-gain-calories'],
+	weight: ['tdee', 'calorie', 'protein', 'timeline', 'bodyfat', 'ffmi', 'lbm', 'macro', 'maintenance', 'bmi', 'composition', 'deficit', 'surplus', 'target', 'muscle', 'recomp', 'bmr', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'daily-needs', 'weight-loss-calories', 'weight-gain-calories'],
+	bodyFat: ['tdee', 'bodyfat', 'ffmi', 'lbm', 'composition', 'target', 'recomp', 'bmr', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'daily-needs', 'weight-loss-calories', 'weight-gain-calories'],
 	waist: ['bodyfat', 'composition', 'whtr'],
 	neck: ['bodyfat', 'composition'],
 	hip: ['bodyfat', 'composition'],
-	activity: ['tdee', 'calorie', 'maintenance', 'deficit', 'surplus', 'muscle', 'recomp'],
-	goal: ['calorie', 'macro', 'deficit', 'surplus', 'timeline', 'muscle', 'recomp'],
+	activity: ['tdee', 'calorie', 'maintenance', 'deficit', 'surplus', 'muscle', 'recomp', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'daily-needs', 'weight-loss-calories', 'weight-gain-calories'],
+	goal: ['calorie', 'macro', 'deficit', 'surplus', 'timeline', 'muscle', 'recomp', 'target-calories'],
 	targetWeight: ['timeline'],
 	targetBodyFat: ['target'],
 };
@@ -33,14 +33,77 @@ function isFieldVisible(key: keyof typeof fieldGroups) {
 function fieldClass(key: keyof typeof fieldGroups) {
 	return `field ${isFieldVisible(key) ? '' : 'hidden'}`;
 }
+
+const categoryLabels: Record<string, string> = {
+	tdee: 'Energy Balance',
+	calorie: 'Diet Planning',
+	protein: 'Macronutrients',
+	timeline: 'Goal Forecasting',
+	bodyfat: 'Body Composition Index',
+	ffmi: 'Body Composition Index',
+	lbm: 'Body Composition Index',
+	macro: 'Macronutrients',
+	maintenance: 'Energy Balance',
+	ideal: 'Body Metrics',
+	bmi: 'Body Metrics',
+	whtr: 'Body Metrics',
+	composition: 'Body Composition Index',
+	'maintenance-calories': 'Energy Balance',
+	'deficit-calories': 'Energy Balance',
+	'surplus-calories': 'Energy Balance',
+	'target-calories': 'Diet Planning',
+	'daily-needs': 'Energy Balance',
+	'weight-loss-calories': 'Energy Balance',
+	'weight-gain-calories': 'Energy Balance',
+	surplus: 'Diet Planning',
+	deficit: 'Diet Planning',
+	target: 'Goal Forecasting',
+	muscle: 'Goal Forecasting',
+	recomp: 'Diet Planning',
+	bmr: 'Energy Balance',
+};
+
+const category = categoryLabels[mode] || 'Calculator';
+
+const buttonLabels: Record<string, string> = {
+	tdee: 'Calculate TDEE & Maintenance',
+	calorie: 'Calculate Daily Calorie Target',
+	protein: 'Calculate Daily Protein Target',
+	timeline: 'Forecast Weight Goal Timeline',
+	bodyfat: 'Calculate Body Fat Percentage',
+	ffmi: 'Calculate Fat-Free Mass Index',
+	lbm: 'Calculate Lean Body Mass',
+	macro: 'Calculate Macro Distribution',
+	maintenance: 'Calculate Maintenance Calories',
+	ideal: 'Calculate Ideal Weight Range',
+	bmi: 'Calculate Body Mass Index',
+	whtr: 'Calculate Waist-to-Height Ratio',
+	composition: 'Calculate Body Composition Snapshot',
+	surplus: 'Calculate Calorie Surplus Target',
+	deficit: 'Calculate Calorie Deficit Target',
+	target: 'Calculate Target Weight Goal',
+	muscle: 'Calculate Muscle Gain Rate',
+	recomp: 'Calculate Recomposition Targets',
+	bmr: 'Calculate Basal Metabolic Rate',
+};
+
+const btnLabel = buttonLabels[mode] || 'Calculate Estimates';
 ---
 
 <div class="surface overflow-hidden rounded-2xl border border-border" data-calculator={mode}>
 	<!-- Header -->
 	<div class="grid gap-6 border-b border-border p-6 lg:grid-cols-[1fr_auto] lg:items-start">
 		<div>
-			<p class="eyebrow">Calculator Module</p>
-			<h1 class="mt-2 text-3xl font-black text-foreground sm:text-4xl">{title}</h1>
+			<p class="eyebrow">{category}</p>
+			<h1 class="mt-2 text-3xl font-black text-foreground sm:text-4xl flex items-center gap-3">
+				{category === 'Energy Balance' && <svg class="text-accent shrink-0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>}
+				{category === 'Diet Planning' && <svg class="text-accent shrink-0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>}
+				{category === 'Macronutrients' && <svg class="text-accent shrink-0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>}
+				{category === 'Goal Forecasting' && <svg class="text-accent shrink-0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
+				{category === 'Body Composition Index' && <svg class="text-accent shrink-0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>}
+				{category === 'Body Metrics' && <svg class="text-accent shrink-0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>}
+				{title}
+			</h1>
 			<p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">{description}</p>
 			{primaryInputs.length > 0 && (
 				<div class="mt-4 flex flex-wrap gap-1.5">
@@ -56,76 +119,336 @@ function fieldClass(key: keyof typeof fieldGroups) {
 			</div>
 		</div>
 	</div>
-
 	<!-- Form -->
-	<form id="calc-form" class="grid gap-4 p-6 sm:grid-cols-2">
-		<div class={fieldClass('sex')}>
-			<label for="sex">Biological Sex</label>
-			<div class="select-wrap">
-				<select id="sex"><option value="male">Male</option><option value="female">Female</option></select>
+	<div class="calculator-layout-wrapper">
+		{mode === 'tdee' && (
+			<!-- Wizard flow indicator -->
+			<div class="px-6 pt-4 flex items-center justify-between border-b border-border/40 pb-3 bg-muted/10">
+				<div class="flex items-center gap-2">
+					<span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Step:</span>
+					<div class="flex items-center gap-1.5" id="tdee-wizard-steps">
+						<span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-accent text-white" data-step="1">1</span>
+						<span class="w-3 h-[2px] bg-border"></span>
+						<span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-muted text-muted-foreground" data-step="2">2</span>
+						<span class="w-3 h-[2px] bg-border"></span>
+						<span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-muted text-muted-foreground" data-step="3">3</span>
+					</div>
+				</div>
+				<span class="text-xs font-bold text-accent" id="tdee-wizard-step-label">Step 1: Body Metrics</span>
 			</div>
-		</div>
-		<div class={fieldClass('age')}>
-			<label for="age">Age (years)</label>
-			<input id="age" type="number" min="18" max="90" value="32" />
-		</div>
-		<div class={fieldClass('height')}>
-			<label for="height">Height <span data-height-unit>(cm)</span></label>
-			<input id="height" type="number" min="120" max="230" step="0.1" value="175" />
-		</div>
-		<div class={fieldClass('weight')}>
-			<label for="weight">Weight <span data-weight-unit>(kg)</span></label>
-			<input id="weight" type="number" min="35" max="250" step="0.1" value="82" />
-		</div>
-		<div class={fieldClass('bodyFat')}>
-			<label for="bodyFat">Body Fat Percentage (%)</label>
-			<input id="bodyFat" type="number" min="3" max="60" step="0.1" value="22" />
-		</div>
-		<div class={fieldClass('waist')}>
-			<label for="waist">Waist Circumference <span data-height-unit>(cm)</span></label>
-			<input id="waist" type="number" min="40" max="220" step="0.1" value="88" />
-		</div>
-		<div class={fieldClass('neck')}>
-			<label for="neck">Neck Circumference <span data-height-unit>(cm)</span></label>
-			<input id="neck" type="number" min="20" max="80" step="0.1" value="38" />
-		</div>
-		<div id="hip-field" class={fieldClass('hip')}>
-			<label for="hip">Hip Circumference <span data-height-unit>(cm)</span></label>
-			<input id="hip" type="number" min="40" max="220" step="0.1" value="95" />
-		</div>
-		<div class={fieldClass('activity')}>
-			<label for="activity">Daily Activity Level</label>
-			<div class="select-wrap">
-				<select id="activity">
-					<option value="1.2">Sedentary (desk job)</option>
-					<option value="1.375">Lightly Active (moderate walks)</option>
-					<option value="1.55" selected>Moderately Active (trains 3-5x/week)</option>
-					<option value="1.725">Highly Active (heavy training/sports)</option>
-					<option value="1.9">Very Active (demanding labor/athlete)</option>
-				</select>
+		)}
+
+		{mode === 'recomp' && (
+			<!-- Recomposition Eligibility Quiz Banner -->
+			<div class="p-6 bg-muted/20 border-b border-border/60">
+				<p class="text-xs font-bold text-accent uppercase tracking-widest mb-1.5">Pre-Screen: Are You a Good Candidate for Recomp?</p>
+				<p class="text-xs text-muted-foreground mb-4">Body recomposition (building muscle and losing fat simultaneously) is highly effective for specific physiological states. Check all that apply to you:</p>
+				<div class="grid gap-2 sm:grid-cols-2 text-xs" id="recomp-eligibility-checklist">
+					<label class="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-card cursor-pointer hover:border-accent transition-colors">
+						<input type="checkbox" class="mt-0.5 accent-accent" data-points="3" />
+						<div>
+							<p class="font-bold text-foreground">Beginner Lifter</p>
+							<p class="text-[10px] text-muted-foreground mt-0.5">Less than 1 year of consistent strength training.</p>
+						</div>
+					</label>
+					<label class="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-card cursor-pointer hover:border-accent transition-colors">
+						<input type="checkbox" class="mt-0.5 accent-accent" data-points="2" />
+						<div>
+							<p class="font-bold text-foreground">Returning from Break</p>
+							<p class="text-[10px] text-muted-foreground mt-0.5">Detrained but have muscle memory advantages.</p>
+						</div>
+					</label>
+					<label class="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-card cursor-pointer hover:border-accent transition-colors">
+						<input type="checkbox" class="mt-0.5 accent-accent" data-points="2" />
+						<div>
+							<p class="font-bold text-foreground">Moderate/Higher Body Fat</p>
+							<p class="text-[10px] text-muted-foreground mt-0.5">Plenty of stored energy to fuel muscle growth.</p>
+						</div>
+					</label>
+					<label class="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-card cursor-pointer hover:border-accent transition-colors">
+						<input type="checkbox" class="mt-0.5 accent-accent" data-points="-2" />
+						<div>
+							<p class="font-bold text-foreground">Already Lean & Advanced</p>
+							<p class="text-[10px] text-muted-foreground mt-0.5">Very difficult to recomp. Defined cut/bulk cycles are recommended.</p>
+						</div>
+					</label>
+				</div>
+				<div class="mt-4 p-3 rounded-lg bg-accent/5 border border-accent/20 flex items-center justify-between" id="recomp-status-bar">
+					<span class="text-xs font-semibold text-muted-foreground">Select criteria to assess eligibility</span>
+					<span class="text-xs font-black text-accent" id="recomp-eligibility-score">Score: 0</span>
+				</div>
 			</div>
-		</div>
-		<div class={fieldClass('goal')}>
-			<label for="goal">Goal Strategy</label>
-			<div class="select-wrap">
-				<select id="goal">
-					<option value="fat-loss">Moderate Fat Loss (Cut)</option>
-					<option value="maintain">Weight Maintenance</option>
-					<option value="lean-bulk">Lean Muscle Bulk</option>
-					<option value="recomp">Body Recomposition</option>
-				</select>
+		)}
+
+		<form id="calc-form" class="grid gap-4 p-6 sm:grid-cols-2 relative" novalidate>
+			<!-- TDEE STEP 1 -->
+			<div class="tdee-step-panel sm:col-span-2 grid gap-4 sm:grid-cols-2" id="tdee-step-1-panel">
+				<div class={fieldClass('sex')}>
+					<label for="sex">Biological Sex</label>
+					<div class="select-wrap">
+						<select id="sex"><option value="male">Male</option><option value="female">Female</option></select>
+					</div>
+				</div>
+				<div class={fieldClass('age')}>
+					<label for="age">Age (years)</label>
+					<div class="select-wrap">
+						<select id="age">
+							<option value="0" selected>Select Age</option>
+							{Array.from({ length: 76 }, (_, i) => i + 15).map(age => (
+								<option value={age}>{age}</option>
+							))}
+						</select>
+					</div>
+				</div>
+				<div class={fieldClass('height')}>
+					<label for="height">Height <span data-height-unit>(cm)</span></label>
+					<input id="height" type="number" min="120" max="230" step="0.1" value="0" />
+				</div>
+				<div class={fieldClass('weight')}>
+					<label for="weight">Weight <span data-weight-unit>(kg)</span></label>
+					<div class="select-wrap">
+						<select id="weight">
+							<option value="0" selected>Select Weight</option>
+							{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
+								<option value={w}>{w}</option>
+							))}
+						</select>
+					</div>
+				</div>
+				
+				{mode === 'tdee' && (
+					<div class="sm:col-span-2 flex justify-end mt-2">
+						<button type="button" class="button-primary" id="tdee-next-to-2">Continue to Step 2 ➔</button>
+					</div>
+				)}
 			</div>
-		</div>
-		<div class={fieldClass('targetWeight')}>
-			<label for="targetWeight">Target Body Weight <span data-weight-unit>(kg)</span></label>
-			<input id="targetWeight" type="number" min="35" max="250" step="0.1" value="75" />
-		</div>
-		<div class={fieldClass('targetBodyFat')}>
-			<label for="targetBodyFat">Target Body Fat (%)</label>
-			<input id="targetBodyFat" type="number" min="3" max="50" step="0.1" value="15" />
-		</div>
-		<button class="button-primary sm:col-span-2 mt-2" type="submit">Calculate Estimates</button>
-	</form>
+
+			<!-- TDEE STEP 2 -->
+			<div class={`tdee-step-panel sm:col-span-2 grid gap-4 sm:grid-cols-2 ${mode === 'tdee' ? 'hidden' : ''}`} id="tdee-step-2-panel">
+				<div class={fieldClass('bodyFat')}>
+					<label for="bodyFat">Body Fat Percentage (%)</label>
+					<div class="flex gap-2">
+						<input id="bodyFat" type="number" min="3" max="60" step="0.1" value="0" class="flex-1" />
+						{mode !== 'bodyfat' && mode !== 'composition' && (
+							<button type="button" id="calc-toggle-visual-estimator" class="button-secondary text-xs px-3 py-2 flex items-center gap-1.5 shrink-0">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+								Estimate Visually
+							</button>
+						)}
+					</div>
+					{mode !== 'bodyfat' && mode !== 'composition' && (
+						<p class="text-[11px] text-muted-foreground mt-1.5 leading-normal font-sans">
+							Don't know your fat percentage? Find it with this most accurate method across everywhere: <a href="/calculators/body-composition-calculator" class="text-accent font-semibold underline hover:text-accent/80 transition-colors">Estimate via Navy Method ➔</a>
+						</p>
+					)}
+
+					<!-- Visual Body Fat Estimator Drawer -->
+					<div id="calc-visual-estimator-drawer" class="hidden mt-4 border border-border/85 bg-muted/20 p-4 rounded-xl space-y-3 transition-all duration-300">
+						<p class="text-xs font-bold text-foreground">Select your closest matching physique silhouette:</p>
+						
+						<!-- Male Silhouette Cards -->
+						<div id="calc-visual-male" class="grid gap-2.5 grid-cols-2 sm:grid-cols-5">
+							{[
+								[10, 'Lean / Ripped', 'Visible abs, vascularity, high definition.'],
+								[15, 'Fit / Athletic', 'Flat stomach, outline of abs, fit shape.'],
+								[20, 'Average', 'Soft midsection, no visible abs, normal shape.'],
+								[25, 'Soft / Excess', 'Waist outline soft, minimal definition.'],
+								[30, 'High Fat', 'Full waistline, high adiposity.']
+							].map(([bf, label, desc]) => (
+								<button type="button" class="calc-bf-card p-2.5 rounded-lg border border-border bg-card text-left hover:border-accent transition-all flex flex-col justify-between" data-bf={bf}>
+									<div>
+										<span class="text-xs font-black text-accent">{bf}%</span>
+										<p class="font-bold text-[11px] text-foreground mt-0.5 leading-snug">{label}</p>
+										<p class="text-[9px] text-muted-foreground mt-1 leading-relaxed">{desc}</p>
+									</div>
+								</button>
+							))}
+						</div>
+
+						<!-- Female Silhouette Cards -->
+						<div id="calc-visual-female" class="grid gap-2.5 grid-cols-2 sm:grid-cols-5 hidden">
+							{[
+								[18, 'Lean / Ripped', 'Athletic shape, visible definition.'],
+								[22, 'Fit / Athletic', 'Flat stomach, curves defined.'],
+								[26, 'Average', 'Normal curves, soft hips, no abs.'],
+								[30, 'Soft / Excess', 'Full waist and hips, rounder outline.'],
+								[35, 'High Fat', 'Soft contours, high adiposity.']
+							].map(([bf, label, desc]) => (
+								<button type="button" class="calc-bf-card p-2.5 rounded-lg border border-border bg-card text-left hover:border-accent transition-all flex flex-col justify-between" data-bf={bf}>
+									<div>
+										<span class="text-xs font-black text-accent">{bf}%</span>
+										<p class="font-bold text-[11px] text-foreground mt-0.5 leading-snug">{label}</p>
+										<p class="text-[9px] text-muted-foreground mt-1 leading-relaxed">{desc}</p>
+									</div>
+								</button>
+							))}
+						</div>
+					</div>
+				</div>
+
+				<div class={fieldClass('activity')}>
+					<label for="activity">Daily Activity Level</label>
+					<div class="select-wrap">
+						<select id="activity">
+							<option value="1.2">Sedentary (desk job)</option>
+							<option value="1.375">Lightly Active (moderate walks)</option>
+							<option value="1.55" selected>Moderately Active (trains 3-5x/week)</option>
+							<option value="1.725">Highly Active (heavy training/sports)</option>
+							<option value="1.9">Very Active (demanding labor/athlete)</option>
+						</select>
+					</div>
+				</div>
+
+				{mode === 'tdee' && (
+					<div class="sm:col-span-2 flex justify-between mt-2">
+						<button type="button" class="button-secondary" id="tdee-back-to-1">Back</button>
+						<button type="button" class="button-primary" id="tdee-next-to-3">Confirm Details ➔</button>
+					</div>
+				)}
+			</div>
+
+			<!-- TDEE STEP 3 -->
+			<div class={`tdee-step-panel sm:col-span-2 grid gap-4 sm:grid-cols-2 ${mode === 'tdee' ? 'hidden' : ''}`} id="tdee-step-3-panel">
+				<!-- Goal and target weight parameters (for other modes, visible directly if enabled) -->
+				{mode === 'calorie' && (
+					<div class="sm:col-span-2">
+						<label class="mb-2 block">Choose Strategy Target</label>
+						<div class="grid gap-3 sm:grid-cols-4" id="goal-cards-selector">
+							<button type="button" class="goal-card-btn text-left p-3 rounded-xl border border-border bg-card hover:border-accent transition-all flex flex-col justify-between" data-goal="fat-loss">
+								<span class="text-xs font-bold text-accent">CUT</span>
+								<span class="font-bold text-sm text-foreground mt-2">Fat Loss</span>
+							</button>
+							<button type="button" class="goal-card-btn text-left p-3 rounded-xl border border-border bg-card hover:border-accent transition-all flex flex-col justify-between" data-goal="maintain">
+								<span class="text-xs font-bold text-success">MAINTAIN</span>
+								<span class="font-bold text-sm text-foreground mt-2">Maintenance</span>
+							</button>
+							<button type="button" class="goal-card-btn text-left p-3 rounded-xl border border-border bg-card hover:border-accent transition-all flex flex-col justify-between" data-goal="lean-bulk">
+								<span class="text-xs font-bold text-indigo-500">GROW</span>
+								<span class="font-bold text-sm text-foreground mt-2">Lean Bulk</span>
+							</button>
+							<button type="button" class="goal-card-btn text-left p-3 rounded-xl border border-border bg-card hover:border-accent transition-all flex flex-col justify-between" data-goal="recomp">
+								<span class="text-xs font-bold text-warning">RECOMP</span>
+								<span class="font-bold text-sm text-foreground mt-2">Body Recomp</span>
+							</button>
+						</div>
+						<select id="goal" class="hidden">
+							<option value="fat-loss">Moderate Fat Loss (Cut)</option>
+							<option value="maintain" selected>Weight Maintenance</option>
+							<option value="lean-bulk">Lean Muscle Bulk</option>
+							<option value="recomp">Body Recomposition</option>
+						</select>
+					</div>
+				)}
+
+				{mode !== 'calorie' && isFieldVisible('goal') && (
+					<div class={fieldClass('goal')}>
+						<label for="goal">Goal Strategy</label>
+						<div class="select-wrap">
+							<select id="goal">
+								<option value="fat-loss">Moderate Fat Loss (Cut)</option>
+								<option value="maintain">Weight Maintenance</option>
+								<option value="lean-bulk">Lean Muscle Bulk</option>
+								<option value="recomp">Body Recomposition</option>
+							</select>
+						</div>
+					</div>
+				)}
+
+				{isFieldVisible('targetWeight') && (
+					<div class={fieldClass('targetWeight')}>
+						<label for="targetWeight">Target Body Weight <span data-weight-unit>(kg)</span></label>
+						<div class="select-wrap">
+							<select id="targetWeight">
+								<option value="0" selected>Select Weight</option>
+								{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
+									<option value={w}>{w}</option>
+								))}
+							</select>
+						</div>
+					</div>
+				)}
+
+				{isFieldVisible('targetBodyFat') && (
+					<div class={fieldClass('targetBodyFat')}>
+						<label for="targetBodyFat">Target Body Fat (%)</label>
+						<input id="targetBodyFat" type="number" min="3" max="50" step="0.1" value="0" />
+					</div>
+				)}
+
+				{/* Protein range slider */}
+				{mode === 'protein' && (
+					<div class="sm:col-span-2 mt-2 bg-muted/10 p-4 rounded-xl border border-border/60">
+						<label class="flex justify-between items-center mb-1">
+							<span>Live Weight Adjustment</span>
+							<span class="font-black text-accent" id="protein-slider-weight-val">82 kg</span>
+						</label>
+						<input type="range" id="protein-live-weight-slider" min="40" max="180" value="82" class="w-full h-2 rounded-lg bg-border accent-accent cursor-pointer" />
+					</div>
+				)}
+
+				{/* Body Composition measurement silhouette guide */}
+				{mode === 'composition' && (
+					<div class="sm:col-span-2 grid gap-6 md:grid-cols-[1fr_200px] border-b border-border pb-6 mb-2">
+						<div class="space-y-4">
+							<p class="text-xs font-bold text-accent uppercase tracking-widest">Navy Method Silhouette Guide</p>
+							<div class={fieldClass('waist')}>
+								<label for="waist" class="flex justify-between">
+									<span>Waist Circumference <span data-height-unit>(cm)</span></span>
+									<span class="text-xs text-muted-foreground">Across belly button, exhaled</span>
+								</label>
+								<input id="waist" type="number" min="40" max="220" step="0.1" value="88" />
+							</div>
+							<div class={fieldClass('neck')}>
+								<label for="neck" class="flex justify-between">
+									<span>Neck Circumference <span data-height-unit>(cm)</span></span>
+									<span class="text-xs text-muted-foreground">Below Adam's apple, relaxed</span>
+								</label>
+								<input id="neck" type="number" min="20" max="80" step="0.1" value="38" />
+							</div>
+							<div id="hip-field" class={fieldClass('hip')}>
+								<label for="hip" class="flex justify-between">
+									<span>Hip Circumference <span data-height-unit>(cm)</span></span>
+									<span class="text-xs text-muted-foreground">Widest point of glutes (females only)</span>
+								</label>
+								<input id="hip" type="number" min="40" max="220" step="0.1" value="95" />
+							</div>
+						</div>
+						
+						<!-- Visual SVG Silhouette illustration -->
+						<div class="hidden md:flex flex-col items-center justify-center bg-muted/30 rounded-xl border border-border/40 p-4">
+							<svg width="80" height="150" viewBox="0 0 100 200" fill="none" class="text-muted-foreground/60">
+								<!-- Head -->
+								<circle cx="50" cy="22" r="14" stroke="currentColor" stroke-width="2" class="opacity-60"/>
+								<!-- Neck measurement line -->
+								<line x1="43" y1="39" x2="57" y2="39" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+								<!-- Torso -->
+								<path d="M35 55 C35 55, 30 110, 40 125 C45 130, 55 130, 60 125 C70 110, 65 55, 65 55 Z" stroke="currentColor" stroke-width="2"/>
+								<!-- Waist measurement line -->
+								<line x1="33" y1="90" x2="67" y2="90" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+								<!-- Hip measurement line -->
+								<line x1="31" y1="120" x2="69" y2="120" stroke="var(--success)" stroke-width="3" stroke-linecap="round" id="svg-hip-line"/>
+								<!-- Arms -->
+								<path d="M35 55 C28 65, 24 95, 26 115" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="opacity-40"/>
+								<path d="M65 55 C72 65, 76 95, 74 115" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="opacity-40"/>
+							</svg>
+							<div class="mt-2 text-[10px] text-center font-bold text-muted-foreground uppercase tracking-wider">Navy Metrics</div>
+						</div>
+					</div>
+				)}
+
+				{mode === 'tdee' && (
+					<div class="sm:col-span-2 flex justify-between mt-2">
+						<button type="button" class="button-secondary" id="tdee-back-to-2">Back</button>
+						<button class="button-primary flex-1 ml-3" type="submit" id="calc-submit">Calculate Energy Balance ➔</button>
+					</div>
+				)}
+			</div>
+
+			{mode !== 'tdee' && (
+				<button class="button-primary sm:col-span-2 mt-2" type="submit" id="calc-submit">{btnLabel}</button>
+			)}
+		</form>
+	</div>
 
 	<!-- Output Results Screen -->
 	<div id="calc-result" class="result-container border-t border-border bg-muted/20 p-6" aria-live="polite" tabindex="-1">
@@ -140,22 +463,23 @@ function fieldClass(key: keyof typeof fieldGroups) {
 <!-- Supporting Content cards -->
 <section class="mt-8 grid gap-4 md:grid-cols-3">
 	<div class="app-card">
-		<h3 class="font-bold text-sm text-foreground">Formula & Math</h3>
-		<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{formula}</p>
+		<h3 class="font-bold text-sm text-foreground font-sans">Formula & Math</h3>
+		<p class="mt-2 text-xs leading-relaxed text-muted-foreground font-sans">{formula}</p>
 	</div>
 	<div class="app-card">
-		<h3 class="font-bold text-sm text-foreground">How to Interpret</h3>
-		<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{interpretation}</p>
+		<h3 class="font-bold text-sm text-foreground font-sans">How to Interpret</h3>
+		<p class="mt-2 text-xs leading-relaxed text-muted-foreground font-sans">{interpretation}</p>
 	</div>
 	<div class="app-card">
-		<h3 class="font-bold text-sm text-foreground">Plan Integration</h3>
-		<p class="mt-2 text-xs leading-relaxed text-muted-foreground">
+		<h3 class="font-bold text-sm text-foreground font-sans">Plan Integration</h3>
+		<p class="mt-2 text-xs leading-relaxed text-muted-foreground font-sans">
 			Take these estimations back to the main Strategy Finder assessment, or save them in your tracking logs in the local dashboard.
 		</p>
 	</div>
 </section>
 
-<script define:vars={{ mode }}>
+
+<script>
 	import {
 		round as r,
 		mifflin,
@@ -175,9 +499,12 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		formatWeight as fmtWeight,
 		formatLength as fmtLength,
 	} from '../lib/engines';
-	import { convertFormUnits, updateUnitLabels } from '../lib/units';
+	import { convertFormUnits, updateUnitLabels, rebuildWeightSelect } from '../lib/units';
 
-	let currentUnit = 'metric';
+	const container = document.querySelector('[data-calculator]') as HTMLElement | null;
+	const mode = container?.getAttribute('data-calculator') || 'tdee';
+
+	let currentUnit = typeof localStorage !== 'undefined' ? localStorage.getItem('bodycompos.preferredUnit') || 'metric' : 'metric';
 
 	function formatWeight(kg, digits = 1) {
 		return fmtWeight(kg, currentUnit, digits);
@@ -200,22 +527,53 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		};
 	}
 	
-	function formatWeight(kg, digits = 1) {
-		return currentUnit === 'metric' ? `${r(kg, digits)} kg` : `${r(kgToLb(kg), digits)} lb`;
-	}
 	
-	function formatLength(cm, digits = 1) {
-		return currentUnit === 'metric' ? `${r(cm, digits)} cm` : `${r(cmToIn(cm), digits)} in`;
-	}
 	
+	function formatAnimatedValue(str) {
+		if (typeof str !== 'string') str = String(str);
+		const match = str.match(/^([+-]?\d+(?:\.\d+)?)(.*)$/);
+		if (match) {
+			const num = parseFloat(match[1]);
+			const suffix = match[2];
+			return `<span class="animate-calc-val" data-target="${num}" data-suffix="${suffix.replace(/"/g, '&quot;')}">${str}</span>`;
+		}
+		return str;
+	}
+
 	function makeRows(values) {
 		return `<div class="grid gap-3 sm:grid-cols-3">${values.map(([k, v, width = 64]) => `
 			<div class="result-card">
-				<p class="text-xs font-bold uppercase text-muted-foreground">${k}</p>
-				<p class="mt-1 text-xl font-black text-foreground">${v}</p>
-				<div class="mini-bar mt-3"><span style="width:${width}%"></span></div>
+				<p class="text-xs font-bold uppercase text-muted-foreground font-sans">${k}</p>
+				<p class="mt-1 text-xl font-black text-foreground">${formatAnimatedValue(v)}</p>
+				<div class="mini-bar mt-3"><span class="calc-progress-bar" style="width:0%" data-width="${width}"></span></div>
 			</div>
 		`).join('')}</div>`;
+	}
+
+	function animateCounter(element: HTMLElement, start: number, end: number, duration: number = 800, suffix: string = '') {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			element.textContent = `${end}${suffix}`;
+			return;
+		}
+		
+		let startTime: number | null = null;
+		const isFloat = !Number.isInteger(end);
+		
+		function step(timestamp: number) {
+			if (!startTime) startTime = timestamp;
+			const progress = Math.min((timestamp - startTime) / duration, 1);
+			const easeProgress = progress * (2 - progress); // outQuad
+			const current = start + easeProgress * (end - start);
+			const formatted = isFloat ? current.toFixed(1) : Math.floor(current);
+			element.textContent = `${formatted}${suffix}`;
+			if (progress < 1) {
+				window.requestAnimationFrame(step);
+			} else {
+				element.textContent = `${isFloat ? end.toFixed(1) : end}${suffix}`;
+			}
+		}
+		
+		window.requestAnimationFrame(step);
 	}
 	
 	function fieldVisible(el) {
@@ -241,17 +599,403 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		};
 	}
 	
+	const formEl = document.querySelector('#calc-form') as HTMLFormElement | null;
+
+	function showError(inputId: string, errorMsg: string) {
+		if (!formEl) return;
+		const input = formEl.querySelector(`#${inputId}`) as HTMLInputElement | HTMLSelectElement | null;
+		if (!input) return;
+		
+		input.classList.add('border-destructive');
+		
+		const parent = input.closest('.field');
+		parent?.querySelector('.error-msg')?.remove();
+
+		const span = document.createElement('p');
+		span.className = 'error-msg text-xs text-destructive mt-1.5 font-medium';
+		span.textContent = errorMsg;
+		parent?.appendChild(span);
+	}
+
+	function clearError(inputId: string) {
+		if (!formEl) return;
+		const input = formEl.querySelector(`#${inputId}`) as HTMLInputElement | HTMLSelectElement | null;
+		if (!input) return;
+		input.classList.remove('border-destructive');
+		input.closest('.field')?.querySelector('.error-msg')?.remove();
+	}
+
+	// Setup listeners to clear error on input change/type
+	const validationFields = ['age', 'height', 'weight', 'bodyFat', 'waist', 'neck', 'hip', 'targetWeight', 'targetBodyFat'];
+	validationFields.forEach(fieldId => {
+		const el = formEl?.querySelector(`#${fieldId}`);
+		el?.addEventListener('input', () => clearError(fieldId));
+		el?.addEventListener('change', () => clearError(fieldId));
+	});
+
+	function validateStep(stepIndex: number): boolean {
+		let isValid = true;
+		if (!formEl) return true;
+
+		if (stepIndex === 1) {
+			const ageInput = formEl.querySelector('#age') as HTMLInputElement | null;
+			if (ageInput && fieldVisible(ageInput)) {
+				const age = Number(ageInput.value);
+				if (!ageInput.value || age < 15 || age > 90) {
+					showError('age', 'Please enter a valid age between 15 and 90.');
+					isValid = false;
+				} else {
+					clearError('age');
+				}
+			}
+
+			const heightInput = formEl.querySelector('#height') as HTMLInputElement | null;
+			if (heightInput && fieldVisible(heightInput)) {
+				const height = Number(heightInput.value);
+				const hMin = currentUnit === 'metric' ? 120 : 47;
+				const hMax = currentUnit === 'metric' ? 230 : 91;
+				if (!heightInput.value || height < hMin || height > hMax) {
+					showError('height', `Height must be between ${hMin} and ${hMax} ${currentUnit === 'metric' ? 'cm' : 'inches'}.`);
+					isValid = false;
+				} else {
+					clearError('height');
+				}
+			}
+
+			const weightInput = formEl.querySelector('#weight') as HTMLInputElement | null;
+			if (weightInput && fieldVisible(weightInput)) {
+				const weight = Number(weightInput.value);
+				const wMin = currentUnit === 'metric' ? 20 : 44;
+				const wMax = currentUnit === 'metric' ? 250 : 551;
+				if (!weightInput.value || weight < wMin || weight > wMax) {
+					showError('weight', `Weight must be between ${wMin} and ${wMax} ${currentUnit === 'metric' ? 'kg' : 'lbs'}.`);
+					isValid = false;
+				} else {
+					clearError('weight');
+				}
+			}
+		} else if (stepIndex === 2) {
+			const bfInput = formEl.querySelector('#bodyFat') as HTMLInputElement | null;
+			if (bfInput && fieldVisible(bfInput)) {
+				const bf = Number(bfInput.value);
+				if (bfInput.value && bf !== 0 && (bf < 3 || bf > 60)) {
+					showError('bodyFat', 'Body fat must be between 3% and 60% (or 0 for fallback).');
+					isValid = false;
+				} else {
+					clearError('bodyFat');
+				}
+			}
+		} else if (stepIndex === 3) {
+			const waistInput = formEl.querySelector('#waist') as HTMLInputElement | null;
+			if (waistInput && fieldVisible(waistInput)) {
+				const waist = Number(waistInput.value);
+				const waMin = currentUnit === 'metric' ? 40 : 16;
+				const waMax = currentUnit === 'metric' ? 220 : 87;
+				if (!waistInput.value || waist < waMin || waist > waMax) {
+					showError('waist', `Waist must be between ${waMin} and ${waMax} ${currentUnit === 'metric' ? 'cm' : 'inches'}.`);
+					isValid = false;
+				} else {
+					clearError('waist');
+				}
+			}
+
+			const neckInput = formEl.querySelector('#neck') as HTMLInputElement | null;
+			if (neckInput && fieldVisible(neckInput)) {
+				const neck = Number(neckInput.value);
+				const nMin = currentUnit === 'metric' ? 20 : 8;
+				const nMax = currentUnit === 'metric' ? 80 : 31;
+				if (!neckInput.value || neck < nMin || neck > nMax) {
+					showError('neck', `Neck must be between ${nMin} and ${nMax} ${currentUnit === 'metric' ? 'cm' : 'inches'}.`);
+					isValid = false;
+				} else {
+					clearError('neck');
+				}
+			}
+
+			const hipInput = formEl.querySelector('#hip') as HTMLInputElement | null;
+			if (hipInput && fieldVisible(hipInput) && !hipInput.closest('.field')?.classList.contains('hidden')) {
+				const hip = Number(hipInput.value);
+				const hiMin = currentUnit === 'metric' ? 40 : 16;
+				const hiMax = currentUnit === 'metric' ? 220 : 87;
+				if (!hipInput.value || hip < hiMin || hip > hiMax) {
+					showError('hip', `Hip must be between ${hiMin} and ${hiMax} ${currentUnit === 'metric' ? 'cm' : 'inches'}.`);
+					isValid = false;
+				} else {
+					clearError('hip');
+				}
+			}
+
+			const targetWeightInput = formEl.querySelector('#targetWeight') as HTMLInputElement | null;
+			if (targetWeightInput && fieldVisible(targetWeightInput)) {
+				const targetWeight = Number(targetWeightInput.value);
+				const wMin = currentUnit === 'metric' ? 20 : 44;
+				const wMax = currentUnit === 'metric' ? 250 : 551;
+				if (!targetWeightInput.value || targetWeight < wMin || targetWeight > wMax) {
+					showError('targetWeight', `Target weight must be between ${wMin} and ${wMax} ${currentUnit === 'metric' ? 'kg' : 'lbs'}.`);
+					isValid = false;
+				} else {
+					clearError('targetWeight');
+				}
+			}
+
+			const targetBodyFatInput = formEl.querySelector('#targetBodyFat') as HTMLInputElement | null;
+			if (targetBodyFatInput && fieldVisible(targetBodyFatInput)) {
+				const targetBodyFat = Number(targetBodyFatInput.value);
+				if (!targetBodyFatInput.value || targetBodyFat < 3 || targetBodyFat > 50) {
+					showError('targetBodyFat', 'Target body fat must be between 3% and 50%.');
+					isValid = false;
+				} else {
+					clearError('targetBodyFat');
+				}
+			}
+		}
+		return isValid;
+	}
+
 	function setUnit(unit) {
 		if (unit === currentUnit) return;
 		const f = document.querySelector('#calc-form') as HTMLFormElement | null;
 		if (!f) return;
-		const fields: (keyof typeof import('../lib/units').FormFields)[] = ['height', 'weight', 'waist', 'neck', 'hip', 'targetWeight'];
+
+		const weightSelect = f.querySelector('#weight') as HTMLSelectElement | null;
+		const targetWeightSelect = f.querySelector('#targetWeight') as HTMLSelectElement | null;
+		const currentWeightVal = weightSelect ? Number(weightSelect.value) : 0;
+		const currentTargetWeightVal = targetWeightSelect ? Number(targetWeightSelect.value) : 0;
+
+		const fields: (keyof typeof import('../lib/units').FormFields)[] = ['height', 'waist', 'neck', 'hip'];
 		convertFormUnits(f, currentUnit, unit, fields);
+
+		// Rebuild select dropdowns dynamically
+		rebuildWeightSelect(weightSelect, unit, currentWeightVal);
+		rebuildWeightSelect(targetWeightSelect, unit, currentTargetWeightVal);
+
 		currentUnit = unit;
+		if (typeof localStorage !== 'undefined') {
+			localStorage.setItem('bodycompos.preferredUnit', unit);
+		}
 		updateUnitLabels(unit, { unitBtn: 'data-unit', heightLabel: 'data-height-unit', weightLabel: 'data-weight-unit' });
+		validationFields.forEach(clearError);
 	}
 	
 	document.querySelectorAll('[data-unit]').forEach((button) => button.addEventListener('click', () => setUnit(button.getAttribute('data-unit'))));
+
+	// TDEE Wizard Navigation
+	if (mode === 'tdee') {
+		const step1Btn = document.getElementById('tdee-next-to-2');
+		const step2Btn = document.getElementById('tdee-next-to-3');
+		const back1Btn = document.getElementById('tdee-back-to-1');
+		const back2Btn = document.getElementById('tdee-back-to-2');
+
+		const panel1 = document.getElementById('tdee-step-1-panel');
+		const panel2 = document.getElementById('tdee-step-2-panel');
+		const panel3 = document.getElementById('tdee-step-3-panel');
+
+		const setWizardStep = (stepNum) => {
+			document.querySelectorAll('#tdee-wizard-steps [data-step]').forEach(span => {
+				const sVal = Number(span.getAttribute('data-step'));
+				if (sVal < stepNum) {
+					span.className = 'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-success text-white';
+				} else if (sVal === stepNum) {
+					span.className = 'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-accent text-white';
+				} else {
+					span.className = 'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-muted text-muted-foreground';
+				}
+			});
+			const labels = {
+				1: 'Step 1: Physical Metrics',
+				2: 'Step 2: Activity & Body Fat',
+				3: 'Step 3: Confirm Details'
+			};
+			const lbl = document.getElementById('tdee-wizard-step-label');
+			if (lbl) lbl.textContent = labels[stepNum];
+		};
+
+		step1Btn?.addEventListener('click', () => {
+			if (validateStep(1)) {
+				panel1?.classList.add('hidden');
+				panel2?.classList.remove('hidden');
+				setWizardStep(2);
+			}
+		});
+		back1Btn?.addEventListener('click', () => {
+			panel2?.classList.add('hidden');
+			panel1?.classList.remove('hidden');
+			setWizardStep(1);
+		});
+		step2Btn?.addEventListener('click', () => {
+			if (validateStep(2)) {
+				panel2?.classList.add('hidden');
+				panel3?.classList.remove('hidden');
+				setWizardStep(3);
+			}
+		});
+		back2Btn?.addEventListener('click', () => {
+			panel3?.classList.add('hidden');
+			panel2?.classList.remove('hidden');
+			setWizardStep(2);
+		});
+	}
+
+	// Calorie Goal Card Selectors
+	if (mode === 'calorie') {
+		const select = document.getElementById('goal') as HTMLSelectElement;
+		const cards = document.querySelectorAll('.goal-card-btn');
+		const form = document.getElementById('calc-form');
+
+		const updateActiveCard = (targetGoal) => {
+			cards.forEach(btn => {
+				const isSelected = btn.getAttribute('data-goal') === targetGoal;
+				btn.className = `goal-card-btn text-left p-3 rounded-xl border transition-all flex flex-col justify-between ${isSelected ? 'border-accent bg-accent/5 ring-1 ring-accent' : 'border-border bg-card hover:border-accent'}`;
+			});
+		};
+
+		cards.forEach(btn => {
+			btn.addEventListener('click', () => {
+				const gVal = btn.getAttribute('data-goal');
+				if (gVal && select) {
+					select.value = gVal;
+					updateActiveCard(gVal);
+					// auto-submit form for snappy preview
+					form?.dispatchEvent(new Event('submit', { cancelable: true }));
+				}
+			});
+		});
+
+		// initialize active state
+		if (select) updateActiveCard(select.value);
+	}
+
+	// Live Protein Slider Handler
+	if (mode === 'protein') {
+		const weightInput = document.getElementById('weight') as HTMLInputElement;
+		const slider = document.getElementById('protein-live-weight-slider') as HTMLInputElement;
+		const sliderVal = document.getElementById('protein-slider-weight-val');
+		const form = document.getElementById('calc-form');
+
+		// Sync form weight input to slider weight input
+		const syncWeight = (val) => {
+			if (sliderVal) {
+				const displayVal = currentUnit === 'metric' ? `${r(val)} kg` : `${r(kgToLb(val))} lb`;
+				sliderVal.textContent = displayVal;
+			}
+			if (weightInput) {
+				const formVal = currentUnit === 'metric' ? r(val, 1) : r(kgToLb(val), 1);
+				weightInput.value = String(formVal);
+			}
+		};
+
+		slider?.addEventListener('input', () => {
+			const rawVal = parseFloat(slider.value);
+			syncWeight(rawVal);
+			form?.dispatchEvent(new Event('submit', { cancelable: true }));
+		});
+
+		weightInput?.addEventListener('input', () => {
+			const val = parseFloat(weightInput.value) || 82;
+			const metricVal = currentUnit === 'metric' ? val : lbToKg(val);
+			if (slider) slider.value = String(r(metricVal));
+			if (sliderVal) sliderVal.textContent = currentUnit === 'metric' ? `${r(metricVal)} kg` : `${r(val)} lb`;
+		});
+	}
+
+	// Recomposition Checklist Score Logic
+	if (mode === 'recomp') {
+		const checks = document.querySelectorAll('#recomp-eligibility-checklist input[type="checkbox"]');
+		const scoreLabel = document.getElementById('recomp-eligibility-score');
+		const statusText = document.querySelector('#recomp-status-bar span');
+		
+		const updateRecompQuiz = () => {
+			let score = 0;
+			checks.forEach(el => {
+				const chk = el as HTMLInputElement;
+				if (chk.checked) score += Number(chk.getAttribute('data-points') || 0);
+			});
+			
+			if (scoreLabel) scoreLabel.textContent = `Score: ${score}`;
+			if (statusText) {
+				if (score >= 4) {
+					statusText.className = 'text-xs font-bold text-success';
+					statusText.textContent = 'Excellent Candidate (High probability of recomp)';
+				} else if (score >= 2) {
+					statusText.className = 'text-xs font-bold text-accent';
+					statusText.textContent = 'Moderate Candidate (Recomp is viable)';
+				} else if (score > 0) {
+					statusText.className = 'text-xs font-semibold text-warning';
+					statusText.textContent = 'Low-Viability Candidate (Slow/negligible progress)';
+				} else if (score < 0) {
+					statusText.className = 'text-xs font-semibold text-destructive';
+					statusText.textContent = 'Unsuitable (Recommend distinct Cut/Bulk strategy)';
+				} else {
+					statusText.className = 'text-xs font-semibold text-muted-foreground';
+					statusText.textContent = 'Select criteria to assess eligibility';
+				}
+			}
+		};
+		
+		checks.forEach(el => el.addEventListener('change', updateRecompQuiz));
+	}
+
+	// Live silhouette line visibility toggles
+	const sexSelect = document.getElementById('sex') as HTMLSelectElement;
+	const hipField = document.getElementById('hip-field');
+	const svgHipLine = document.getElementById('svg-hip-line');
+	
+	function updateHipVisibility() {
+		const isFemale = sexSelect?.value === 'female';
+		if (isFemale) {
+			hipField?.classList.remove('hidden');
+			if (svgHipLine) svgHipLine.style.display = 'block';
+		} else {
+			hipField?.classList.add('hidden');
+			if (svgHipLine) svgHipLine.style.display = 'none';
+		}
+	}
+	sexSelect?.addEventListener('change', updateHipVisibility);
+	updateHipVisibility();
+
+	// Calculator Visual Body Fat Estimator Logic
+	(function() {
+		const toggleBtn = document.getElementById('calc-toggle-visual-estimator');
+		const drawer = document.getElementById('calc-visual-estimator-drawer');
+		const maleGrid = document.getElementById('calc-visual-male');
+		const femaleGrid = document.getElementById('calc-visual-female');
+		const sexSelectEl = document.getElementById('sex') as HTMLSelectElement | null;
+		const bfInputEl = document.getElementById('bodyFat') as HTMLInputElement | null;
+
+		function updateCalcVisualGrid() {
+			const isFemale = sexSelectEl?.value === 'female';
+			if (isFemale) {
+				maleGrid?.classList.add('hidden');
+				femaleGrid?.classList.remove('hidden');
+			} else {
+				maleGrid?.classList.remove('hidden');
+				femaleGrid?.classList.add('hidden');
+			}
+		}
+
+		toggleBtn?.addEventListener('click', () => {
+			drawer?.classList.toggle('hidden');
+			updateCalcVisualGrid();
+		});
+
+		sexSelectEl?.addEventListener('change', updateCalcVisualGrid);
+
+		document.querySelectorAll('.calc-bf-card').forEach(card => {
+			card.addEventListener('click', () => {
+				const bfValue = card.getAttribute('data-bf');
+				if (bfInputEl && bfValue) {
+					bfInputEl.value = bfValue;
+					// Highlight selected card
+					document.querySelectorAll('.calc-bf-card').forEach(c => c.classList.remove('border-accent', 'ring-1', 'ring-accent'));
+					card.classList.add('border-accent', 'ring-1', 'ring-accent');
+					// Hide drawer
+					drawer?.classList.add('hidden');
+					// Trigger change/input events to propagate
+					bfInputEl.dispatchEvent(new Event('input', { bubbles: true }));
+				}
+			});
+		});
+	})();
 
 	(function() {
 		const savedBf = localStorage.getItem('bodycompos.estimatedBodyFat');
@@ -263,18 +1007,33 @@ function fieldClass(key: keyof typeof fieldGroups) {
 			}
 		}
 	})();
-	
-	const sexSelect = document.getElementById('sex');
-	const hipField = document.getElementById('hip-field');
-	function updateHipVisibility() {
-		if (sexSelect?.value === 'female') {
-			hipField?.classList.remove('hidden');
-		} else {
-			hipField?.classList.add('hidden');
+
+	// Imperial load initializer
+	(function() {
+		if (currentUnit === 'imperial') {
+			const formEl = document.querySelector('#calc-form') as HTMLFormElement | null;
+			if (formEl) {
+				const weightSelect = formEl.querySelector('#weight') as HTMLSelectElement | null;
+				const targetWeightSelect = formEl.querySelector('#targetWeight') as HTMLSelectElement | null;
+				rebuildWeightSelect(weightSelect, 'imperial', 180);
+				rebuildWeightSelect(targetWeightSelect, 'imperial', 165);
+
+				const heightInput = formEl.querySelector('#height') as HTMLInputElement | null;
+				if (heightInput) { heightInput.min = '47'; heightInput.max = '91'; heightInput.value = '69'; }
+
+				const waistInput = formEl.querySelector('#waist') as HTMLInputElement | null;
+				if (waistInput) { waistInput.min = '16'; waistInput.max = '87'; waistInput.value = '35'; }
+
+				const neckInput = formEl.querySelector('#neck') as HTMLInputElement | null;
+				if (neckInput) { neckInput.min = '8'; neckInput.max = '31'; neckInput.value = '15'; }
+
+				const hipInput = formEl.querySelector('#hip') as HTMLInputElement | null;
+				if (hipInput) { hipInput.min = '16'; hipInput.max = '87'; hipInput.value = '38'; }
+
+				updateUnitLabels('imperial', { unitBtn: 'data-unit', heightLabel: 'data-height-unit', weightLabel: 'data-weight-unit' });
+			}
 		}
-	}
-	sexSelect?.addEventListener('change', updateHipVisibility);
-	updateHipVisibility();
+	})();
 
 	function getStepByStepMathHtml(mode, sex, age, h, w, bf, waist, neck, hip, activity, goal, targetCal, maintenance) {
 		let html = '';
@@ -383,6 +1142,22 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		const metric = toMetric(raw);
 		const { sex, age, h, w, bf, waist, neck, hip, activity, goal, targetWeight, targetBodyFat } = metric;
 
+		const calcResult = document.querySelector('#calc-result') as HTMLElement;
+
+		// Run step validations
+		let isValid = true;
+		if (!validateStep(1)) isValid = false;
+		if (!validateStep(2)) isValid = false;
+		if (!validateStep(3)) isValid = false;
+
+		if (!isValid) {
+			const firstError = formEl?.querySelector('.error-msg');
+			if (firstError) {
+				firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+			return;
+		}
+
 		let bfVal = bf;
 		if (['bodyfat', 'composition'].includes(mode)) {
 			bfVal = calculateNavyBodyFat({ sex, waistCm: waist, neckCm: neck, hipCm: hip, heightCm: h });
@@ -403,7 +1178,7 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		let snapshotHtml = '';
 		
 		// Configure dynamic rows and visual graphs based on categories
-		if (['tdee', 'maintenance', 'bmr'].includes(mode)) {
+		if (['tdee', 'maintenance', 'bmr', 'daily-needs'].includes(mode)) {
 			rows = mode === 'bmr' ? [
 				['BMR (resting)', `${r(baseBmr)} kcal`, 64],
 				['Body weight', formatWeight(w), 52],
@@ -429,19 +1204,51 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				</div>
 			`;
 		}
-		else if (['calorie', 'deficit', 'surplus', 'recomp', 'muscle'].includes(mode) || mode.includes('calorie')) {
+		else if (['calorie', 'deficit', 'surplus', 'recomp', 'muscle', 'maintenance-calories', 'deficit-calories', 'surplus-calories', 'target-calories', 'weight-loss-calories', 'weight-gain-calories'].includes(mode) || mode.includes('calorie')) {
+			let labelName = 'Target Calories';
+			let activeGoal = goal;
+
+			if (mode === 'deficit-calories' || mode === 'weight-loss-calories') {
+				labelName = 'Deficit Target';
+				activeGoal = 'fat-loss';
+			} else if (mode === 'surplus-calories' || mode === 'weight-gain-calories') {
+				labelName = 'Surplus Target';
+				activeGoal = 'lean-bulk';
+			} else if (mode === 'maintenance-calories') {
+				labelName = 'Maintenance Target';
+				activeGoal = 'maintain';
+			}
+
 			rows = [
 				['Maintenance', `${maintenance} kcal`, 65],
-				[mode === 'deficit' ? 'Deficit Target' : mode === 'surplus' ? 'Surplus Target' : mode === 'recomp' ? 'Recomp Target' : mode === 'muscle' ? 'Lean Gain Target' : 'Target Calories', `${targetCal} kcal`, strategyMultiplier(mode, goal) < 1 ? 52 : 74],
+				[labelName, `${targetCal} kcal`, strategyMultiplier(mode, activeGoal) < 1 ? 52 : 74],
 				['Protein Target', `${m.protein} g`, 68]
 			];
+			
+			// Highlight visual goals context card
+			const details = {
+				'fat-loss': { title: 'Fat Loss (Moderate Deficit)', tip: 'Optimizes fat mobilization while preserving active lean mass.' },
+				'maintain': { title: 'Weight Maintenance', tip: 'Equilibrium intake to support training output and hormone baseline.' },
+				'lean-bulk': { title: 'Controlled Surplus (Lean Bulk)', tip: 'Supports muscle protein synthesis while keeping fat gain low.' },
+				'recomp': { title: 'Body Recomposition', tip: 'Near-maintenance intake with high protein to build muscle and burn fat.' }
+			}[activeGoal] || { title: 'Diet Strategy', tip: 'Starting calorie targets based on activity level.' };
+
+			const progressRate = activeGoal === 'fat-loss'
+				? 'Expected fat loss progress: ~0.4 - 0.5 kg / week'
+				: activeGoal === 'lean-bulk'
+				? 'Expected muscle gain progress: ~0.1 - 0.2 kg / week'
+				: 'Weight stability with body composition shifts';
+
 			snapshotHtml = `
 				<div class="result-card">
-					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Energy & Macro Targets</p>
-					<div class="mt-4 space-y-3 font-mono">
-						<div class="flex justify-between text-xs font-bold text-foreground"><span>Starting Calories</span><span>${targetCal} kcal</span></div>
-						<div class="flex justify-between text-xs font-bold text-foreground"><span>Protein Intake</span><span>${m.protein} g</span></div>
-						<div class="flex justify-between text-xs font-bold text-foreground"><span>Fat Intake</span><span>${m.fat} g</span></div>
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">${details.title}</p>
+					<p class="mt-2 text-xs text-muted-foreground leading-relaxed font-sans">${details.tip}</p>
+					<p class="mt-2 text-[10px] text-success font-semibold font-sans">${progressRate}</p>
+					<div class="mt-4 space-y-2 border-t border-border/40 pt-3 text-xs font-mono">
+						<div class="flex justify-between text-foreground"><span>Caloric Intake</span><span>${targetCal} kcal</span></div>
+						<div class="flex justify-between text-foreground"><span>Protein (1.9 g/kg)</span><span>${m.protein} g</span></div>
+						<div class="flex justify-between text-foreground"><span>Dietary Fats (28%)</span><span>${m.fat} g</span></div>
+						<div class="flex justify-between text-foreground"><span>Carbohydrates</span><span>${m.carbs} g</span></div>
 					</div>
 				</div>
 			`;
@@ -489,7 +1296,31 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				['Midpoint', formatWeight(ideal.midpoint), 60],
 				['High range', formatWeight(ideal.high), 76]
 			];
-			snapshotHtml = `<div class="result-card"><p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Ideal Weight Context</p><p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Uses a Hamwi-style height estimate with a ±10% practical range. Body composition and training goals can justify weights outside this range.</p></div>`;
+			
+			// Build ideal range horizontal bar widget
+			const currentWeightText = formatWeight(w);
+			const percentPos = clamp(Math.round(((w - ideal.low) / (ideal.high - ideal.low)) * 100), 5, 95);
+			
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans mb-3">Skeletal Weight Range</p>
+					<div class="relative pt-6 pb-2 px-1">
+						<!-- Horizontal line -->
+						<div class="h-1.5 w-full bg-muted rounded-full relative">
+							<!-- Ideal zone colored green -->
+							<div class="absolute top-0 bottom-0 left-[10%] right-[10%] bg-success/20 rounded-full"></div>
+							<!-- User position indicator -->
+							<div class="absolute -top-1 w-3.5 h-3.5 rounded-full bg-accent border-2 border-card -ml-1.5 cursor-help" style="left: ${percentPos}%" title="Your Weight: ${currentWeightText}"></div>
+						</div>
+						<!-- Labels -->
+						<div class="flex justify-between text-[9px] text-muted-foreground mt-2 font-mono">
+							<span>${formatWeight(ideal.low)} (Low)</span>
+							<span>${formatWeight(ideal.high)} (High)</span>
+						</div>
+					</div>
+					<p class="mt-2 text-[10px] leading-relaxed text-muted-foreground font-sans">Skeletal reference range using healthy BMI base. Athletes with high muscle mass regularly exceed this range safely.</p>
+				</div>
+			`;
 		}
 		else if (mode === 'whtr') {
 			const ratio = waist / h;
@@ -498,7 +1329,26 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				['Waist', formatLength(waist), 52],
 				['Category', whtrCategory(ratio), ratio <= 0.5 ? 70 : 45]
 			];
-			snapshotHtml = `<div class="result-card"><p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Central Adiposity Screen</p><p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Waist-to-height ratio is a screening estimate. A common public-health target is keeping waist circumference below roughly half of height.</p></div>`;
+			
+			// Traffic light gauge widget
+			let color = 'bg-success';
+			let txt = 'Generally Healthy';
+			if (ratio > 0.5 && ratio <= 0.6) { color = 'bg-warning'; txt = 'Elevated adiposity'; }
+			else if (ratio > 0.6) { color = 'bg-destructive'; txt = 'High risk'; }
+			
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans mb-3">Cardiovascular Risk Screen</p>
+					<div class="flex items-center gap-3 p-3 rounded-lg bg-muted/40 border border-border/40 mb-3">
+						<span class="w-3 h-3 rounded-full ${color} shrink-0 animate-pulse"></span>
+						<div>
+							<p class="text-xs font-bold text-foreground">${txt}</p>
+							<p class="text-[10px] text-muted-foreground mt-0.5">Ratio: ${r(ratio, 2)} (healthy standard <= 0.5)</p>
+						</div>
+					</div>
+					<p class="text-[10px] leading-relaxed text-muted-foreground font-sans">WHtR evaluates visceral fat levels more effectively than BMI by focusing directly on waist measurements relative to height.</p>
+				</div>
+			`;
 		}
 		else if (mode === 'target') {
 			const target = targetWeightFromBodyFat(w, bfVal, targetBodyFat);
@@ -507,7 +1357,16 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				['Required Change', `${target.change >= 0 ? '+' : ''}${formatWeight(target.change)}`, 48],
 				['Lean Mass Held', formatWeight(target.leanMass), 68]
 			];
-			snapshotHtml = `<div class="result-card"><p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Target Composition Model</p><p class="mt-3 text-xs leading-relaxed text-muted-foreground font-sans">Assumes lean mass is maintained while fat mass changes toward the selected target body fat percentage.</p></div>`;
+			snapshotHtml = `
+				<div class="result-card">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Delta Target Strategy</p>
+					<div class="mt-4 p-3 rounded-lg border border-border/40 bg-muted/30 text-xs font-mono space-y-1">
+						<div class="flex justify-between"><span>Current Weight</span><span>${formatWeight(w)}</span></div>
+						<div class="flex justify-between"><span>Target Weight</span><span>${formatWeight(target.targetWeight)}</span></div>
+						<div class="flex justify-between font-bold text-accent"><span>Target Delta</span><span>${target.change >= 0 ? '+' : ''}${formatWeight(target.change)}</span></div>
+					</div>
+				</div>
+			`;
 		}
 		else if (['bodyfat', 'ffmi', 'lbm', 'composition', 'bmi'].includes(mode) || mode.includes('composition') || mode.includes('fat') || mode.includes('mass')) {
 			rows = [
@@ -530,17 +1389,39 @@ function fieldClass(key: keyof typeof fieldGroups) {
 					['Normalized FFMI', normFfmiVal, clamp((normFfmiVal - 12) * 6, 10, 95)],
 					['Lean Mass', formatWeight(lean), 66]
 				];
-			}
-			snapshotHtml = `
-				<div class="result-card">
-					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Body Index Composition</p>
-					<div class="mt-4 space-y-2 text-xs text-muted-foreground font-mono">
-						<div class="flex justify-between font-bold text-foreground"><span>BMI score</span><span>${b}</span></div>
-						${lean ? `<div class="flex justify-between font-bold text-foreground"><span>Lean Mass share</span><span>${formatWeight(lean)} (${r(100 - bfVal, 1)}%)</span></div>` : ''}
-						${fatMass ? `<div class="flex justify-between font-bold text-foreground"><span>Fat Mass share</span><span>${formatWeight(fatMass)} (${bfVal}%)</span></div>` : ''}
+				
+				// Percentile gauge for FFMI with natural ceiling
+				let status = 'Average';
+				if (normFfmiVal >= 25) status = 'Theoretical Genetic Limit';
+				else if (normFfmiVal >= 22) status = 'Excellent/Very Muscular';
+				else if (normFfmiVal >= 20) status = 'Above Average';
+				
+				snapshotHtml = `
+					<div class="result-card">
+						<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans mb-3">FFMI Percentile Scale</p>
+						<div class="p-3 bg-muted/40 border border-border/40 rounded-lg text-xs font-sans space-y-2">
+							<div class="flex justify-between font-bold"><span>Normal FFMI</span><span>${normFfmiVal}</span></div>
+							<div class="flex justify-between text-muted-foreground text-[10px]"><span>Muscle Tier</span><span>${status}</span></div>
+							<div class="relative h-1.5 w-full bg-muted rounded-full overflow-hidden mt-1">
+								<div class="absolute top-0 bottom-0 left-0 bg-accent rounded-full" style="width: ${clamp((normFfmiVal - 12) * 6.5, 5, 98)}%"></div>
+								<div class="absolute top-0 bottom-0 w-0.5 bg-destructive cursor-help" style="left: 84.6%" title="Natural FFMI Ceiling (25)"></div>
+							</div>
+							<div class="flex justify-between text-[8px] text-muted-foreground font-mono"><span>12 (Low)</span><span>22 (High)</span><span>25+ (Ceiling)</span></div>
+						</div>
 					</div>
-				</div>
-			`;
+				`;
+			} else {
+				snapshotHtml = `
+					<div class="result-card">
+						<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Body Index Composition</p>
+						<div class="mt-4 space-y-2 text-xs text-muted-foreground font-mono">
+							<div class="flex justify-between font-bold text-foreground"><span>BMI score</span><span>${b}</span></div>
+							${lean ? `<div class="flex justify-between font-bold text-foreground"><span>Lean Mass share</span><span>${formatWeight(lean)} (${r(100 - bfVal, 1)}%)</span></div>` : ''}
+							${fatMass ? `<div class="flex justify-between font-bold text-foreground"><span>Fat Mass share</span><span>${formatWeight(fatMass)} (${bfVal}%)</span></div>` : ''}
+						</div>
+					</div>
+				`;
+			}
 		}
 		else if (mode === 'macro') {
 			rows = [
@@ -548,13 +1429,76 @@ function fieldClass(key: keyof typeof fieldGroups) {
 				['Fat (28%)', `${m.fat} g`, 40],
 				['Carbohydrates (42%)', `${m.carbs} g`, 76]
 			];
+			// Visual macro pie chart (SVG)
+			snapshotHtml = `
+				<div class="result-card flex flex-col items-center">
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans w-full text-left">Macro Split Ratio</p>
+					<div class="relative w-32 h-32 my-4">
+						<svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+							<!-- Protein: 30% (dasharray 30 70) -->
+							<circle cx="18" cy="18" r="15.915" fill="transparent" stroke="var(--accent)" stroke-width="4.2" stroke-dasharray="30 70" stroke-dashoffset="0"></circle>
+							<!-- Fat: 28% (dasharray 28 72, offset starts at -30) -->
+							<circle cx="18" cy="18" r="15.915" fill="transparent" stroke="var(--success)" stroke-width="4.2" stroke-dasharray="28 72" stroke-dashoffset="-30"></circle>
+							<!-- Carbs: 42% (dasharray 42 58, offset starts at -58) -->
+							<circle cx="18" cy="18" r="15.915" fill="transparent" stroke="var(--warning)" stroke-width="4.2" stroke-dasharray="42 58" stroke-dashoffset="-58"></circle>
+						</svg>
+						<div class="absolute inset-0 flex flex-col items-center justify-center font-mono">
+							<span class="text-xs font-bold text-foreground">${targetCal}</span>
+							<span class="text-[9px] text-muted-foreground">kcal</span>
+						</div>
+					</div>
+					<div class="w-full space-y-2 text-xs text-muted-foreground font-mono">
+						<div class="flex justify-between font-bold text-foreground">
+							<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-accent inline-block"></span>Protein</span>
+							<span>${m.protein} g (${r(m.protein*4)} kcal)</span>
+						</div>
+						<div class="flex justify-between font-bold text-foreground">
+							<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-success inline-block"></span>Fats</span>
+							<span>${m.fat} g (${r(m.fat*9)} kcal)</span>
+						</div>
+						<div class="flex justify-between font-bold text-foreground">
+							<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-warning inline-block"></span>Carbs</span>
+							<span>${m.carbs} g (${r(m.carbs*4)} kcal)</span>
+						</div>
+					</div>
+				</div>
+			`;
+		}
+		else if (mode === 'cycling') {
+			const trainingDays = 4;
+			const restDays = 7 - trainingDays;
+			// High/Low day math: Training days = Maintenance + 200, Rest days balanced to hit targetCal weekly average
+			const highDay = targetCal + 200;
+			const totalWeeklyTarget = targetCal * 7;
+			const lowDay = Math.round((totalWeeklyTarget - (highDay * trainingDays)) / restDays);
+
+			rows = [
+				['Weekly Average Target', `${targetCal} kcal/day`, 60],
+				['Training Day Target (4 days)', `${highDay} kcal/day`, 75],
+				['Rest Day Target (3 days)', `${lowDay} kcal/day`, 45]
+			];
 			snapshotHtml = `
 				<div class="result-card">
-					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Macro Split</p>
-					<div class="mt-4 space-y-2 text-xs text-muted-foreground font-mono">
-						<div class="flex justify-between font-bold text-foreground"><span>Protein</span><span>${m.protein} g (${r(m.protein*4)} kcal)</span></div>
-						<div class="flex justify-between font-bold text-foreground"><span>Fats</span><span>${m.fat} g (${r(m.fat*9)} kcal)</span></div>
-						<div class="flex justify-between font-bold text-foreground"><span>Carbohydrates</span><span>${m.carbs} g (${r(m.carbs*4)} kcal)</span></div>
+					<p class="text-xs font-bold uppercase text-accent tracking-wider font-sans">Calorie Cycling Projections</p>
+					<div class="mt-4 space-y-4 text-xs text-muted-foreground">
+						<div>
+							<div class="flex justify-between font-bold text-foreground mb-1">
+								<span>Training Days (${trainingDays} days/wk)</span>
+								<span>${highDay} kcal</span>
+							</div>
+							<div class="relative h-2 w-full bg-border rounded-full overflow-hidden">
+								<div class="absolute inset-y-0 left-0 bg-success rounded-full" style="width: 85%"></div>
+							</div>
+						</div>
+						<div>
+							<div class="flex justify-between font-bold text-foreground mb-1">
+								<span>Rest Days (${restDays} days/wk)</span>
+								<span>${lowDay} kcal</span>
+							</div>
+							<div class="relative h-2 w-full bg-border rounded-full overflow-hidden">
+								<div class="absolute inset-y-0 left-0 bg-accent rounded-full" style="width: 60%"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			`;
@@ -575,33 +1519,61 @@ function fieldClass(key: keyof typeof fieldGroups) {
 		
 		const mathHtml = getStepByStepMathHtml(mode, sex, age, h, w, bfVal, waist, neck, hip, activity, goal, targetCal, maintenance);
 		
-		const calcResult = document.querySelector('#calc-result');
-		calcResult.classList.add('has-result');
-		const formulaNote = bfVal
-			? 'Katch-McArdle formula (uses body fat)'
-			: 'Mifflin-St Jeor formula (no body fat provided)';
-		calcResult.innerHTML = `
-			<div class="result-content grid gap-6 lg:grid-cols-[1.2fr_0.8fr] text-left">
-				<div>
-					${makeRows(rows)}
-					<p class="mt-2 text-xs text-muted-foreground font-sans">Formula: ${formulaNote}</p>
-					${mathHtml}
-					<p class="mt-4 text-xs leading-relaxed text-muted-foreground font-sans">
-						Calculated starting point estimates. Energy output and metabolic speed fluctuate weekly. Reassess after tracking actual trend weight changes.
-					</p>
-					<div class="mt-4 flex flex-wrap gap-3 font-sans">
-						<a class="button-secondary text-sm" href="/assess">Plug into Strategy Finder</a>
-						<a class="button-ghost text-sm" href="/dashboard">Open Local Log</a>
+		
+		if (calcResult) {
+			let themeClass = 'border-border bg-muted/20';
+			if (['deficit', 'calorie-deficit-calculator', 'deficit-calculator'].includes(mode) || (mode === 'calorie' && goal === 'fat-loss')) {
+				themeClass = 'border-cyan-500/20 bg-cyan-500/[0.03]';
+			} else if (['surplus', 'muscle', 'calorie-surplus-calculator', 'surplus-calculator'].includes(mode) || (mode === 'calorie' && goal.includes('bulk'))) {
+				themeClass = 'border-emerald-500/20 bg-emerald-500/[0.03]';
+			} else if (['recomp', 'composition', 'bodyfat'].includes(mode) || (mode === 'calorie' && goal === 'recomp')) {
+				themeClass = 'border-indigo-500/20 bg-indigo-500/[0.03]';
+			} else if (['timeline', 'target'].includes(mode)) {
+				themeClass = 'border-amber-500/20 bg-amber-500/[0.03]';
+			}
+
+			calcResult.className = `result-container border-t ${themeClass} p-6 has-result`;
+			const formulaNote = bfVal
+				? 'Katch-McArdle formula (uses body fat)'
+				: 'Mifflin-St Jeor formula (no body fat provided)';
+			calcResult.innerHTML = `
+				<div class="result-content grid gap-6 lg:grid-cols-[1.2fr_0.8fr] text-left animate-fade-in-up">
+					<div>
+						${makeRows(rows)}
+						<p class="mt-2 text-xs text-muted-foreground font-sans">Formula: ${formulaNote}</p>
+						${mathHtml}
+						<p class="mt-4 text-xs leading-relaxed text-muted-foreground font-sans">
+							Calculated starting point estimates. Energy output and metabolic speed fluctuate weekly. Reassess after tracking actual trend weight changes.
+						</p>
+						<div class="mt-4 flex flex-wrap gap-3 font-sans">
+							<a class="button-secondary text-sm" href="/assess">Plug into Strategy Finder</a>
+							<a class="button-ghost text-sm" href="/dashboard">Open Local Log</a>
+						</div>
+					</div>
+					<div>
+						${snapshotHtml}
+						<p class="mt-3 text-xs font-medium text-warning font-sans">These are educational estimates. Consult a healthcare professional before starting any diet or exercise program.</p>
 					</div>
 				</div>
-				<div>
-					${snapshotHtml}
-					<p class="mt-3 text-xs font-medium text-warning">These are educational estimates. Consult a healthcare professional before starting any diet or exercise program.</p>
-				</div>
-			</div>
-		`;
-		
-		document.querySelector('#calc-result')?.focus();
-		document.querySelector('#calc-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			`;
+
+			// Animate value counters
+			calcResult.querySelectorAll('.animate-calc-val').forEach(el => {
+				const target = parseFloat(el.getAttribute('data-target') || '0');
+				const suffix = el.getAttribute('data-suffix') || '';
+				animateCounter(el as HTMLElement, 0, target, 800, suffix);
+			});
+
+			// Animate progress bars
+			calcResult.querySelectorAll('.calc-progress-bar').forEach(bar => {
+				const width = bar.getAttribute('data-width') || '0';
+				setTimeout(() => {
+					(bar as HTMLElement).style.width = `${width}%`;
+				}, 50);
+			});
+
+			calcResult.focus();
+			calcResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		}
 	});
 </script>

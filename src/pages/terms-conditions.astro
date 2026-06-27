@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { DOMAIN } from '../data/site';
+import Author from '../components/Author.astro';
+
+const title = "Terms and Conditions of Use | BodyCompOS";
+const description = "Read the BodyCompOS Terms & Conditions. Guidelines governing calculations, strategy recommendations, and local tracking outputs.";
+const canonical = `${DOMAIN}/terms-conditions`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	name: title,
+	description: description,
+	url: canonical,
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<span class="text-foreground">Terms and Conditions</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8 text-center sm:text-left">
+				<p class="eyebrow">User Agreement</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Terms & <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Conditions</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					Please read these terms carefully before utilizing our calculators, strategy estimators, and logging databases.
+				</p>
+			</div>
+
+			<!-- Editorial Body -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_280px]">
+				<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl shadow-sm prose-lite space-y-6 text-sm text-muted-foreground leading-relaxed">
+					<section>
+						<h2 class="text-lg font-bold text-foreground mb-2">1. Permitted Personal Use</h2>
+						<p>
+							BodyCompOS is provided solely for personal, educational, and tracking purposes. You may use our calculators and tools to support your fitness objectives. Commercial use or programmatic scraping of our pages is strictly prohibited.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-lg font-bold text-foreground mb-2">2. Accuracy of Calculations</h2>
+						<p>
+							All formulas (Mifflin-St Jeor, Katch-McArdle, US Navy) represent mathematical averages. Individual biological results vary due to sleep, stress, genetics, and activity adherence. We make no guarantees regarding individual outcomes.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-lg font-bold text-foreground mb-2">3. Limitation of Liability</h2>
+						<p>
+							We are not liable for any injuries, dietary deficiencies, or health consequences resulting from adherence to calorie/protein estimates. Always consult a certified dietitian or physician before embarking on intense caloric restrictions.
+						</p>
+					</section>
+
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+				</div>
+
+				<!-- Sidebar info -->
+				<div class="space-y-6 text-xs">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h4 class="font-bold text-foreground mb-2">Agreement Statement</h4>
+						<p class="text-muted-foreground leading-relaxed">
+							By using this website, you confirm your acceptance of these guidelines, our privacy rules, and metabolic disclaimers.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

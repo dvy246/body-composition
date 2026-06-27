@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Author from '../components/Author.astro';
+import { SITE, absoluteUrl } from '../data/site';
+
+const pageTitle = 'About Us | BodyCompOS';
+const pageDescription = 'Learn about BodyCompOS — our evidence-based mission, local-first privacy approach, and the scientific review process behind every calculator and guide.';
+const canonicalUrl = absoluteUrl('/about');
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	name: 'About BodyCompOS',
+	description: pageDescription,
+	url: canonicalUrl,
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: absoluteUrl('/favicon.svg'),
+		},
+	},
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} canonical={canonicalUrl} schema={schema}>
+	<section class="site-container py-10 sm:py-16">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<span class="text-foreground">About</span>
+		</nav>
+
+		<!-- Hero Section -->
+		<div class="max-w-3xl animate-fade-in">
+			<p class="eyebrow">Platform & Mission</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Evidence-Based Strategy. <span class="text-accent">Zero Compromises.</span>
+			</h1>
+			<p class="mt-6 text-lg leading-relaxed text-muted-foreground">
+				BodyCompOS was founded to bridge the gap between complex peer-reviewed sports science and practical, everyday fitness tracking. We replace standard static calculators with an active operating loop: assessment, strategy recommendation, calorie setting, timeline planning, and progressive trend reassessment.
+			</p>
+		</div>
+
+		<!-- Pillars Grid -->
+		<div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+			<div class="app-card border border-border p-6 rounded-2xl flex flex-col justify-between bg-card/40 hover:shadow-soft">
+				<div>
+					<div class="w-10 h-10 rounded-lg flex items-center justify-center bg-accent/10 text-accent mb-4">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2">Science-First Integrity</h3>
+					<p class="text-sm text-muted-foreground leading-relaxed">
+						We use validated equations (Mifflin-St Jeor, Katch-McArdle, US Navy) directly from peer-reviewed literature. No fabricated algorithms or quick-fix magic numbers.
+					</p>
+				</div>
+			</div>
+
+			<div class="app-card border border-border p-6 rounded-2xl flex flex-col justify-between bg-card/40 hover:shadow-soft">
+				<div>
+					<div class="w-10 h-10 rounded-lg flex items-center justify-center bg-success/10 text-success mb-4">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2">100% Local Privacy</h3>
+					<p class="text-sm text-muted-foreground leading-relaxed">
+						Your body measurements, weight trend, and biological stats are stored exclusively in your browser's local storage. Your personal data never leaves your device.
+					</p>
+				</div>
+			</div>
+
+			<div class="app-card border border-border p-6 rounded-2xl flex flex-col justify-between bg-card/40 hover:shadow-soft">
+				<div>
+					<div class="w-10 h-10 rounded-lg flex items-center justify-center bg-accent/10 text-accent mb-4">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2">Adaptive Guidance</h3>
+					<p class="text-sm text-muted-foreground leading-relaxed">
+						Calculators shouldn't just output a number and stop. BodyCompOS helps you adapt targets dynamically based on your real-world weekly check-in results.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Meet the Founder & Credentials -->
+		<div class="mt-20 max-w-4xl animate-fade-in-up">
+			<h2 class="text-2xl font-black text-foreground mb-6">Expertise Behind the Platform</h2>
+			<Author className="bg-card/70 border border-border" />
+		</div>
+
+		<!-- Editorial Vetting Process & Quality Vows -->
+		<div class="mt-20 grid gap-10 lg:grid-cols-2 max-w-5xl animate-fade-in-up">
+			<div>
+				<h2 class="text-2xl font-black text-foreground mb-4">Our Editorial Process</h2>
+				<p class="text-sm text-muted-foreground leading-relaxed mb-4">
+					Body composition advice online is plagued by commercial bias, sponsored supplement recommendations, and extreme caloric targets. To ensure BodyCompOS remains a trusted, objective resource:
+				</p>
+				<ul class="space-y-4">
+					<li class="flex gap-3">
+						<svg class="text-success shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+						<span class="text-sm text-muted-foreground leading-relaxed">
+							<strong class="text-foreground">Strict Vetting:</strong> Every calculator logic and strategy guide is designed and peer-reviewed by D. Yadav, CSCS, referencing original medical and sports science papers.
+						</span>
+					</li>
+					<li class="flex gap-3">
+						<svg class="text-success shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+						<span class="text-sm text-muted-foreground leading-relaxed">
+							<strong class="text-foreground">Evidence Citations:</strong> All assertions regarding protein requirements, metabolic adaptation, or bulking limits link back to public journals or DOI databases.
+						</span>
+					</li>
+					<li class="flex gap-3">
+						<svg class="text-success shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+						<span class="text-sm text-muted-foreground leading-relaxed">
+							<strong class="text-foreground">Continuous Updates:</strong> We review content quarterly to integrate new meta-analyses, and immediately patch any discrepancies submitted via our corrections portal.
+						</span>
+					</li>
+				</ul>
+			</div>
+
+			<!-- Medical Warning Card (YMYL Compliant) -->
+			<div class="content-panel border-l-4 border-l-destructive rounded-xl bg-destructive/5 p-6 flex flex-col justify-between">
+				<div>
+					<div class="flex items-center gap-3 text-destructive font-bold text-sm mb-3 uppercase tracking-wider">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+						Critical Medical Disclaimer
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-3">BodyCompOS is Educational Software</h3>
+					<p class="text-sm text-muted-foreground leading-relaxed mb-4">
+						All calculations, strategy suggestions, nutrition targets, and metabolic forecasting calculations are educational estimates derived from population-average equations. They are not clinical diagnoses, medical assessments, or personalized prescriptions.
+					</p>
+					<p class="text-sm text-muted-foreground leading-relaxed">
+						Always consult a medical professional before starting a caloric deficit, entering a training cycle, or modifying macronutrient ratios if you have pre-existing conditions, renal or metabolic issues, eating disorder history, or are pregnant/nursing.
+					</p>
+				</div>
+				<div class="mt-6 pt-4 border-t border-border flex justify-between items-center text-xs text-muted-foreground">
+					<span>Reviewed: June 26, 2026</span>
+					<a href="/disclaimer" class="font-bold text-accent hover:underline">Read Full Disclaimer</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Strategy Finder CTA -->
+		<div class="mt-20 rounded-2xl bg-muted/30 border border-border p-8 text-center max-w-4xl mx-auto">
+			<h2 class="text-2xl font-black text-foreground mb-3">Ready to Assess Your Body Composition?</h2>
+			<p class="text-sm text-muted-foreground max-w-xl mx-auto mb-6">
+				Skip the guesswork. Use our multi-step Strategy Finder to assess your stats, identify your focus pathway, and calculate initial protein and calorie targets.
+			</p>
+			<div class="flex flex-col sm:flex-row justify-center gap-4">
+				<a class="button-primary" href="/assess">Start Free Assessment</a>
+				<a class="button-secondary" href="/calculators">Explore Support Calculators</a>
+			</div>
+		</div>
+	</section>
+</Layout>

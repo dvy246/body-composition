@@ -1,0 +1,229 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN, articleSchema } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import QuickAnswer from '../../components/QuickAnswer.astro';
+import Author from '../../components/Author.astro';
+
+const title = "How to Break a Weight Loss Plateau - Scientific Guide | BodyCompOS";
+const description = "Are you in a calorie deficit but not losing weight? Learn the causes of a weight loss plateau, common myths, and science-backed strategies to overcome it.";
+const canonical = `${DOMAIN}/guides/weight-loss-plateau-guide`;
+
+const faqEntries = [
+	['How long does a weight loss plateau last?', 'A true weight loss plateau is defined as a complete stall in both scale weight and body measurements (waist size) for at least 3-4 consecutive weeks. Stalls shorter than 3 weeks are usually due to temporary water retention masking fat loss.'],
+	['Why am I in a calorie deficit but not losing weight?', 'The most common causes are: (1) Adherence drift: underestimating calorie intake by not weighing foods. (2) Unconscious reduction in daily non-exercise movement (NEAT) as your body adapts to the deficit. (3) Water retention triggered by elevated cortisol (stress).'],
+	['How do I break a fat loss plateau?', 'To break a stall, first audit your food tracking accuracy. If tracking is precise, implement a 1-week maintenance break (refeed) to restore thyroid output and lower cortisol, or reduce daily calories by a small 100-150 kcal increment while maintaining high protein.'],
+];
+
+const schema = [
+	articleSchema(title, description, canonical),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqEntries.map(([q, a]) => ({
+			'@type': 'Question',
+			name: q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: a,
+			},
+		})),
+	},
+];
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
+	<section class="site-container py-10 sm:py-12">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/guides">Guides</a>
+			<span>/</span>
+			<span class="text-foreground">Weight Loss Plateau Guide</span>
+		</nav>
+
+		<!-- Content Hero -->
+		<div class="max-w-4xl">
+			<p class="eyebrow">Metabolic Adaptation</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				How to Break a Weight Loss Plateau <br/>
+				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Science-Backed Deficit Diagnostics</span>
+			</h1>
+			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
+				Stalled progress is frustrating. If you are stuck in a calorie deficit but not losing weight, this guide breaks down the biological causes of fat loss plateaus, distinguishes water weight mask from real metabolic suppression, and supplies a step-by-step action plan to break the stall.
+			</p>
+
+			<QuickAnswer 
+				title="Direct Plateau Diagnostic"
+				answer="A true weight loss plateau is a cessation of weight and waist changes for 3-4 consecutive weeks. It is rarely a broken metabolism; rather, it is caused by calorie tracking drift, unconscious reductions in daily NEAT movement, or water retention driven by stress cortisol levels. Audit tracking first, lower stress, or introduce a 7-day maintenance refeed phase."
+			/>
+
+			<!-- Author / E-E-A-T Attribution -->
+			<AuthorAttribution 
+				role="Reviewed by certified sports nutrition researchers" 
+				references="Trexler et al. 2014 (JISSN), Hall et al. 2011 (Lancet), Helms et al. 2014" 
+				published="June 2026"
+				reviewed="June 27, 2026"
+			/>
+			<p class="mt-4 text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				11 min read
+			</p>
+		</div>
+
+		<!-- Mobile TOC Accordion -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#defining-plateau" class="block text-muted-foreground hover:text-accent transition-colors">1. Defining a True Plateau</a>
+				<a href="#common-causes" class="block text-muted-foreground hover:text-accent transition-colors">2. Common Causes of Stalls</a>
+				<a href="#water-retention-mask" class="block text-muted-foreground hover:text-accent transition-colors">3. The Cortisol Water Mask</a>
+				<a href="#breaking-strategies" class="block text-muted-foreground hover:text-accent transition-colors">4. Action Plan to Overcome Stalls</a>
+				<a href="#refeed-breaks" class="block text-muted-foreground hover:text-accent transition-colors">5. Diet Breaks & Refeeds</a>
+				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">6. FAQ</a>
+			</nav>
+		</details>
+
+		<!-- Main grid -->
+		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
+			<!-- Left column: Sticky TOC -->
+			<div class="hidden lg:block">
+				<div class="sticky top-24 space-y-6">
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
+						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
+							<a href="#defining-plateau" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Defining a Plateau</a>
+							<a href="#common-causes" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. Common Causes</a>
+							<a href="#water-retention-mask" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. The Cortisol Mask</a>
+							<a href="#breaking-strategies" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Action Plan</a>
+							<a href="#refeed-breaks" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Diet Breaks & Refeeds</a>
+							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. FAQ</a>
+						</nav>
+					</div>
+
+					<div class="surface border border-border p-5 rounded-2xl">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Plateau Tool</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">Let our local analyzer diagnose your trend data and isolate the block.</p>
+						<a href="/tools/plateau-analyzer" class="button-primary w-full text-center text-xs mt-3 block">Run Analyzer</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right column: Main Editorial -->
+			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">
+				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
+
+					<section>
+						<h2 id="defining-plateau" class="text-xl font-bold text-foreground mb-3">1. Defining a True Plateau</h2>
+						<p>
+							Many lifters confuse daily scale weight fluctuations with a lack of progress. A genuine weight loss plateau is defined as a complete cessation of weight loss and waist size reduction for <strong>3-4 consecutive weeks</strong>. 
+						</p>
+						<p>
+							During the first few weeks of a calorie deficit, the body loses water weight and glycogen quickly, leading to rapid scale drops. As the deficit continues, these variables stabilize, and the rate of fat loss settles to a slower, expected pace. Stalls shorter than 21 days are almost always masked by temporary water retention.
+						</p>
+					</section>
+
+					<section>
+						<h2 id="common-causes" class="text-xl font-bold text-foreground mb-3">2. Common Causes of Weight Loss Stalls</h2>
+						<p>
+							If fat loss has stalled for a month, it is typically driven by one of the following factors:
+						</p>
+						<ul class="list-disc pl-5 space-y-2 mt-2">
+							<li><strong>Adherence Drift:</strong> Gradually eating slightly larger portions, skipping calorie logs for oils and sauces, or underestimating weekend food intake.</li>
+							<li><strong>NEAT Reduction:</strong> As your body tries to conserve energy in a deficit, it unconsciously reduces spontaneous movements like pacing, fidgeting, and posture maintenance. This can reduce TDEE by up to 300-500 kcal per day.</li>
+							<li><strong>Metabolic Adaptation:</strong> A smaller body requires fewer calories to function. Your BMR decreases naturally as weight drops, narrowing your active calorie deficit.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2 id="water-retention-mask" class="text-xl font-bold text-foreground mb-3">3. The Cortisol Water Mask</h2>
+						<p>
+							Living in a calorie deficit and training hard is a physiological stressor. This chronic stress elevates <strong>cortisol</strong>, a hormone that regulates water retention. Elevated cortisol levels cause your body to retain fluid in subcutaneous tissues, masking fat loss on the scale. 
+						</p>
+						<p>
+							When you take a diet break or reduce stress, cortisol drops, and the retained water is released quickly—often resulting in a sudden weight drop of 1-2 kg in a few days (known as the "whoosh" effect).
+						</p>
+					</section>
+
+					<section>
+						<h2 id="breaking-strategies" class="text-xl font-bold text-foreground mb-3">4. Action Plan to Overcome Stalls</h2>
+						<p>
+							Follow this diagnostic protocol to break your plateau:
+						</p>
+						<ol class="list-decimal pl-5 space-y-2 mt-2">
+							<li><strong>Audit your tracking accuracy:</strong> Use a digital food scale to weigh everything you eat for 7 days. Do not estimate portion sizes.</li>
+							<li><strong>Track weekly averages, not daily weights:</strong> Add up your weights for the week and divide by 7. Compare weekly moving averages to filter out water weight noise.</li>
+							<li><strong>Increase daily step count:</strong> Set a baseline step goal (e.g. 8,000 to 10,000 steps) to prevent your body from reducing NEAT levels.</li>
+						</ol>
+					</section>
+
+					<section>
+						<h2 id="refeed-breaks" class="text-xl font-bold text-foreground mb-3">5. Diet Breaks & Refeed Days</h2>
+						<p>
+							If you have been in a calorie deficit for over 12-16 weeks, diet fatigue is high. A scheduled **7-day diet break**—where you increase calories back to estimated maintenance levels—helps restore leptin, normalize thyroid hormones, and lower cortisol. This temporarily relieves metabolic adaptation before starting another deficit phase.
+						</p>
+					</section>
+
+					<section>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">6. Frequently Asked Questions</h2>
+						<div class="space-y-4 mt-3">
+							{faqEntries.map(([q, a]) => (
+								<div>
+									<h4 class="font-bold text-foreground text-xs">{q}</h4>
+									<p class="text-xs text-muted-foreground mt-1">{a}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const outlineNav = document.getElementById('sticky-outline-nav');
+	if (outlineNav) {
+		const links = outlineNav.querySelectorAll('a[href^="#"]');
+		const headings = Array.from(links).map(link => {
+			const id = link.getAttribute('href');
+			return id ? document.querySelector(id) : null;
+		}).filter(Boolean) as Element[];
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute('id');
+					links.forEach(link => {
+						const href = link.getAttribute('href');
+						if (href === `#${id}`) {
+							link.classList.add('active-toc-link', 'text-accent');
+							link.classList.remove('text-muted-foreground');
+						} else {
+							link.classList.remove('active-toc-link', 'text-accent');
+							link.classList.add('text-muted-foreground');
+						}
+					});
+				}
+			});
+		}, { rootMargin: '-10% 0px -75% 0px' });
+
+		headings.forEach(h => observer.observe(h));
+	}
+</script>
+
+<style>
+	.active-toc-link {
+		border-left-color: var(--accent) !important;
+		font-weight: 700;
+	}
+</style>

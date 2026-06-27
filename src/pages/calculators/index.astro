@@ -6,12 +6,32 @@ import { SITE, calculators, calculatorCategories, absoluteUrl } from '../../data
 function findCalculator(slug: string) {
 	return calculators.find((c) => c.slug === slug);
 }
+
+const canonicalUrl = absoluteUrl('/calculators');
+
+// ItemList schema — signals to Google this is a curated list of tools
+const itemListSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'ItemList',
+	name: 'Body Composition Calculators',
+	description: 'Free, evidence-based body composition strategy calculators.',
+	url: canonicalUrl,
+	numberOfItems: calculators.length,
+	itemListElement: calculators.map((calc, index) => ({
+		'@type': 'ListItem',
+		position: index + 1,
+		name: calc.title,
+		url: absoluteUrl(`/calculators/${calc.slug}`),
+		description: calc.description,
+	})),
+};
 ---
 
 <Layout
-	title="Fitness & Body Composition Calculators | BodyCompOS"
-	description="Browse our collection of 19 strategy-supporting calculators. Estimate BMR, TDEE, protein intake, macros, body fat, FFMI, target weight timelines, and more."
-	canonical={absoluteUrl('calculators')}
+	title="Free Body Composition Calculators — TDEE, Macros, Body Fat & More | BodyCompOS"
+	description="Browse our evidence-based body composition calculators. Free tools for TDEE, BMR, protein intake, macros, body fat %, FFMI, target weight timelines, and strategy planning."
+	canonical={canonicalUrl}
+	schema={itemListSchema}
 >
 	<section class="site-container py-12 sm:py-16">
 		<div class="max-w-3xl">

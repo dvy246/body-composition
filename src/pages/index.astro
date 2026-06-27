@@ -3,13 +3,17 @@ import Layout from '../layouts/Layout.astro';
 import StrategyFinder from '../components/StrategyFinder.astro';
 import { calculators, absoluteUrl } from '../data/site';
 
+const title = "BodyCompOS - Body Composition Strategy Platform";
+const description = "Learn what body composition is, why it beats tracking scale weight alone, and use our tools (TDEE, BMR, fat percentage, BMI) to construct your plan.";
+const canonical = absoluteUrl();
+
 const webAppSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'WebApplication',
 	name: 'BodyCompOS',
 	applicationCategory: 'HealthApplication',
 	operatingSystem: 'Web',
-	url: absoluteUrl(),
+	url: canonical,
 	description: 'A local-first body composition strategy platform for assessment, targets, forecasting, and reassessment.',
 	offers: {
 		'@type': 'Offer',
@@ -17,89 +21,254 @@ const webAppSchema = {
 		priceCurrency: 'USD',
 	},
 };
+
+const faqEntries = [
+	['What is body composition?', 'Body composition refers to the percentage of fat, bone, water, and muscle in human bodies. Unlike total body weight on a scale, body composition analysis separates weight into fat mass (stored adipose tissue) and lean body mass (muscle, organs, bones, and water), providing a much more accurate picture of health and fitness.'],
+	['Why is body composition more important than BMI or weight?', 'Scale weight and BMI do not differentiate between muscle and fat. An active individual with high muscle mass can be classified as overweight by BMI despite having very low body fat. Tracking body composition ensures that weight lost is actually body fat, not lean muscle tissue.'],
+	['What is BMR in body composition?', 'Basal Metabolic Rate (BMR) represents the minimum number of calories your body requires to perform basic life-sustaining functions (like breathing and circulation) at complete rest. It forms the metabolic baseline of your Total Daily Energy Expenditure (TDEE).'],
+];
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqEntries.map(([q, a]) => ({
+		'@type': 'Question',
+		name: q,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: a,
+		},
+	})),
+};
 ---
 
 <Layout
-	title="BodyCompOS - Body Composition Strategy Platform"
-	description="Start with a body composition assessment, get a strategy recommendation, estimate calories and protein, then track whether the plan is working."
-	canonical={absoluteUrl()}
-	schema={webAppSchema}
+	title={title}
+	description={description}
+	canonical={canonical}
+	schema={[webAppSchema, faqSchema]}
 >
+	<!-- Strategy Finder Hero Widget -->
 	<StrategyFinder />
 
-	<!-- Operating Loop -->
-	<section class="site-container py-16 border-t border-border">
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 1: What is Body Composition? -->
+	<section class="site-container py-16 space-y-12">
+		<div class="max-w-4xl mx-auto grid gap-10 md:grid-cols-[1.2fr_0.8fr]">
+			<div class="space-y-6">
+				<p class="eyebrow">Topical Pillar</p>
+				<h2 class="text-3xl font-black text-foreground sm:text-4xl">What is Body Composition?</h2>
+				<p class="text-sm text-muted-foreground leading-relaxed">
+					At its core, <strong>body composition</strong> defines what your body weight is actually made of. Standard scales treat every kilogram identically, but sports science separates total mass into two distinct compartments:
+				</p>
+				<ul class="space-y-3 text-xs text-muted-foreground list-disc pl-5 leading-relaxed">
+					<li><strong>Fat Mass:</strong> All stored adipose tissue (subcutaneous and visceral fat) along with essential lipid tissues needed for hormone production and insulation.</li>
+					<li><strong>Lean Body Mass (LBM):</strong> Your active tissues, including skeletal muscle, bones, vital organs, blood, and cellular water.</li>
+				</ul>
+				<p class="text-sm text-muted-foreground leading-relaxed">
+					By understanding your body fat percentage and lean mass, you can select optimal metabolic strategies (fat loss cutting, lean bulking, or body recomposition) instead of chasing arbitrary numbers on a scale.
+				</p>
+			</div>
+
+			<div class="surface border border-border p-6 rounded-2xl flex flex-col justify-between">
+				<div>
+					<h3 class="font-bold text-sm text-foreground">Why Scale Weight Deceives</h3>
+					<p class="text-xs text-muted-foreground mt-2 leading-relaxed">
+						Two individuals can stand at exactly 80 kg and 180 cm tall. One carries 25% body fat with minimal muscle, while the other carries 12% body fat with highly developed lean tissue. BMI classifies them identically, but their metabolic rates, health markers, and physical aesthetics are vastly different.
+					</p>
+				</div>
+				<div class="mt-6">
+					<a href="/calculators/body-composition-calculator" class="button-primary text-xs w-full text-center block">Calculate Your Body Comp</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 2: Platform Strategy Loop -->
+	<section class="site-container py-16">
 		<div class="max-w-3xl">
 			<p class="eyebrow">Operating Loop</p>
-			<h2 class="mt-2 text-3xl font-black tracking-tight text-foreground sm:text-4xl">From assessment to reassessment</h2>
-			<p class="mt-4 text-base leading-7 text-muted-foreground">
-				BodyCompOS links assessments with strategy guidance, calorie setting, and progressive monitoring to answer: <span class="text-foreground font-semibold">is your strategy actually working?</span>
+			<h2 class="mt-2 text-3xl font-black tracking-tight text-foreground sm:text-4xl">From Assessment to Reassessment</h2>
+			<p class="mt-4 text-sm leading-relaxed text-muted-foreground">
+				Our local-first system links diagnostics, nutritional multipliers, forecasting curves, and plateau diagnostics to answer a single question: <strong>is your body composition strategy working?</strong>
 			</p>
 		</div>
 		
 		<div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{[
-				['01', 'Assessment', 'Enter sex, age, height, weight, activity levels, and lifting background to define your physical base.'],
-				['02', 'Strategy Choice', 'Identify your optimal current strategy (cut, bulk, maintenance, or recomp) and view confidence levels.'],
-				['03', 'Calorie & Protein Targets', 'Get personalized starting nutrition targets using conservative metabolic rate formulas.'],
-				['04', 'Weekly Check-Ins', 'Log daily weigh-ins and tracking adherence percentages locally without uploading sensitive data.'],
-				['05', 'Progress Forecasting', 'Let the local forecast engine estimate your weeks-to-target weight and rate of change.'],
-				['06', 'Trend Reassessment', 'Compare actual rates of change against predicted progress and adjust calorie targets automatically.'],
+				['01', 'Assess Metrics', 'Enter height, weight, waist, and neck details to calculate body fat via the Navy Circumference Method.'],
+				['02', 'Establish Strategy', 'Select Cut, Bulk, or Recomp based on your experience levels, current body fat ratio, and aesthetic targets.'],
+				['03', 'Calorie & Protein Targets', 'Derive baseline Mifflin-St Jeor and Katch-McArdle numbers with high protein protection targets.'],
+				['04', 'Weekly Check-Ins', 'Log local weigh-ins and adherence values directly to browser storage without server uploads.'],
+				['05', 'Forecast Progress', 'Project completion dates and rate of change velocity using non-linear metabolic decay curves.'],
+				['06', 'Correct Course', 'Identify plateaus using the Plateau Analyzer and adjust your calories dynamically to break stalls.'],
 			].map(([step, title, body]) => (
 				<div class="app-card flex flex-col justify-between group hover:shadow-soft">
 					<div>
 						<span class="text-xs font-black text-accent tracking-widest bg-accent/10 px-2 py-0.5 rounded">{step}</span>
 						<h3 class="mt-4 text-base font-bold text-foreground">{title}</h3>
-						<p class="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+						<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{body}</p>
 					</div>
 				</div>
 			))}
 		</div>
 	</section>
 
-	<!-- Calculators Quick Links -->
-	<section class="site-container py-16 border-t border-border">
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 3: Side-by-Side Comparison Tables -->
+	<section class="site-container py-16 space-y-10">
+		<div class="max-w-3xl">
+			<p class="eyebrow">Comparison Matrices</p>
+			<h2 class="text-3xl font-black text-foreground sm:text-4xl">Scientific Strategy Comparisons</h2>
+			<p class="text-sm text-muted-foreground mt-2">Evaluate the exact tradeoffs between metabolic indicators and methodologies.</p>
+		</div>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<!-- Table 1: BMI vs Body Fat -->
+			<div class="surface border border-border rounded-2xl p-5 space-y-4">
+				<h3 class="font-bold text-sm text-foreground">BMI vs. Body Fat Percentage</h3>
+				<div class="overflow-x-auto">
+					<table class="w-full text-left text-[11px] border-collapse">
+						<thead>
+							<tr class="border-b border-border text-muted-foreground font-semibold">
+								<th class="pb-2">Metric</th>
+								<th class="pb-2">BMI (Body Mass Index)</th>
+								<th class="pb-2">Body Fat Percentage</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y divide-border/40 text-muted-foreground">
+							<tr>
+								<td class="py-2 font-semibold text-foreground">Input Data</td>
+								<td class="py-2">Total weight & height only</td>
+								<td class="py-2">Circumferences / LBM</td>
+							</tr>
+							<tr>
+								<td class="py-2 font-semibold text-foreground">Muscle Bias</td>
+								<td class="py-2 text-warning font-semibold">Penalizes muscular builds</td>
+								<td class="py-2 text-success font-semibold">Rewards lean muscle tissue</td>
+							</tr>
+							<tr>
+								<td class="py-2 font-semibold text-foreground">Health Utility</td>
+								<td class="py-2">Population-level screening</td>
+								<td class="py-2">Individual strategic targets</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<a href="/compare/bmi-vs-body-fat-percentage" class="text-xs text-accent font-bold hover:underline block pt-2">Full Index Comparison →</a>
+			</div>
+
+			<!-- Table 2: Deficit vs Recomp -->
+			<div class="surface border border-border rounded-2xl p-5 space-y-4">
+				<h3 class="font-bold text-sm text-foreground">Cutting Deficit vs. Recomposition</h3>
+				<div class="overflow-x-auto">
+					<table class="w-full text-left text-[11px] border-collapse">
+						<thead>
+							<tr class="border-b border-border text-muted-foreground font-semibold">
+								<th class="pb-2">Parameter</th>
+								<th class="pb-2">Calorie Deficit (Cut)</th>
+								<th class="pb-2">Recomposition (Recomp)</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y divide-border/40 text-muted-foreground">
+							<tr>
+								<td class="py-2 font-semibold text-foreground">Calorie Intake</td>
+								<td class="py-2">15-20% below maintenance</td>
+								<td class="py-2">At maintenance (or -5%)</td>
+							</tr>
+							<tr>
+								<td class="py-2 font-semibold text-foreground">Velocity</td>
+								<td class="py-2 text-success font-semibold">Rapid localized fat loss</td>
+								<td class="py-2">Slow, gradual tissue change</td>
+							</tr>
+							<tr>
+								<td class="py-2 font-semibold text-foreground">Protein Target</td>
+								<td class="py-2">High (2.2 g/kg)</td>
+								<td class="py-2">Extreme (2.2+ g/kg)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<a href="/compare/cut-vs-recomp" class="text-xs text-accent font-bold hover:underline block pt-2">Full Strategy Comparison →</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 4: All Core Calculators List -->
+	<section class="site-container py-16">
 		<div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
 			<div class="max-w-xl">
 				<p class="eyebrow">Calculators</p>
-				<h2 class="mt-2 text-3xl font-black tracking-tight text-foreground sm:text-4xl">Supporting Strategy Tools</h2>
-				<p class="mt-4 text-sm leading-6 text-muted-foreground">
-					Dive deeper into custom metrics, formula breakdowns, and biological indexes once you have defined your primary direction.
+				<h2 class="mt-2 text-3xl font-black tracking-tight text-foreground sm:text-4xl">Platform Strategic Tools</h2>
+				<p class="mt-4 text-sm leading-relaxed text-muted-foreground">
+					Access our full collection of evidence-based calculators to isolate baseline calorie targets, macronutrient partitions, and genetic muscle ceilings.
 				</p>
 			</div>
-			<a class="button-secondary shrink-0" href="/calculators">
-				Browse All 19 Calculators
-				<svg class="inline-block ml-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			<a class="button-secondary shrink-0 text-xs" href="/calculators">
+				View All Calculators
+				<svg class="inline-block ml-1" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
 			</a>
 		</div>
 		
 		<div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{calculators.slice(0, 6).map((calc) => (
-				<a class="app-card block group" href={`/calculators/${calc.slug}`}>
+				<a class="app-card block group hover:shadow-soft" href={`/calculators/${calc.slug}`}>
 					<div class="flex justify-between items-start">
-						<p class="font-bold text-foreground group-hover:text-accent transition-colors">{calc.title}</p>
-						<svg class="text-muted-foreground group-hover:text-accent transition-colors" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+						<p class="font-bold text-foreground group-hover:text-accent transition-colors text-sm">{calc.title}</p>
+						<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
 					</div>
-					<p class="mt-2 text-sm leading-6 text-muted-foreground">{calc.description}</p>
+					<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{calc.description}</p>
 				</a>
 			))}
 		</div>
 	</section>
 
-	<!-- Trust Foundations -->
-	<section class="site-container py-16 border-t border-border">
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 5: F.A.Q. Accordions -->
+	<section class="site-container py-16 max-w-4xl mx-auto space-y-8">
+		<div class="text-center sm:text-left">
+			<p class="eyebrow">Common Questions</p>
+			<h2 class="text-3xl font-black text-foreground sm:text-4xl mt-2">Body Composition FAQ</h2>
+		</div>
+
+		<div class="space-y-4">
+			{faqEntries.map(([q, a]) => (
+				<details class="surface border border-border rounded-xl overflow-hidden group">
+					<summary class="flex justify-between items-center px-5 py-4 font-bold text-sm text-foreground cursor-pointer hover:bg-muted/10 transition-colors select-none">
+						<span>{q}</span>
+						<svg class="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+					</summary>
+					<div class="px-5 pb-5 pt-2 text-xs text-muted-foreground leading-relaxed border-t border-border/40">
+						{a}
+					</div>
+				</details>
+			))}
+		</div>
+	</section>
+
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 6: Trust, Privacy, and References -->
+	<section class="site-container py-16">
 		<div class="grid gap-8 lg:grid-cols-[1.2fr_1.8fr] lg:items-center rounded-xl border border-border bg-muted/20 p-6 sm:p-8">
 			<div>
 				<p class="eyebrow">Trust Foundations</p>
-				<h2 class="mt-2 text-2xl font-bold text-foreground">Transparent calculations, local privacy</h2>
-				<p class="mt-3 text-sm text-muted-foreground leading-relaxed">
-					Formulas shown, tracking stays local, editorial policy in place. No fabricated claims, no server uploads.
+				<h2 class="mt-2 text-2xl font-bold text-foreground">Transparent Calculations & Local Privacy</h2>
+				<p class="mt-3 text-xs text-muted-foreground leading-relaxed">
+					All formulas are fully open-source and visible. No personal weigh-ins or body circumferences are ever uploaded to a remote server — everything runs client-side inside your browser.
 				</p>
 			</div>
 			<div class="grid gap-3 sm:grid-cols-3">
-				<a class="button-secondary text-center text-sm" href="/methodology">Formula Methodology</a>
-				<a class="button-secondary text-center text-sm" href="/editorial-policy">Editorial Standards</a>
-				<a class="button-secondary text-center text-sm" href="/privacy-policy">Privacy & Local Data</a>
+				<a class="button-secondary text-center text-xs justify-center" href="/methodology">Formula Methodology</a>
+				<a class="button-secondary text-center text-xs justify-center" href="/references">Scientific References</a>
+				<a class="button-secondary text-center text-xs justify-center" href="/privacy-policy">Privacy & Local Storage</a>
 			</div>
 		</div>
 	</section>

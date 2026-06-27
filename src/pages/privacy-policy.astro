@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { DOMAIN } from '../data/site';
+import Author from '../components/Author.astro';
+
+const title = "Privacy Policy - Local-First Data Storage | BodyCompOS";
+const description = "Read the BodyCompOS Privacy Policy. Learn about our local-first storage design which guarantees your physical measurements never leave your device.";
+const canonical = `${DOMAIN}/privacy-policy`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	name: title,
+	description: description,
+	url: canonical,
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<span class="text-foreground">Privacy Policy</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8 text-center sm:text-left">
+				<p class="eyebrow">Data Governance</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					Privacy <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Policy</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					BodyCompOS is built as a privacy-first, local-first web application. We collect minimal statistics and keep your physical data on your device.
+				</p>
+			</div>
+
+			<!-- Editorial Body -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_280px]">
+				<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl shadow-sm prose-lite space-y-6 text-sm text-muted-foreground leading-relaxed">
+					<section>
+						<h2 class="text-lg font-bold text-foreground mb-2">1. Local-First Data Architecture</h2>
+						<p>
+							All user-entered data — including height, weight, body fat measurements, age, activity inputs, and weekly progress logs — is stored exclusively inside your browser's local storage (<code>localStorage</code>). This data is never uploaded, transmitted, or synchronized to external servers. It stays entirely on your physical device.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-lg font-bold text-foreground mb-2">2. Analytics & Cookies</h2>
+						<p>
+							We do not load invasive tracking cookies or session replays. To serve relevant ads and keep this platform free, we may integrate third-party ad networks (like Google AdSense) which place their own cookies to limit ad frequency and measure performance.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="text-lg font-bold text-foreground mb-2">3. Your Data Rights</h2>
+						<p>
+							Because your data is stored locally in your browser, you retain absolute ownership and control. You can view, modify, or permanently delete all saved entries at any time by clearing your browser cache, resetting local logs in the dashboard database tools, or using developer tools.
+						</p>
+					</section>
+
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+				</div>
+
+				<!-- Sidebar info -->
+				<div class="space-y-6 text-xs">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h4 class="font-bold text-foreground mb-2">Policy Summary</h4>
+						<p class="text-muted-foreground leading-relaxed">
+							No server uploads. No registrations. Zero personal data profiling. You retain 100% control of your body composition logs.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

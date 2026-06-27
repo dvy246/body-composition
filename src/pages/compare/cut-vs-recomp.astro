@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
 
 const title = 'Cut vs. Body Recomposition - Side-by-Side Comparison | BodyCompOS';
 const description = 'Compare a dedicated fat loss phase (cutting) with simultaneous fat loss and muscle building (body recomposition). Understand the math, physiological trade-offs, and which is right for you.';
@@ -12,10 +13,16 @@ const schema = {
 	headline: title,
 	description: description,
 	datePublished: '2026-06-25',
-	dateModified: '2026-06-25',
+	dateModified: '2026-06-26',
 	author: {
-		'@type': 'Organization',
-		name: 'BodyCompOS Editorial Board',
+		'@type': 'Person',
+		name: 'D. Yadav, CSCS',
+		url: `${DOMAIN}/about`,
+	},
+	reviewer: {
+		'@type': 'Person',
+		name: 'D. Yadav, CSCS',
+		url: `${DOMAIN}/about`,
 	},
 	publisher: {
 		'@type': 'Organization',
@@ -47,14 +54,25 @@ const schema = {
 				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Lose Fat or Reconstruct Your Body?</span>
 			</h1>
 			<!-- EEAT Attribution -->
-			<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
-				<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm shrink-0" aria-hidden="true">BC</div>
-				<div>
-					<p><span class="font-semibold text-foreground">BodyCompOS Editorial Board</span> · Peer-Reviewed sports nutrition meta-analysis comparison</p>
-					<p class="mt-0.5">Published June 2026 · References: Helms et al. 2014, Barakat et al. 2020</p>
-				</div>
-			</div>
+			<AuthorAttribution 
+				role="Peer-Reviewed sports nutrition meta-analysis comparison" 
+				references="Helms et al. 2014, Barakat et al. 2020" 
+			/>
 		</div>
+
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#energy-balance-divergence" class="block text-muted-foreground hover:text-accent transition-colors">1. The Energy Balance Divergence</a>
+				<a href="#tradeoff-matrix" class="block text-muted-foreground hover:text-accent transition-colors">2. Side-by-Side Tradeoff Matrix</a>
+				<a href="#biological-mechanisms" class="block text-muted-foreground hover:text-accent transition-colors">3. Biological Mechanics &amp; Protein Demand</a>
+				<a href="#how-to-choose" class="block text-muted-foreground hover:text-accent transition-colors">4. How to Choose Your Direction</a>
+			</nav>
+		</details>
 
 		<!-- Grid Layout -->
 		<div class="mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
@@ -62,7 +80,7 @@ const schema = {
 				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
 					
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">1. The Energy Balance Divergence</h2>
+						<h2 id="energy-balance-divergence" class="text-xl font-bold text-foreground mb-3">1. The Energy Balance Divergence</h2>
 						<p>
 							The fundamental difference between a dedicated <strong>Cut (Fat Loss)</strong> and a <strong>Body Recomposition (Recomp)</strong> lies in how they manipulate energy balance to alter body composition.
 						</p>
@@ -76,7 +94,7 @@ const schema = {
 
 					<!-- Side-by-Side Table -->
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Tradeoff Matrix</h2>
+						<h2 id="tradeoff-matrix" class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Tradeoff Matrix</h2>
 						<div class="overflow-x-auto rounded-xl border border-border">
 							<table class="w-full text-left border-collapse text-xs">
 								<thead>
@@ -133,7 +151,7 @@ const schema = {
 					</section>
 
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">3. Biological Mechanics &amp; Protein Demand</h2>
+						<h2 id="biological-mechanisms" class="text-xl font-bold text-foreground mb-3">3. Biological Mechanics &amp; Protein Demand</h2>
 						<p>
 							Many lifters mistakenly assume that cutting and recomposing require the same nutritional profile. However, research indicates that recomposition has a higher local protein demand than a standard cut. 
 						</p>
@@ -143,7 +161,7 @@ const schema = {
 					</section>
 
 					<section>
-						<h2 class="text-xl font-bold text-foreground mb-3">4. How to Choose Your Direction</h2>
+						<h2 id="how-to-choose" class="text-xl font-bold text-foreground mb-3">4. How to Choose Your Direction</h2>
 						<p>
 							Use this rule of thumb to decide:
 						</p>
@@ -165,6 +183,17 @@ const schema = {
 								</ul>
 							</div>
 						</div>
+
+						<div class="my-6 p-5 border border-border rounded-xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+									Not sure of your body fat percentage?
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Starting body fat drives your entire strategy. Use our Navy Method estimator to get your percentage in 30 seconds.</p>
+							</div>
+							<a href="/calculators/body-fat-calculator" class="button-primary text-xs shrink-0 whitespace-nowrap">Estimate Body Fat % ➔</a>
+						</div>
 					</section>
 
 					<!-- YMYL Warning -->
@@ -177,6 +206,17 @@ const schema = {
 
 			<!-- Sidebar -->
 			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#energy-balance-divergence" class="block text-muted-foreground hover:text-accent transition-colors">1. The Energy Balance Divergence</a>
+						<a href="#tradeoff-matrix" class="block text-muted-foreground hover:text-accent transition-colors">2. Side-by-Side Tradeoff Matrix</a>
+						<a href="#biological-mechanisms" class="block text-muted-foreground hover:text-accent transition-colors">3. Biological Mechanics &amp; Protein Demand</a>
+						<a href="#how-to-choose" class="block text-muted-foreground hover:text-accent transition-colors">4. How to Choose Your Direction</a>
+					</nav>
+				</div>
+
 				<div class="surface border border-border p-5 rounded-2xl">
 					<h3 class="font-bold text-sm text-foreground">Interactive Analysis</h3>
 					<p class="text-xs text-muted-foreground mt-2">Let our algorithm evaluate your biological metrics and suggest the optimal strategy.</p>

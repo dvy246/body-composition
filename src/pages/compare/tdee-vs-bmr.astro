@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+
+const title = "TDEE vs BMR: What's the Difference? | BodyCompOS";
+const description = "Understand the critical differences between Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) for calorie planning.";
+const canonical = `${DOMAIN}/compare/tdee-vs-bmr`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+	<section class="site-container py-10 sm:py-16">
+		<div class="max-w-4xl mx-auto">
+			<!-- Breadcrumbs -->
+			<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+				<a class="hover:text-accent transition-colors" href="/">Home</a>
+				<span>/</span>
+				<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+				<span>/</span>
+				<span class="text-foreground">TDEE vs BMR</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="border-b border-border pb-6 mb-8">
+				<p class="eyebrow">Metabolic Concepts Compared</p>
+				<h1 class="text-3xl font-black text-foreground sm:text-5xl mt-2">
+					TDEE vs <span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">BMR</span>
+				</h1>
+				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+					Basal Metabolic Rate (BMR) is your rest benchmark, while Total Daily Energy Expenditure (TDEE) accounts for all daily motion and workouts. Compare their definitions, variables, and applications.
+				</p>
+			</div>
+
+			<!-- Core comparison structure -->
+			<div class="grid gap-8 lg:grid-cols-[1fr_280px]">
+				<div class="space-y-8">
+					<div class="surface rounded-2xl border border-border overflow-hidden">
+						<table class="w-full text-left text-xs border-collapse">
+							<thead>
+								<tr class="border-b border-border bg-muted/10">
+									<th class="p-4 font-bold text-foreground">Variable</th>
+									<th class="p-4 font-bold text-foreground">BMR (Basal Metabolic Rate)</th>
+									<th class="p-4 font-bold text-foreground">TDEE (Total Daily Energy Expenditure)</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-border/60">
+								<tr>
+									<td class="p-4 font-bold text-foreground">Definition</td>
+									<td class="p-4 text-muted-foreground">Calories burned to keep vital organs functioning at absolute rest.</td>
+									<td class="p-4 text-muted-foreground">Total daily calories burned including activity, exercise, and digestion.</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Formula Relationship</td>
+									<td class="p-4 text-muted-foreground">The starting base of TDEE.</td>
+									<td class="p-4 text-muted-foreground">BMR × Physical Activity Factor.</td>
+								</tr>
+								<tr>
+									<td class="p-4 font-bold text-foreground">Can you eat below it?</td>
+									<td class="p-4 text-muted-foreground">Generally not recommended (severe restriction risk).</td>
+									<td class="p-4 text-muted-foreground">Yes, to create a fat-loss calorie deficit.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="prose-lite text-sm text-muted-foreground space-y-4">
+						<h3 class="text-lg font-bold text-foreground">Practical Strategy Guidelines</h3>
+						<p>
+							Your <strong>BMR</strong> is the biological minimum energy needed for cellular survival. Eating below BMR for extended periods signals your metabolic system to downregulate thyroid output, reduce body temperature, and suppress non-essential activity levels.
+						</p>
+						<p>
+							To lose body fat healthily, aim to eat at a <strong>15-20% deficit below TDEE</strong>, but try to keep intake above your estimated BMR unless you are under medical supervision.
+						</p>
+					</div>
+				</div>
+
+				<div class="space-y-6">
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">TDEE tool</h3>
+						<p class="text-[10px] text-muted-foreground leading-relaxed">
+							Our calculator helps estimate both BMR and TDEE in a single workflow.
+						</p>
+						<a href="/calculators/tdee-calculator" class="button-primary w-full text-center text-xs mt-3 block">Calculate TDEE</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

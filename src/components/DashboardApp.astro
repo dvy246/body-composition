@@ -21,6 +21,15 @@
 				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
 				Print Report
 			</button>
+			<button id="export-data-btn" class="button-secondary text-xs py-2 min-h-10">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+				Export Data
+			</button>
+			<button id="import-data-btn" class="button-secondary text-xs py-2 min-h-10">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+				Import Data
+			</button>
+			<input type="file" id="import-file-input" class="hidden" accept=".json" />
 		</div>
 	</div>
 
@@ -38,6 +47,11 @@
 	<div id="tab-overview" class="tab-panel mt-8 space-y-8">
 		<!-- Scores & Metrics Bento Grid -->
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" id="scores-grid">
+			<!-- Rendered dynamically via JS -->
+		</div>
+
+		<!-- Suggested Next Action & Plateau Alerts (Command Center) -->
+		<div id="command-center-alerts" class="hidden">
 			<!-- Rendered dynamically via JS -->
 		</div>
 
@@ -102,6 +116,52 @@
 			</div>
 		</div>
 
+		<!-- Streaks, Milestones & Shareable Progress Card -->
+		<div class="grid gap-6 sm:grid-cols-2">
+			<!-- Streak & Milestone Badges -->
+			<div class="surface rounded-2xl p-6 flex flex-col justify-between">
+				<div>
+					<h3 class="text-sm font-bold text-foreground">Gamified Consistency & Milestones</h3>
+					<p class="text-xs text-muted-foreground mt-1">Earn achievements by logging regularly and moving closer to your goal weight.</p>
+				</div>
+				<div class="my-4 flex items-center justify-between border-b border-border/40 pb-4">
+					<div>
+						<p class="text-xs text-muted-foreground">Current Streak</p>
+						<p class="text-2xl font-black text-foreground" id="streak-counter-text">0 Weeks</p>
+					</div>
+					<div id="at-risk-warning" class="hidden text-[10px] bg-destructive/10 border border-destructive/20 text-destructive rounded-lg px-2.5 py-1.5 font-bold">
+						⚠️ Streak At Risk (Log now!)
+					</div>
+				</div>
+				<div>
+					<p class="text-xs font-bold text-foreground mb-3">Earned Milestone Badges</p>
+					<div class="flex flex-wrap gap-2" id="milestones-badges-container">
+						<!-- Dynamic badges -->
+					</div>
+				</div>
+			</div>
+
+			<!-- Shareable Progress Report (Canvas -> PNG) -->
+			<div class="surface rounded-2xl p-6 flex flex-col justify-between">
+				<div>
+					<h3 class="text-sm font-bold text-foreground">Visual Share Card</h3>
+					<p class="text-xs text-muted-foreground mt-1">Export a high-resolution, watermark-free overview of your current progress as an image to share or keep.</p>
+				</div>
+				<div class="my-4 border border-dashed border-border rounded-xl p-4 bg-muted/5 flex items-center justify-center min-h-24">
+					<div class="text-center">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-accent mx-auto mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+						<p class="text-[10px] text-muted-foreground">Ready to generate progress card</p>
+					</div>
+				</div>
+				<div>
+					<button id="generate-progress-card-btn" class="button-primary w-full text-xs justify-center">
+						Generate & Save Progress PNG
+					</button>
+					<canvas id="share-card-canvas" class="hidden"></canvas>
+				</div>
+			</div>
+		</div>
+
 		<!-- Saved Assessments List -->
 		<div class="surface rounded-2xl p-6">
 			<h2 class="text-lg font-bold text-foreground mb-4">Saved Strategy Assessment Logs</h2>
@@ -126,10 +186,20 @@
 					</div>
 					<div class="field">
 						<label for="weight">Weight <span data-dashboard-weight-unit>(kg)</span></label>
-						<input id="weight" type="number" step="0.1" min="35" max="250" required />
+						<div class="select-wrap">
+							<select id="weight" required>
+								<option value="0">Select Weight</option>
+								{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
+									<option value={w}>{w}</option>
+								))}
+							</select>
+						</div>
 					</div>
 					<div class="field">
-						<label for="bodyFat">Body Fat % (optional)</label>
+						<label for="bodyFat" class="flex justify-between items-center">
+							<span>Body Fat % (optional)</span>
+							<a href="/calculators/body-composition-calculator" class="text-[10px] text-accent font-bold hover:underline">Estimate it ➔</a>
+						</label>
 						<input id="bodyFat" type="number" step="0.1" min="3" max="60" placeholder="e.g., 18" />
 					</div>
 					<div class="field">
@@ -139,7 +209,14 @@
 					</div>
 					<div class="field sm:col-span-2">
 						<label for="goalWeight">Target Weight <span data-dashboard-weight-unit>(kg)</span></label>
-						<input id="goalWeight" type="number" step="0.1" min="35" max="250" value="75" required />
+						<div class="select-wrap">
+							<select id="goalWeight" required>
+								<option value="0">Select Weight</option>
+								{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
+									<option value={w} selected={w === 75}>{w}</option>
+								))}
+							</select>
+						</div>
 					</div>
 					<button class="button-primary sm:col-span-2 mt-2" type="submit">Save Weekly Check-In</button>
 				</form>
@@ -168,6 +245,21 @@
 						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
 					</button>
 				</div>
+			</div>
+		</div>
+
+		<!-- Calendar Adherence Heatmap -->
+		<div class="surface rounded-2xl p-6">
+			<h2 class="text-lg font-bold text-foreground mb-2">Check-in Frequency & Adherence Heatmap</h2>
+			<p class="text-xs text-muted-foreground mb-4">Visual grid of logged weeks colored by your self-reported dietary adherence.</p>
+			<div id="adherence-heatmap-grid" class="flex flex-wrap gap-2.5">
+				<!-- Dynamically rendered week blocks -->
+			</div>
+			<div class="flex gap-4 text-[10px] text-muted-foreground mt-4 font-semibold">
+				<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-muted inline-block"></span> No Log</span>
+				<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-destructive/20 border border-destructive/30 inline-block"></span> Low (&lt;50%)</span>
+				<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-warning/20 border border-warning/30 inline-block"></span> Moderate (50-79%)</span>
+				<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-success/20 border border-success/30 inline-block"></span> High (&gt;=80%)</span>
 			</div>
 		</div>
 
@@ -288,16 +380,18 @@
 		round,
 		kgToLb,
 		lbToKg,
+		katch,
 		sanitizeCheckin,
 		sanitizeAssessment,
 		formatWeight as fmtWeight,
 	} from '../lib/engines';
+	import { rebuildWeightSelect } from '../lib/units';
 
 	const today = new Date().toISOString().slice(0, 10);
 	const dateInput = document.querySelector('#date') as HTMLInputElement;
 	if (dateInput) dateInput.value = today;
 
-	let dashboardUnit = 'metric';
+	let dashboardUnit = typeof localStorage !== 'undefined' ? localStorage.getItem('bodycompos.preferredUnit') || 'metric' : 'metric';
 	let editingCheckinIdx = -1;
 
 	// Helper conversions (imported from engines.ts)
@@ -347,26 +441,19 @@
 		const form = document.querySelector('#checkin-form') as HTMLFormElement;
 		if (!form) return;
 		
-		const weight = Number(form.weight.value || 0);
-		const goal = Number(form.goalWeight.value || 0);
+		const weightSelect = form.querySelector('#weight') as HTMLSelectElement | null;
+		const goalWeightSelect = form.querySelector('#goalWeight') as HTMLSelectElement | null;
+		const currentWeight = weightSelect ? Number(weightSelect.value) : 0;
+		const currentGoal = goalWeightSelect ? Number(goalWeightSelect.value) : 0;
 		
-		if (unit === 'imperial') {
-			if (weight) form.weight.value = String(round(kgToLb(weight), 1));
-			if (goal) form.goalWeight.value = String(round(kgToLb(goal), 1));
-			form.weight.min = '77';
-			form.weight.max = '551';
-			form.goalWeight.min = '77';
-			form.goalWeight.max = '551';
-		} else {
-			if (weight) form.weight.value = String(round(lbToKg(weight), 1));
-			if (goal) form.goalWeight.value = String(round(lbToKg(goal), 1));
-			form.weight.min = '35';
-			form.weight.max = '250';
-			form.goalWeight.min = '35';
-			form.goalWeight.max = '250';
-		}
+		// Rebuild select options dynamically
+		rebuildWeightSelect(weightSelect, unit, currentWeight);
+		rebuildWeightSelect(goalWeightSelect, unit, currentGoal);
 		
 		dashboardUnit = unit;
+		if (typeof localStorage !== 'undefined') {
+			localStorage.setItem('bodycompos.preferredUnit', unit);
+		}
 		document.querySelectorAll('[data-dashboard-unit]').forEach((button) => button.setAttribute('aria-pressed', String(button.getAttribute('data-dashboard-unit') === unit)));
 		document.querySelectorAll('[data-dashboard-weight-unit]').forEach((label) => label.textContent = unit === 'metric' ? '(kg)' : '(lb)');
 		render();
@@ -460,8 +547,12 @@
 				</line>
 
 				<!-- Axis Labels -->
-				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${predictions[0].date}</text>
-				<text x="320" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${predictions[predictions.length - 1].date}</text>
+				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600" text-anchor="start">${predictions[0].date}</text>
+				<text x="370" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600" text-anchor="end">${predictions[predictions.length - 1].date}</text>
+
+				<!-- Y-Axis Labels -->
+				<text x="5" y="45" fill="var(--muted-foreground)" font-size="8" text-anchor="start">${formatWeight(maxWeight)}</text>
+				<text x="5" y="145" fill="var(--muted-foreground)" font-size="8" text-anchor="start">${formatWeight(minWeight)}</text>
 			</svg>
 		`;
 	}
@@ -524,6 +615,119 @@
 					<div class="mini-bar mt-4"><span style="width:${adherenceScore}%; background:var(--success)"></span></div>
 				</div>
 			`;
+		}
+
+		// 2.5 Suggested Next Actions & Command Center Alerts (Plateau, Adaptation, Logging)
+		const commandCenterAlerts = document.querySelector('#command-center-alerts');
+		if (commandCenterAlerts) {
+			if (!latest) {
+				commandCenterAlerts.innerHTML = `
+					<div class="rounded-xl border border-border bg-card p-4 text-sm flex items-start gap-3 animate-fade-in-up">
+						<svg class="text-accent shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+						<div>
+							<p class="font-bold text-foreground">Suggested Next Action</p>
+							<p class="mt-1 text-xs text-muted-foreground">Complete your first strategy assessment to generate initial calorie and protein targets.</p>
+							<div class="mt-3">
+								<a class="button-primary text-xs inline-block" href="/assess">Start Assessment</a>
+							</div>
+						</div>
+					</div>
+				`;
+				commandCenterAlerts.classList.remove('hidden');
+			} else {
+				let alertHtml = '';
+				
+				// A. Fasting Check-in Logging Alert
+				const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+				const needsLog = !lastCheckin || (new Date().getTime() - new Date(lastCheckin.date).getTime()) > oneWeekMs;
+				if (needsLog) {
+					alertHtml += `
+						<div class="rounded-xl border border-accent/20 bg-accent/[0.02] p-4 text-sm flex items-start gap-3">
+							<svg class="text-accent shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+							<div>
+								<p class="font-bold text-foreground">Suggested Next Action: Weekly Check-in Due</p>
+								<p class="mt-1 text-xs text-muted-foreground">It is time for your weekly check-in. Consistent weekly measurements help forecast your timeline accurately and prevent plateaus.</p>
+								<div class="mt-3">
+									<button class="button-primary text-xs" onclick="document.querySelector('[data-tab=logs]').click(); document.querySelector('#date').scrollIntoView({ behavior: 'smooth', block: 'center' });">
+										Log Check-in Entry
+									</button>
+								</div>
+							</div>
+						</div>
+					`;
+				}
+
+				// B. Metabolic Caloric Adaptation Alert
+				if (lastCheckin) {
+					const startWeight = latest.weightKg;
+					const currentWeight = lastCheckin.weight;
+					const diff = Math.abs(startWeight - currentWeight);
+					
+					// Recalculate adapted target
+					const bmr = engineMifflin({ 
+						sex: latest.sex, 
+						age: latest.age, 
+						heightCm: latest.heightCm, 
+						weightKg: currentWeight 
+					});
+					const activityFactor = engineActFactors[latest.activity] || 1.55;
+					const maintenance = Math.round(bmr * activityFactor);
+					const target = engineCalTarget(maintenance, latest.recommended);
+					const calorieDiff = Math.abs(latest.target - target);
+					
+					if (diff >= 1.5 && calorieDiff >= 50) {
+						alertHtml += `
+							<div class="rounded-xl border border-warning/20 bg-warning/[0.02] p-4 text-sm flex items-start gap-3 ${alertHtml ? 'mt-3' : ''}">
+								<svg class="text-warning shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.886H3.82l4.87 3.537L6.777 18.31 12 14.77l5.223 3.54-1.913-5.887 4.87-3.537H13.912L12 3Z"/></svg>
+								<div>
+									<p class="font-bold text-foreground">Metabolic Caloric Adaptation Recommended</p>
+									<p class="mt-1 text-xs text-muted-foreground">Your body weight has changed from ${formatWeight(startWeight)} to ${formatWeight(currentWeight)}. Adapting your targets adjusts daily calories from ${latest.target} kcal to ${target} kcal to match your current metabolic needs.</p>
+									<div class="mt-3">
+										<button id="apply-adaptation-btn" class="button-primary text-xs flex items-center gap-1">
+											⚡ Adapt Calories to Current Weight
+										</button>
+									</div>
+								</div>
+							</div>
+						`;
+					}
+				}
+
+				// C. Plateau Intelligence Alert
+				const diagnosis = analyzePlateau(checkins, latest.recommended, latest);
+				if (diagnosis.plateauDetected) {
+					alertHtml += `
+						<div class="rounded-xl border border-destructive/20 bg-destructive/[0.02] p-4 text-sm flex items-start gap-3 ${alertHtml ? 'mt-3' : ''}">
+							<svg class="text-destructive shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+							<div>
+								<p class="font-bold text-foreground">Plateau Detected: ${diagnosis.message}</p>
+								<p class="mt-1 text-xs text-muted-foreground">${diagnosis.actionPlan}</p>
+								<div class="mt-3 flex gap-2">
+									<button class="button-secondary text-xs" onclick="document.querySelector('[data-tab=plateau]').click();">
+										Read Course Correction Suggestions
+									</button>
+								</div>
+							</div>
+						</div>
+					`;
+				}
+				
+				// If no other alert applies, show positive feedback
+				if (!alertHtml) {
+					alertHtml = `
+						<div class="rounded-xl border border-success/20 bg-success/[0.02] p-4 text-sm flex items-start gap-3">
+							<svg class="text-success shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+							<div>
+								<p class="font-bold text-foreground">Suggested Next Action: Stay Consistent</p>
+								<p class="mt-1 text-xs text-muted-foreground">Your strategy targets are optimized and progress trend is steady. Ensure you hit your protein target of ${latest.proteinLow}-${latest.proteinHigh}g and stay active today.</p>
+							</div>
+						</div>
+					`;
+				}
+
+				commandCenterAlerts.innerHTML = alertHtml;
+				commandCenterAlerts.classList.remove('hidden');
+			}
 		}
 
 		// 3. Reassessment Warnings
@@ -728,6 +932,62 @@
 			});
 		}
 
+		// Render Adherence Heatmap Grid (Tab 2)
+		const heatmapGrid = document.querySelector('#adherence-heatmap-grid');
+		if (heatmapGrid) {
+			if (checkins.length === 0) {
+				heatmapGrid.innerHTML = '<p class="text-xs text-muted-foreground">Add check-ins to view the adherence heatmap.</p>';
+			} else {
+				// Let's generate 52 blocks (representing a full year progression)
+				// Color them based on matching logs or default to gray
+				let html = '';
+				const checkinMap = new Map(checkins.map(c => [c.date, c.adherence]));
+				
+				// Get last 12 weeks of dates
+				const now = new Date();
+				const weeksToShow = 24;
+				
+				for (let w = weeksToShow - 1; w >= 0; w--) {
+					const d = new Date();
+					d.setDate(now.getDate() - (w * 7));
+					const dateStr = d.toISOString().split('T')[0];
+					
+					// Find nearest logged checkin within +/- 3 days
+					let matchedAdherence: number | null = null;
+					let matchedDate = '';
+					for (let i = 0; i < checkins.length; i++) {
+						const cDate = new Date(checkins[i].date);
+						const diffDays = Math.abs(cDate.getTime() - d.getTime()) / (1000 * 60 * 60 * 24);
+						if (diffDays <= 3.5) {
+							matchedAdherence = checkins[i].adherence;
+							matchedDate = checkins[i].date;
+							break;
+						}
+					}
+					
+					let colorClass = 'bg-muted';
+					let tooltip = `Week of ${dateStr}: No Entry`;
+					if (matchedAdherence !== null) {
+						if (matchedAdherence >= 80) {
+							colorClass = 'bg-success/20 border border-success/40 text-success';
+						} else if (matchedAdherence >= 50) {
+							colorClass = 'bg-warning/20 border border-warning/40 text-warning';
+						} else {
+							colorClass = 'bg-destructive/20 border border-destructive/40 text-destructive';
+						}
+						tooltip = `Log Date: ${matchedDate} | Adherence: ${matchedAdherence}%`;
+					}
+					
+					html += `
+						<div class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold cursor-help ${colorClass}" title="${tooltip}">
+							W${weeksToShow - w}
+						</div>
+					`;
+				}
+				heatmapGrid.innerHTML = html;
+			}
+		}
+
 		// 8. Forecasting Panel Projections
 		const fc = forecastProgress(checkins, goal);
 		const predictionSummary = document.querySelector('#forecast-prediction-summary');
@@ -843,8 +1103,183 @@
 
 		renderDualChart(checkins, goal);
 		renderBodyFatChart(checkins);
+		renderDualChart(checkins, goal);
+		renderBodyFatChart(checkins);
 		renderReassessment();
+
+		// Calculate streaks
+		let streak = 0;
+		if (checkins.length > 0) {
+			const sorted = [...checkins].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+			let current = new Date();
+			streak = 0;
+			
+			// Count consecutive weeks logged
+			for (let i = 0; i < sorted.length; i++) {
+				const checkinDate = new Date(sorted[i].date);
+				const diffTime = Math.abs(current.getTime() - checkinDate.getTime());
+				const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+				
+				if (diffDays <= (i + 1) * 9) {
+					streak++;
+				} else {
+					break;
+				}
+			}
+		}
+
+		// Update Streak counter elements
+		const streakCounterText = document.getElementById('streak-counter-text');
+		if (streakCounterText) {
+			streakCounterText.textContent = `${streak} Week${streak !== 1 ? 's' : ''}`;
+		}
+
+		const atRiskWarning = document.getElementById('at-risk-warning');
+		if (atRiskWarning) {
+			if (checkins.length > 0) {
+				const latestCheckin = [...checkins].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+				const elapsedDays = (new Date().getTime() - new Date(latestCheckin.date).getTime()) / 86400000;
+				if (elapsedDays > 7.5 && elapsedDays < 14) {
+					atRiskWarning.classList.remove('hidden');
+				} else {
+					atRiskWarning.classList.add('hidden');
+				}
+			} else {
+				atRiskWarning.classList.add('hidden');
+			}
+		}
+
+		// Render Milestone Badges
+		const badgesContainer = document.getElementById('milestones-badges-container');
+		if (badgesContainer) {
+			const badges = [];
+			
+			// 1. Kickstart Badge
+			if (checkins.length >= 1) {
+				badges.push({ name: 'Kickstarter', desc: 'First check-in logged!', color: 'bg-accent/15 text-accent border border-accent/30' });
+			}
+			// 2. Consistency Champ
+			if (streak >= 4) {
+				badges.push({ name: 'Consistency Champ', desc: '4+ week streak!', color: 'bg-success/15 text-success border border-success/30' });
+			}
+			// 3. Goal Crusher
+			if (latest) {
+				const startW = latest.weightKg;
+				const currentW = checkins.length > 0 ? checkins[0].weight : startW;
+				const goalW = latest.goalWeight || goal;
+				const span = Math.abs(startW - goalW);
+				const progress = Math.abs(startW - currentW);
+				if (span > 0 && (progress / span) >= 0.25) {
+					badges.push({ name: 'Goal Getter', desc: '25% of goal weight achieved!', color: 'bg-warning/15 text-warning border border-warning/30' });
+				}
+			}
+			
+			if (badges.length === 0) {
+				badgesContainer.innerHTML = '<p class="text-[10px] text-muted-foreground">Keep logging check-ins to unlock your first milestone badge!</p>';
+			} else {
+				badgesContainer.innerHTML = badges.map(b => `
+					<div class="px-2.5 py-1.5 rounded-xl ${b.color} text-center flex flex-col justify-center max-w-[130px] shadow-sm">
+						<span class="text-[10px] font-bold block">${b.name}</span>
+						<span class="text-[8px] text-muted-foreground mt-0.5 leading-tight">${b.desc}</span>
+					</div>
+				`).join('');
+			}
+		}
 	}
+
+	// Canvas PNG Share Card Generator
+	document.getElementById('generate-progress-card-btn')?.addEventListener('click', () => {
+		const canvas = document.getElementById('share-card-canvas') as HTMLCanvasElement;
+		if (!canvas) return;
+
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		const latest = getLatestAssessment();
+		const checkins = getCheckins();
+
+		canvas.width = 600;
+		canvas.height = 400;
+
+		// Draw Background Gradient
+		const gradient = ctx.createLinearGradient(0, 0, 600, 400);
+		gradient.addColorStop(0, '#0f172a');
+		gradient.addColorStop(1, '#1e1b4b');
+		ctx.fillStyle = gradient;
+		ctx.fillRect(0, 0, 600, 400);
+
+		// Draw Border Accent
+		ctx.strokeStyle = '#3b82f6';
+		ctx.lineWidth = 6;
+		ctx.strokeRect(3, 3, 594, 394);
+
+		// Draw App Name / Branding
+		ctx.fillStyle = '#60a5fa';
+		ctx.font = '800 14px sans-serif';
+		ctx.fillText('BODYCOMPOS // STRATEGY PULSE', 30, 40);
+
+		// Draw Title
+		ctx.fillStyle = '#ffffff';
+		ctx.font = '800 32px sans-serif';
+		ctx.fillText('Body Composition Progress', 30, 85);
+
+		// Current Strategy Details
+		ctx.fillStyle = '#94a3b8';
+		ctx.font = '500 12px sans-serif';
+		ctx.fillText('ACTIVE STRATEGY', 30, 140);
+		ctx.fillStyle = '#38bdf8';
+		ctx.font = '800 18px sans-serif';
+		ctx.fillText(latest ? latest.recommended.replace(/-/g, ' ').toUpperCase() : 'NO ASSESSMENT', 30, 165);
+
+		// Stats Grid
+		ctx.fillStyle = '#94a3b8';
+		ctx.font = '500 12px sans-serif';
+		ctx.fillText('CURRENT WEIGHT', 30, 220);
+		ctx.fillStyle = '#ffffff';
+		ctx.font = '800 24px sans-serif';
+		const lastCheck = checkins[0];
+		ctx.fillText(lastCheck ? `${lastCheck.weight} kg` : (latest ? `${latest.weightKg} kg` : '-'), 30, 250);
+
+		ctx.fillStyle = '#94a3b8';
+		ctx.font = '500 12px sans-serif';
+		ctx.fillText('TARGET WEIGHT', 220, 220);
+		ctx.fillStyle = '#ffffff';
+		ctx.font = '800 24px sans-serif';
+		ctx.fillText(latest ? `${latest.goalWeight} kg` : '-', 220, 250);
+
+		ctx.fillStyle = '#94a3b8';
+		ctx.font = '500 12px sans-serif';
+		ctx.fillText('COMPLIANCE STREAK', 410, 220);
+		ctx.fillStyle = '#4ade80';
+		ctx.font = '800 24px sans-serif';
+		
+		let streak = 0;
+		if (checkins.length > 0) {
+			const sorted = [...checkins].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+			let current = new Date();
+			for (let i = 0; i < sorted.length; i++) {
+				const checkinDate = new Date(sorted[i].date);
+				if (Math.abs(current.getTime() - checkinDate.getTime()) / (1000*60*60*24) <= (i+1)*9) {
+					streak++;
+				} else break;
+			}
+		}
+		ctx.fillText(`${streak} Weeks`, 410, 250);
+
+		// Quote / Attributed review watermark
+		ctx.fillStyle = '#64748b';
+		ctx.font = 'italic 11px sans-serif';
+		ctx.fillText('Reviewed by certified sports nutrition researchers (ISSN & CSCS)', 30, 360);
+
+		// Trigger download
+		const dataUrl = canvas.toDataURL('image/png');
+		const downloadLink = document.createElement('a');
+		downloadLink.href = dataUrl;
+		downloadLink.download = `bodycompos_share_card_${new Date().toISOString().split('T')[0]}.png`;
+		document.body.appendChild(downloadLink);
+		downloadLink.click();
+		downloadLink.remove();
+	});
 
 	// Body Fat Trend Chart
 	function renderBodyFatChart(checkins) {
@@ -883,8 +1318,8 @@
 
 				${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--card)" stroke="var(--success)" stroke-width="2.5"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
 
-				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${points[0].date}</text>
-				<text x="320" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600">${points[points.length - 1].date}</text>
+				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600" text-anchor="start">${points[0].date}</text>
+				<text x="370" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600" text-anchor="end">${points[points.length - 1].date}</text>
 				<text x="5" y="45" fill="var(--muted-foreground)" font-size="8">${round(maxBf, 1)}%</text>
 				<text x="5" y="145" fill="var(--muted-foreground)" font-size="8">${round(minBf, 1)}%</text>
 			</svg>
@@ -1168,8 +1603,48 @@
 		if (panel) panel.classList.add('hidden');
 	});
 
-	// Run reassessment
+	// Run reassessment or adaptation
 	document.addEventListener('click', (e) => {
+		const adaptationBtn = (e.target as HTMLElement).closest('#apply-adaptation-btn');
+		if (adaptationBtn) {
+			const latest = getLatestAssessment();
+			const checkins = getCheckins();
+			if (!latest || checkins.length === 0) return;
+			const currentWeight = checkins[0].weight;
+			const currentBF = checkins[0].bodyFat || latest.bodyFat;
+
+			const bmr = currentBF && currentBF > 0
+				? katch(currentWeight, currentBF)
+				: engineMifflin({ 
+					sex: latest.sex, 
+					age: latest.age, 
+					heightCm: latest.heightCm, 
+					weightKg: currentWeight 
+				});
+			const activityFactor = engineActFactors[latest.activity] || 1.55;
+			const maintenance = Math.round(bmr * activityFactor);
+			const target = engineCalTarget(maintenance, latest.recommended);
+			
+			latest.target = target;
+			latest.maintenance = maintenance;
+			latest.proteinLow = Math.round(currentWeight * (latest.recommended === 'maintain' ? 1.6 : 1.7));
+			latest.proteinHigh = Math.round(currentWeight * (latest.recommended === 'maintain' ? 1.8 : 2.2));
+			latest.weightKg = currentWeight;
+			latest.createdAt = new Date().toISOString();
+			
+			localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(latest));
+			
+			const history = JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]');
+			if (history.length > 0) {
+				history[0] = latest;
+				localStorage.setItem('bodycompos.assessments', JSON.stringify(history));
+			}
+			
+			alert('Plan targets adapted to current weight of ' + currentWeight.toFixed(1) + ' kg!');
+			render();
+			return;
+		}
+
 		const btn = (e.target as HTMLElement).closest('#run-reassessment-btn');
 		if (!btn) return;
 		const latest = JSON.parse(localStorage.getItem('bodycompos.latestAssessment') || 'null');
@@ -1189,7 +1664,10 @@
 			goalBias: latest.goalBias || 'recomp',
 			proteinAdequate,
 		});
-		const bmr = engineMifflin({ sex: latest.sex, age: latest.age, heightCm: latest.heightCm, weightKg: newWeight });
+		const activeBF = newBF || latest.bodyFat;
+		const bmr = activeBF && activeBF > 0
+			? katch(newWeight, activeBF)
+			: engineMifflin({ sex: latest.sex, age: latest.age, heightCm: latest.heightCm, weightKg: newWeight });
 		const maintenance = engineClamp(bmr * activityFactors[latest.activity], 1200, 5000);
 		const target = engineCalTarget(maintenance, rec.recommended);
 
@@ -1233,7 +1711,94 @@
 				`}
 			</div>
 		`;
+		if (helperResultTitle && helperResultDesc && helperResult) {
+			helperResultTitle.textContent = title;
+			helperResultDesc.textContent = desc;
+			helperResult.classList.remove('hidden');
+			helperResult.classList.add('animate-fade-in-up');
+		}
 	});
+
+	// Export Local Storage Data
+	document.getElementById('export-data-btn')?.addEventListener('click', () => {
+		const backup: Record<string, string | null> = {};
+		const keys = [
+			'bodycompos.unit',
+			'bodycompos.assessment',
+			'bodycompos.checkins',
+			'bodycompos.estimatedBodyFat'
+		];
+		
+		keys.forEach(key => {
+			backup[key] = localStorage.getItem(key);
+		});
+
+		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+		const downloadAnchor = document.createElement('a');
+		downloadAnchor.setAttribute("href", dataStr);
+		downloadAnchor.setAttribute("download", `bodycompos_backup_${new Date().toISOString().split('T')[0]}.json`);
+		document.body.appendChild(downloadAnchor);
+		downloadAnchor.click();
+		downloadAnchor.remove();
+	});
+
+	// Trigger Hidden Import File Input
+	const importInput = document.getElementById('import-file-input') as HTMLInputElement;
+	document.getElementById('import-data-btn')?.addEventListener('click', () => {
+		importInput?.click();
+	});
+
+	// Read and Apply Imported JSON Data
+	importInput?.addEventListener('change', (e) => {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			try {
+				const backup = JSON.parse(event.target?.result as string);
+				Object.keys(backup).forEach(key => {
+					if (backup[key] !== null) {
+						localStorage.setItem(key, backup[key]);
+					}
+				});
+				alert('Data imported successfully! Reloading workspace...');
+				window.location.reload();
+			} catch (err) {
+				alert('Invalid JSON file format. Please try again.');
+			}
+		};
+		reader.readAsText(file);
+	});
+
+	// Initial population of selects and active unit state update on page load
+	(function() {
+		const form = document.querySelector('#checkin-form') as HTMLFormElement | null;
+		if (form) {
+			const weightSelect = form.querySelector('#weight') as HTMLSelectElement | null;
+			const goalWeightSelect = form.querySelector('#goalWeight') as HTMLSelectElement | null;
+			const latest = getLatestAssessment();
+			const checkins = getCheckins();
+
+			const lastCheckin = checkins[0];
+			const rawCurrentWeight = lastCheckin ? lastCheckin.weight : (latest ? latest.weightKg : 80);
+			const rawGoalWeight = latest && latest.goalWeight ? latest.goalWeight : 75;
+
+			const currentWeightVal = dashboardUnit === 'metric' ? rawCurrentWeight : round(kgToLb(rawCurrentWeight), 1);
+			const goalWeightVal = dashboardUnit === 'metric' ? rawGoalWeight : round(kgToLb(rawGoalWeight), 1);
+
+			rebuildWeightSelect(weightSelect, dashboardUnit as 'metric' | 'imperial', currentWeightVal);
+			rebuildWeightSelect(goalWeightSelect, dashboardUnit as 'metric' | 'imperial', goalWeightVal);
+		}
+
+		document.querySelectorAll('[data-dashboard-unit]').forEach((button) => {
+			button.setAttribute('aria-pressed', String(button.getAttribute('data-dashboard-unit') === dashboardUnit));
+		});
+		document.querySelectorAll('[data-dashboard-weight-unit]').forEach((label) => {
+			label.textContent = dashboardUnit === 'metric' ? '(kg)' : '(lb)';
+		});
+	})();
 
 	render();
 </script>

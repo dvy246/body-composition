@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CalculatorTool from '../../components/CalculatorTool.astro';
 import { calculators, DOMAIN } from '../../data/site';
+import { calculatorArticles } from '../../data/calculatorContent';
 
 export function getStaticPaths() {
 	return calculators.map((calculator) => ({
@@ -11,12 +12,16 @@ export function getStaticPaths() {
 }
 
 const { calculator } = Astro.props;
+const article = calculatorArticles[calculator.slug];
+
+// Resolve FAQs (use custom article FAQs if available, otherwise default FAQs from calculator)
+const activeFaqs = article && article.faqs && article.faqs.length > 0 ? article.faqs : calculator.faqs;
 
 // Dynamically generate FAQ schema for the active calculator
-const faqSchema = calculator.faqs && calculator.faqs.length > 0 ? {
+const faqSchema = activeFaqs && activeFaqs.length > 0 ? {
 	'@context': 'https://schema.org',
 	'@type': 'FAQPage',
-	mainEntity: calculator.faqs.map(([q, a]) => ({
+	mainEntity: activeFaqs.map(([q, a]) => ({
 		'@type': 'Question',
 		name: q,
 		acceptedAnswer: {
@@ -25,6 +30,22 @@ const faqSchema = calculator.faqs && calculator.faqs.length > 0 ? {
 		},
 	})),
 } : null;
+
+// WebApplication schema for every calculator (signals functional tool to Google)
+const webAppSchema = {
+	'@context': 'https://schema.org',
+	'@type': ['SoftwareApplication', 'WebApplication'],
+	name: calculator.seoTitle || calculator.title,
+	description: calculator.metaDescription || calculator.description,
+	applicationCategory: 'HealthApplication',
+	operatingSystem: 'Web',
+	url: `${DOMAIN}/calculators/${calculator.slug}`,
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'USD',
+	},
+};
 
 // Find related calculators objects
 const relatedCalcs = calculator.related
@@ -36,7 +57,7 @@ const relatedCalcs = calculator.related
 	title={calculator.seoTitle || `${calculator.title} | BodyCompOS`}
 	description={calculator.metaDescription || calculator.description}
 	canonical={`${DOMAIN}/calculators/${calculator.slug}`}
-	schema={faqSchema ? [faqSchema] : []}
+	schema={[webAppSchema, ...(faqSchema ? [faqSchema] : [])]}
 >
 	<section class="site-container py-10">
 		<!-- Breadcrumbs trail -->
@@ -59,30 +80,58 @@ const relatedCalcs = calculator.related
 		/>
 
 		<!-- Detailed Informational Content (EEAT SEO Depth) -->
-		<div class="prose-lite mt-12 content-panel bg-card border border-border">
-			<div class="border-b border-border pb-5 mb-5">
-				<h2 class="text-2xl font-black text-foreground">Understanding the Calculation</h2>
-				<p class="text-xs text-muted-foreground mt-1">Reviewed on June 24, 2026 by the BodyCompOS Editorial Board</p>
+		<div class="prose-lite mt-12 content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl shadow-sm">
+			<div class="border-b border-border pb-5 mb-5 flex flex-col sm:flex-row justify-between sm:items-end gap-3">
+				<div>
+					<h2 class="text-2xl font-black text-foreground">
+						{article ? article.title : `${calculator.title} Science & Physiological Analysis`}
+					</h2>
+					<p class="text-xs text-muted-foreground mt-1 font-sans">Science & physiological analysis for strategy selection</p>
+				</div>
+				<div class="text-left sm:text-right shrink-0 font-sans">
+					<p class="text-xs font-semibold text-foreground">Reviewed by D. Yadav, CSCS</p>
+					<p class="text-[10px] text-muted-foreground mt-0.5">Last updated: June 27, 2026 · BodyCompOS Editorial Board</p>
+				</div>
 			</div>
 
-			<h3 class="text-lg font-bold text-foreground">How to Use This Target</h3>
-			<p>
-				Treat this calculation as a starting baseline. Biological factors like training history, daily sleep quality, stress levels, and genetic differences will affect your exact metabolic outputs. If you are tracking progress, weigh yourself consistently under similar conditions and monitor a 2-to-4-week moving average before adjusting calories.
-			</p>
+			<div class="text-sm leading-relaxed text-muted-foreground space-y-4">
+				<p class="text-foreground font-medium text-base leading-relaxed">
+					{article ? article.intro : `The ${calculator.title} is designed to calculate personal body composition and metabolic indicators based on evidence-based mathematical models. In sports science and daily diet planning, using objective equations ensures you start with realistic parameters instead of guessing.`}
+				</p>
+				
+				<h3 class="text-lg font-black text-foreground mt-8 pt-4 border-t border-border/40 font-sans">1. How to Use & Apply This Target</h3>
+				<p>
+					{article ? article.useTarget : `Integrate the results from this calculator with your primary body composition strategy. For example, metabolic rate calculations should serve as your nutritional starting point for 14-21 days. Adjust intake incrementally only after reviewing actual weekly weight averages.`}
+				</p>
+				
+				<h3 class="text-lg font-black text-foreground mt-8 pt-4 border-t border-border/40 font-sans">2. Mathematical Assumptions & Formula Logic</h3>
+				<p>
+					{article ? article.assumptions : `This calculator relies on: ${calculator.formula}. Predictive models have inherent variation depending on lean mass share, genetics, sleep, and activity adherence. All values should be treated as directionally useful starting zones.`}
+				</p>
+				
+				<h3 class="text-lg font-black text-foreground mt-8 pt-4 border-t border-border/40 font-sans">3. Step-by-Step worked Mathematical Example</h3>
+				<div class="bg-muted/30 border border-border/50 rounded-xl p-5 font-mono text-xs text-foreground whitespace-pre-line leading-relaxed">
+					{article ? article.workedExample : `Here is the mathematical progression:
+1. Identify primary input parameters (e.g. Weight, Height, Age, Sex, Activity).
+2. Apply the formula: ${calculator.formula}.
+3. Extract baseline outputs for personal strategic goal setting.`}
+				</div>
+			</div>
 
-			<h3 class="text-lg font-bold text-foreground mt-6">Assumptions & Formula Logic</h3>
-			<p>
-				{calculator.formula} When body fat composition measurements are omitted, standard age-and-height-based equations are used. For more exact body index splits, consider adding caliper or circumference waist inputs where requested.
-			</p>
-
-			{calculator.faqs && calculator.faqs.length > 0 && (
-				<div class="mt-8 border-t border-border pt-6">
-					<h3 class="text-lg font-bold text-foreground mb-4">Frequently Asked Questions</h3>
-					<div class="space-y-3">
-						{calculator.faqs.map(([q, a]) => (
-							<div class="rounded-lg border border-border bg-muted/10 p-4">
-								<h4 class="text-sm font-bold text-foreground">{q}</h4>
-								<p class="text-xs text-muted-foreground mt-1.5 leading-relaxed">{a}</p>
+			{activeFaqs && activeFaqs.length > 0 && (
+				<div class="mt-10 border-t border-border pt-8">
+					<h3 class="text-xl font-black text-foreground mb-5 flex items-center gap-2 font-sans">
+						<svg class="text-accent shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+						Frequently Asked Questions
+					</h3>
+					<div class="space-y-4">
+						{activeFaqs.map(([q, a]) => (
+							<div class="rounded-xl border border-border bg-muted/10 p-5 hover:border-border/80 transition-colors">
+								<h4 class="text-sm font-bold text-foreground flex items-start gap-1.5 leading-snug font-sans">
+									<span class="text-accent shrink-0 mt-0.5">Q:</span>
+									{q}
+								</h4>
+								<p class="text-xs text-muted-foreground mt-2 leading-relaxed pl-5">{a}</p>
 							</div>
 						))}
 					</div>
@@ -113,5 +162,57 @@ const relatedCalcs = calculator.related
 				</div>
 			</div>
 		)}
+
+		<!-- Related Strategy Guides (High-value internal linking) -->
+		{(() => {
+			const guideMap = {
+				'tdee': [
+					{ title: 'TDEE & Maintenance Calories Guide', url: '/guides/maintenance-calories', desc: 'Learn how metabolic rate changes with weight, age, and training volume.' }
+				],
+				'calorie': [
+					{ title: 'Should I Cut or Bulk?', url: '/guides/should-i-cut-or-bulk', desc: 'The scientific decision matrix to select your optimal body composition phase.' }
+				],
+				'protein': [
+					{ title: 'Protein & Macronutrient Guide', url: '/guides/protein-nutrition', desc: 'Complete breakdown of daily protein intake requirements and ratios.' }
+				],
+				'macro': [
+					{ title: 'Protein & Macronutrient Guide', url: '/guides/protein-nutrition', desc: 'Complete breakdown of daily protein intake requirements and ratios.' }
+				],
+				'composition': [
+					{ title: 'Body Fat Percentage Guide', url: '/guides/body-fat-percentage', desc: 'How to accurately estimate and track body fat changes over time.' }
+				],
+				'recomp': [
+					{ title: 'Body Recomposition Strategy Guide', url: '/guides/body-recomposition', desc: 'Build muscle and lose fat simultaneously without traditional bulk cycles.' }
+				],
+				'timeline': [
+					{ title: 'Should I Cut or Bulk?', url: '/guides/should-i-cut-or-bulk', desc: 'Select the optimal starting timeline strategy for your fitness level.' }
+				]
+			};
+
+			const guides = guideMap[calculator.mode] || [
+				{ title: 'Body Composition Strategy Guide', url: '/body-composition-strategy-guide', desc: 'The comprehensive scientific strategy guide to body composition optimization.' }
+			];
+
+			return (
+				<div class="mt-8 border-t border-border/40 pt-8">
+					<h3 class="text-lg font-bold text-foreground mb-4">Related Strategy Guides</h3>
+					<div class="grid gap-3 sm:grid-cols-2">
+						{guides.map(guide => (
+							<a class="app-card block group border border-dashed hover:border-solid transition-all" href={guide.url}>
+								<div class="flex justify-between items-center">
+									<h4 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">
+										{guide.title}
+									</h4>
+									<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+								</div>
+								<p class="mt-2 text-xs text-muted-foreground leading-relaxed">
+									{guide.desc}
+								</p>
+							</a>
+						))}
+					</div>
+				</div>
+			);
+		})()}
 	</section>
 </Layout>

@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { absoluteUrl } from '../data/site';
+
+const canonicalUrl = absoluteUrl('/404');
+---
+
+<Layout
+	title="Page Not Found (404) | BodyCompOS"
+	description="The requested page could not be found. Return to BodyCompOS to recalculate your fitness strategy."
+	canonical={canonicalUrl}
+>
+	<section class="site-container py-24 flex flex-col items-center justify-center text-center min-h-[70vh]">
+		<div class="max-w-md animate-fade-in">
+			<div class="inline-flex mb-6">
+				<span class="badge badge-accent">
+					404 ERROR
+				</span>
+			</div>
+			
+			<h1 class="text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Strategy Deficit.
+			</h1>
+			
+			<p class="mt-6 text-sm leading-relaxed text-muted-foreground">
+				The requested page could not be located or has been relocated. Your local body composition data and check-ins remain safely stored in your browser cache.
+			</p>
+			
+			<div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+				<a href="/" class="button-primary text-xs">Return to Strategy Finder ➔</a>
+				<a href="/calculators" class="button-secondary text-xs">Browse Calculators</a>
+			</div>
+		</div>
+	</section>
+</Layout>
