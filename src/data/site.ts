@@ -428,54 +428,6 @@ export const infoPages = [
 		],
 		faqs: [],
 	},
-	{
-		slug: 'faq',
-		title: 'FAQ Hub',
-		seoTitle: 'FAQ Hub - Body Composition Strategy and Calculator Questions | BodyCompOS',
-		description: 'Common questions about strategy selection, calories, protein, tracking, and forecasting.',
-		type: 'FAQPage',
-		sections: [
-			['Is this a weight loss website?', 'No. BodyCompOS covers fat loss, lean bulk, recomp, maintenance, and weight gain through a body composition strategy lens.'],
-			['Are the outputs medical advice?', 'No. Outputs are educational estimates based on the inputs provided.'],
-			['Where is data stored?', 'Saved assessments and check-ins are stored locally in the browser.'],
-			['What should I do first?', 'Start with the Strategy Finder, then use the calorie and protein calculators to refine the starting targets.'],
-		],
-		faqs: [
-			['Is this a weight loss website?', 'No. BodyCompOS covers fat loss, lean bulk, recomp, maintenance, and weight gain through a body composition strategy lens.'],
-			['Where is data stored?', 'Saved assessments and check-ins are stored locally in the browser.'],
-		],
-	},
-	{
-		slug: 'privacy-policy',
-		title: 'Privacy Policy',
-		seoTitle: 'Privacy Policy - Local-First BodyCompOS Data Storage | BodyCompOS',
-		description: 'BodyCompOS privacy policy covering local data storage, cookies, advertising, and your rights.',
-		type: 'WebPage',
-		sections: [
-			['Overview', 'BodyCompOS is designed as a privacy-first application. We collect minimal information and we are transparent about everything we do with it. This Privacy Policy covers how data is handled on the BodyCompOS platform, including local storage, cookies, analytics, and advertising. By using BodyCompOS, you acknowledge this policy. Last updated: June 2026.'],
-			['Local Data Storage', 'BodyCompOS stores all user-entered information — including assessments, check-ins, goal settings, and strategy history — exclusively in your browser\'s localStorage. This data never leaves your device. It is not transmitted to BodyCompOS servers, third-party analytics platforms, or any external service in its current form. localStorage data persists until you clear your browser storage or explicitly delete it within the app. You can view and delete this data at any time through your browser\'s developer tools or storage settings.'],
-			['Cookies and Tracking Technologies', 'BodyCompOS currently uses cookies and similar browser storage technologies for the following purposes: (1) Theme preference storage — we save your light/dark mode preference in localStorage so it persists between visits. (2) Cookie consent — we store your response to the cookie consent banner in localStorage. (3) Advertising — BodyCompOS may display advertisements served by Google AdSense or similar ad networks. These services may use cookies and similar tracking technologies to serve personalized or contextual ads based on your browsing activity across websites. Google\'s advertising privacy controls are available at g.co/adsettings. You can opt out of personalized advertising through your browser settings or by using an opt-out tool provided by your country\'s data protection authority.'],
-			['Third-Party Advertising', 'To keep BodyCompOS free for all users, we may partner with advertising networks including Google AdSense. When advertisements are displayed, the advertising network may set its own cookies on your browser to measure ad performance, limit frequency, and improve relevance. BodyCompOS does not sell your personal data to advertisers. We do not have access to the data collected by advertising networks through their own cookies. You may decline cookie consent using our banner, which will prevent non-essential cookies from being set by BodyCompOS, though third-party services may independently have their own cookie policies.'],
-			['Analytics', 'If analytics are enabled in the future, this policy will be updated before any analytics service is activated. Currently, no analytics data is collected.'],
-			['Your Rights and Controls', 'You have the right to access, correct, or delete any data associated with your use of BodyCompOS. Since all user data is stored locally in your browser, you exercise these rights directly through your browser\'s storage management. For any questions about this privacy policy or your data, contact hello@bodycompos.com. Requests will be acknowledged within 30 days.'],
-		],
-		faqs: [],
-	},
-	{
-		slug: 'terms',
-		title: 'Terms of Use',
-		seoTitle: 'Terms of Use - BodyCompOS Educational Tool Terms | BodyCompOS',
-		description: 'Terms governing use of the BodyCompOS educational body composition platform, calculations, and tracking.',
-		type: 'WebPage',
-		sections: [
-			['Acceptance of Terms', 'By accessing and using the BodyCompOS platform, you accept and agree to be bound by these Terms of Use, our Privacy Policy, and our Disclaimer. If you do not agree with any part of these terms, you must immediately discontinue use of the platform. We reserve the right to modify these terms at any time without prior notice. Any changes will be posted on this page with an updated modification date. Your continued use of the platform after changes are posted constitutes your acceptance of the revised terms. Last updated: June 2026.'],
-			['Permitted Use & User Restrictions', 'BodyCompOS is provided solely for personal, non-commercial, educational use. You may use the calculators, strategy finder, progress logs, and charts to estimate body composition metrics, plan nutritional targets, and track your personal fitness journey. You may not: (1) use BodyCompOS to provide professional coaching, clinical, or dietary services to others for compensation without express permission, (2) scrape or programmatically download calculator outputs or content from the platform, or (3) attempt to reverse-engineer, copy, or replicate our proprietary strategy recommendation algorithms for competing commercial use.'],
-			['Disclaimer of Warranties & Calculations', 'BodyCompOS provides all calculators, tools, and content on an "as is" and "as available" basis without warranties of any kind, either express or implied. All calculations, recommendations, and projections are mathematical estimates derived from population-average formulas and self-reported inputs. We do not warrant that the calculations will meet your specific physiological requirements, be 100% accurate for your individual body structure, or guarantee specific physical results. You acknowledge that individual metabolic rate, genetics, training history, and lifestyle factors can cause actual outcomes to vary significantly from estimates.'],
-			['Limitation of Liability & Indemnification', 'To the maximum extent permitted by law, BodyCompOS, its operators, creators, and contributors shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising from your use of, or inability to use, the platform or its calculations. You agree to defend, indemnify, and hold harmless BodyCompOS and its operators from any claims, liabilities, damages, or costs (including legal fees) arising from your violation of these terms or your reliance on calculator outputs for medical, physical, or dietary decisions.'],
-			['Intellectual Property & Attribution', 'All designs, custom code, mathematical models, text guides, and logo designs on BodyCompOS are the intellectual property of BodyCompOS and are protected by copyright laws. You may share screenshots of your dashboard or quote small sections of our guides for personal use, social media, or educational discussions, provided that you include a clickable link and clear attribution to BodyCompOS. Reproduction of substantial portions of our code or content for commercial websites is strictly prohibited.'],
-		],
-		faqs: [],
-	},
 ];
 
 export const allPagePaths = [
@@ -486,6 +438,8 @@ export const allPagePaths = [
 	'calculators/calories',
 	'dashboard',
 	'faq',
+	'privacy-policy',
+	'terms-conditions',
 	'guides',
 	...calculators.map((calculator) => `calculators/${calculator.slug}`),
 	...infoPages.map((page) => page.slug),

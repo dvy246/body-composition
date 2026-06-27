@@ -26,3 +26,6 @@ pnpm-debug.log*
 # hidden environment and tool configurations
 .opencode/
 .qodo/
+.wrangler/
+.gemini/
+.agents/

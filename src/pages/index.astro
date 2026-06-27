@@ -23,9 +23,14 @@ const webAppSchema = {
 };
 
 const faqEntries = [
-	['What is body composition?', 'Body composition refers to the percentage of fat, bone, water, and muscle in human bodies. Unlike total body weight on a scale, body composition analysis separates weight into fat mass (stored adipose tissue) and lean body mass (muscle, organs, bones, and water), providing a much more accurate picture of health and fitness.'],
-	['Why is body composition more important than BMI or weight?', 'Scale weight and BMI do not differentiate between muscle and fat. An active individual with high muscle mass can be classified as overweight by BMI despite having very low body fat. Tracking body composition ensures that weight lost is actually body fat, not lean muscle tissue.'],
-	['What is BMR in body composition?', 'Basal Metabolic Rate (BMR) represents the minimum number of calories your body requires to perform basic life-sustaining functions (like breathing and circulation) at complete rest. It forms the metabolic baseline of your Total Daily Energy Expenditure (TDEE).'],
+	['What is a calorie deficit?', 'A calorie deficit occurs when you consume fewer calories than your body burns to sustain life and physical activity. When this energy imbalance happens, your body is forced to mobilize energy from stored tissues, primarily body fat and glycogen, to cover the difference, resulting in weight loss.'],
+	['What is TDEE?', 'TDEE stands for Total Daily Energy Expenditure. It represents the total number of calories your body burns in a 24-hour period, calculated as the sum of your Basal Metabolic Rate (BMR), Thermic Effect of Activity (TEA), Non-Exercise Activity Thermogenesis (NEAT), and Thermic Effect of Food (TEF).'],
+	['How to calculate body fat percentage?', 'For males, use the Navy formula: 86.010 * log10(waist - neck) - 70.041 * log10(height) + 36.76. For females, use: 163.205 * log10(waist + hip - neck) - 97.684 * log10(height) - 78.387 (measurements in inches).'],
+	['What is body recomposition?', 'Body recomposition is the process of simultaneously building muscle mass and losing body fat. Unlike traditional bulk-and-cut cycles, recomposition aims to exchange fat for muscle over time while maintaining relatively stable scale weight.'],
+	['Is BMI accurate?', 'BMI is a reliable screening tool for general population statistics but inaccurate for individuals. It fails to distinguish between muscle mass and fat tissue, often classifying highly muscular athletes as "overweight" or "obese" despite low body fat.'],
+	['How much protein do I need a day?', 'For active individuals, scientific guidelines recommend between 1.6 and 2.2 grams of protein per kilogram of body weight (0.73 to 1.0 gram per pound) daily to promote muscle repair and preserve lean tissue.'],
+	['Is Pilates good for weight loss?', 'Yes, Pilates is a valuable addition to a weight loss strategy. While Pilates burns fewer calories than high-intensity cardiovascular training, it builds core stability, deep abdominal strength, and active lean tissue. Combining Pilates with a calorie deficit and cardiovascular exercise yields high-quality body composition improvements.'],
+	['Does masturbation cause weight loss?', 'No, masturbation does not directly cause weight loss. The energy cost of masturbation is extremely low — approximately 3 to 10 calories per session, which is metabolically insignificant. Weight loss is driven entirely by achieving a sustained calorie deficit through nutrition and daily physical activity.']
 ];
 
 const faqSchema = {
@@ -250,6 +255,13 @@ const faqSchema = {
 					</div>
 				</details>
 			))}
+		</div>
+
+		<div class="pt-4 text-center">
+			<a href="/faq" class="button-secondary text-xs inline-flex items-center gap-1">
+				View All Frequently Asked Questions
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</a>
 		</div>
 	</section>
 
