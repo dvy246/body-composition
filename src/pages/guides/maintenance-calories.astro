@@ -4,6 +4,27 @@ import { DOMAIN, articleSchema } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
 import Author from '../../components/Author.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+
+const tocItems = [
+	{ href: '#understanding-maintenance', label: 'Understanding Maintenance', shortLabel: 'Understanding Baseline' },
+	{ href: '#tdee-components', label: 'Four Components of TDEE', shortLabel: 'Components of TDEE' },
+	{ href: '#bmr-formulas', label: 'BMR Formulas', shortLabel: 'BMR Formulas' },
+	{ href: '#activity-factor', label: 'Activity Factor Guide', shortLabel: 'Activity Factor' },
+	{ href: '#verification-protocol', label: 'Verification Protocol', shortLabel: 'Verification Protocol' },
+	{ href: '#metabolic-adaptation', label: 'Metabolic Adaptation', shortLabel: 'Metabolic Adaptation' },
+	{ href: '#reverse-dieting', label: 'Reverse Dieting', shortLabel: 'Reverse Dieting' },
+	{ href: '#recalculation', label: 'Recalculation Rules', shortLabel: 'Recalculation Rules' },
+	{ href: '#faq', label: 'Frequently Asked Questions', shortLabel: 'FAQ' },
+	{ href: '#next-steps', label: 'Next Steps' }
+];
+
+const toolLink = {
+	href: '/calculators/tdee-calculator',
+	label: 'TDEE Tool',
+	desc: 'Calculate your custom maintenance calories baseline instantly.',
+	buttonText: 'Open TDEE Tool'
+};
 
 const title = "How to Calculate Maintenance Calories - Metabolic Adaptation Guide | BodyCompOS";
 const description = "Learn how to establish your baseline maintenance calories (TDEE), understand metabolic adaptation, and verify your true energy needs using Mifflin-St Jeor and Katch-McArdle formulas.";
@@ -76,54 +97,9 @@ const schema = [
 			</p>
 		</div>
 
-		<!-- Mobile TOC Accordion (hidden on desktop) -->
-		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
-				<span>On This Page</span>
-				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-			</summary>
-			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
-				<a href="#understanding-maintenance" class="block text-muted-foreground hover:text-accent transition-colors">1. Understanding Maintenance</a>
-				<a href="#tdee-components" class="block text-muted-foreground hover:text-accent transition-colors">2. Four Components of TDEE</a>
-				<a href="#bmr-formulas" class="block text-muted-foreground hover:text-accent transition-colors">3. BMR Formulas</a>
-				<a href="#activity-factor" class="block text-muted-foreground hover:text-accent transition-colors">4. Activity Factor Guide</a>
-				<a href="#verification-protocol" class="block text-muted-foreground hover:text-accent transition-colors">5. Verification Protocol</a>
-				<a href="#metabolic-adaptation" class="block text-muted-foreground hover:text-accent transition-colors">6. Metabolic Adaptation</a>
-				<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors">7. Reverse Dieting</a>
-				<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors">8. Recalculation Rules</a>
-				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
-				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">10. Next Steps</a>
-			</nav>
-		</details>
-
 		<!-- Main editorial body with sticky left column -->
 		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
-			<!-- Left column: Sticky TOC (desktop only) -->
-			<div class="hidden lg:block">
-				<div class="sticky top-24 space-y-6">
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
-						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
-							<a href="#understanding-maintenance" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Understanding Baseline</a>
-							<a href="#tdee-components" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. Components of TDEE</a>
-							<a href="#bmr-formulas" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. BMR Formulas</a>
-							<a href="#activity-factor" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Activity Factor</a>
-							<a href="#verification-protocol" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Verification Protocol</a>
-							<a href="#metabolic-adaptation" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. Metabolic Adaptation</a>
-							<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">7. Reverse Dieting</a>
-							<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">8. Recalculation Rules</a>
-							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">9. FAQ</a>
-							<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">10. Next Steps →</a>
-						</nav>
-					</div>
-
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">TDEE Tool</h3>
-						<p class="text-[10px] text-muted-foreground leading-relaxed">Calculate your custom maintenance calories baseline instantly.</p>
-						<a href="/calculators/tdee-calculator" class="button-primary w-full text-center text-xs mt-3 block">Open TDEE Tool</a>
-					</div>
-				</div>
-			</div>
+			<TableOfContents items={tocItems} toolLink={toolLink} />
 
 			<!-- Right column: Main Editorial content -->
 			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">

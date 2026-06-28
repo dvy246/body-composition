@@ -345,6 +345,12 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Global Dashboard Tooltip for Charts and Heatmaps -->
+	<div id="dashboard-tooltip" class="fixed hidden z-50 bg-card/95 backdrop-blur-md border border-border px-3 py-2 rounded-xl text-[10px] sm:text-xs shadow-lg pointer-events-none text-foreground leading-normal min-w-[140px] max-w-[200px] transition-all duration-75">
+		<div id="dashboard-tooltip-title" class="font-bold border-b border-border/40 pb-1 mb-1 text-accent"></div>
+		<div id="dashboard-tooltip-body" class="space-y-0.5 text-muted-foreground"></div>
+	</div>
 </section>
 
 <!-- Script handling Tab Switching, Local Storage, SVGs, Plateau diagnosis, and Printing -->
@@ -458,15 +464,66 @@
 		if (!container) return;
 
 		if (checkins.length < 2) {
+			const assessments = getAssessments();
+			const hasAssessment = assessments.length > 0;
+			const hasFirstLog = checkins.length >= 1;
+			const remainingLogs = 2 - checkins.length;
+
 			container.innerHTML = `
-				<div class="flex flex-col items-center justify-center p-8 text-center min-h-[240px] rounded-2xl border border-dashed border-border bg-muted/5">
-					<div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-4">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+				<div class="flex flex-col p-6 sm:p-8 min-h-[240px] rounded-2xl border border-dashed border-border bg-card/40 backdrop-blur-sm">
+					<div class="flex items-center gap-3 mb-5">
+						<div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent shrink-0">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+						</div>
+						<div>
+							<h4 class="font-bold text-sm text-foreground">Welcome to Your Strategy Dashboard</h4>
+							<p class="text-[10px] text-muted-foreground">Complete the tasks below to unlock forecast analytics and trend lines.</p>
+						</div>
 					</div>
-					<h4 class="font-bold text-sm text-foreground">Awaiting Weight Check-In Logs</h4>
-					<p class="text-xs text-muted-foreground max-w-sm mt-1 leading-relaxed">
-						Please log at least two check-ins in the Check-in Database panel to initialize the dual-line forecasting curves, trend pacing, and completion ETA indicators.
-					</p>
+
+					<div class="space-y-3.5">
+						<!-- Step 1 -->
+						<div class="flex items-start gap-3 p-3 rounded-xl border border-border bg-muted/5">
+							<div class="mt-0.5 shrink-0 flex items-center justify-center w-5 h-5 rounded-full ${hasAssessment ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground border border-border'} text-[10px] font-bold">
+								${hasAssessment ? '✓' : '1'}
+							</div>
+							<div class="flex-1">
+								<div class="flex items-center justify-between gap-2">
+									<p class="text-xs font-semibold ${hasAssessment ? 'text-muted-foreground line-through' : 'text-foreground'}">Step 1: Complete Strategy Finder Assessment</p>
+									${!hasAssessment ? `<a href="/" class="text-[10px] font-bold text-accent hover:underline">Find Strategy ➔</a>` : `<span class="text-[10px] text-success font-semibold">Completed</span>`}
+								</div>
+								<p class="text-[10px] text-muted-foreground mt-0.5">Establishes your custom calorie deficits, surpluses, and macro allocations.</p>
+							</div>
+						</div>
+
+						<!-- Step 2 -->
+						<div class="flex items-start gap-3 p-3 rounded-xl border border-border bg-muted/5">
+							<div class="mt-0.5 shrink-0 flex items-center justify-center w-5 h-5 rounded-full ${hasFirstLog ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground border border-border'} text-[10px] font-bold">
+								${hasFirstLog ? '✓' : '2'}
+							</div>
+							<div class="flex-1">
+								<div class="flex items-center justify-between gap-2">
+									<p class="text-xs font-semibold ${hasFirstLog ? 'text-muted-foreground line-through' : 'text-foreground'}">Step 2: Log Your Initial Check-In</p>
+									${!hasFirstLog ? `<button onclick="document.querySelector('[data-tab=&quot;logs&quot;]').click()" class="text-[10px] font-bold text-accent hover:underline">Log Entry ➔</button>` : `<span class="text-[10px] text-success font-semibold">Completed</span>`}
+								</div>
+								<p class="text-[10px] text-muted-foreground mt-0.5">Establishes your baseline weight. Ensure logs are taken fasted in matching conditions.</p>
+							</div>
+						</div>
+
+						<!-- Step 3 -->
+						<div class="flex items-start gap-3 p-3 rounded-xl border border-border bg-muted/5">
+							<div class="mt-0.5 shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-muted text-muted-foreground border border-border text-[10px] font-bold">
+								3
+							</div>
+							<div class="flex-1">
+								<div class="flex items-center justify-between gap-2">
+									<p class="text-xs font-semibold text-foreground">Step 3: Establish Trend Line (Need ${remainingLogs} more entry)</p>
+									<button onclick="document.querySelector('[data-tab=&quot;logs&quot;]').click()" class="text-[10px] font-bold text-accent hover:underline">Log Entry ➔</button>
+								</div>
+								<p class="text-[10px] text-muted-foreground mt-0.5">Dual check-ins provide the rate of weight change needed to draw metabolic decay and completion ETA curves.</p>
+							</div>
+						</div>
+					</div>
 				</div>
 			`;
 			return;
@@ -533,7 +590,7 @@
 			bfElements = `
 				<polygon points="${bfAreaPoints}" fill="url(#bf-chart-grad)" opacity="0.4"></polygon>
 				<polyline points="${bfPolylinePoints}" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-dasharray="2,2" opacity="0.85"></polyline>
-				${bfPoints.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="var(--success)"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
+				${bfPoints.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="var(--success)" class="chart-dot cursor-pointer transition-all duration-150 hover:r-5" data-tooltip-title="${p.date}" data-tooltip-type="Body Fat Percentage" data-tooltip-value="${p.val}%" data-tooltip-extra=""></circle>`).join('')}
 			`;
 		}
 
@@ -574,12 +631,17 @@
 
 				<!-- Data Markers -->
 				${predictions.filter(p => !p.isProjected).map((item, index) => {
+					const checkin = sorted[index];
 					const [x, y] = actualPoints[index].split(',');
-					return `<circle cx="${x}" cy="${y}" r="4" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"><title>${item.date}: ${formatWeight(item.weight)}</title></circle>`;
+					const extraParts = [];
+					if (checkin.bodyFat) extraParts.push(`Body Fat: ${checkin.bodyFat}%`);
+					if (checkin.adherence) extraParts.push(`Adherence: ${checkin.adherence}%`);
+					const extra = extraParts.join(' | ');
+					return `<circle cx="${x}" cy="${y}" r="4.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5" class="chart-dot cursor-pointer transition-all duration-150 hover:r-6" data-tooltip-title="${item.date}" data-tooltip-type="Actual Weight" data-tooltip-value="${formatWeight(item.weight)}" data-tooltip-extra="${extra}"></circle>`;
 				}).join('')}
 				${predictions.filter(p => p.isProjected).map((item, index) => {
 					const [x, y] = forecastPoints[index + 1].split(',');
-					return `<circle cx="${x}" cy="${y}" r="3" fill="var(--card)" stroke="var(--warning)" stroke-width="2"><title>[Projected] ${item.date}: ${formatWeight(item.weight)}</title></circle>`;
+					return `<circle cx="${x}" cy="${y}" r="3.5" fill="var(--card)" stroke="var(--warning)" stroke-width="2" class="chart-dot cursor-pointer transition-all duration-150 hover:r-5" data-tooltip-title="${item.date}" data-tooltip-type="Forecast Projection" data-tooltip-value="${formatWeight(item.weight)}" data-tooltip-extra="Model Projection"></circle>`;
 				}).join('')}
 
 				<!-- Goal Reference Line -->
@@ -1007,7 +1069,9 @@
 					}
 					
 					let colorClass = 'bg-muted';
-					let tooltip = `Week of ${dateStr}: No Entry`;
+					let typeText = 'No Entry';
+					let valText = 'N/A';
+					let extraText = 'Log weekly check-ins to track';
 					if (matchedAdherence !== null) {
 						if (matchedAdherence >= 80) {
 							colorClass = 'bg-success/20 border border-success/40 text-success';
@@ -1016,11 +1080,13 @@
 						} else {
 							colorClass = 'bg-destructive/20 border border-destructive/40 text-destructive';
 						}
-						tooltip = `Log Date: ${matchedDate} | Adherence: ${matchedAdherence}%`;
+						typeText = 'Weekly Adherence';
+						valText = `${matchedAdherence}%`;
+						extraText = matchedAdherence >= 80 ? 'High Compliance' : matchedAdherence >= 50 ? 'Moderate Compliance' : 'Low Compliance';
 					}
 					
 					html += `
-						<div class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold cursor-help ${colorClass}" title="${tooltip}">
+						<div class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold cursor-pointer chart-dot transition-all duration-150 hover:scale-105 ${colorClass}" data-tooltip-title="Week of ${dateStr}" data-tooltip-type="${typeText}" data-tooltip-value="${valText}" data-tooltip-extra="${extraText}">
 							W${weeksToShow - w}
 						</div>
 					`;
@@ -1385,7 +1451,7 @@
 				<polygon points="${bfAreaPoints}" fill="url(#bf-chart-grad-only)"></polygon>
 				<polyline points="${polylinePoints}" fill="none" stroke="var(--success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
 
-				${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--card)" stroke="var(--success)" stroke-width="2.5"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
+				${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="var(--card)" stroke="var(--success)" stroke-width="2.5" class="chart-dot cursor-pointer transition-all duration-150 hover:r-6" data-tooltip-title="${p.date}" data-tooltip-type="Body Fat Percentage" data-tooltip-value="${p.val}%" data-tooltip-extra=""></circle>`).join('')}
 
 				<text x="30" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600" text-anchor="start">${points[0].date}</text>
 				<text x="370" y="174" fill="var(--muted-foreground)" font-size="9" font-weight="600" text-anchor="end">${points[points.length - 1].date}</text>
@@ -1837,6 +1903,50 @@
 		});
 		document.querySelectorAll('[data-dashboard-weight-unit]').forEach((label) => {
 			label.textContent = dashboardUnit === 'metric' ? '(kg)' : '(lb)';
+		});
+	})();
+
+	// Global Tooltip Hover Listeners for SVG Charts and Adherence Heatmap
+	(function() {
+		const tooltip = document.getElementById('dashboard-tooltip');
+		const tooltipTitle = document.getElementById('dashboard-tooltip-title');
+		const tooltipBody = document.getElementById('dashboard-tooltip-body');
+		if (!tooltip || !tooltipTitle || !tooltipBody) return;
+
+		document.addEventListener('mouseover', (e) => {
+			const target = (e.target as HTMLElement).closest('.chart-dot');
+			if (!target) return;
+
+			const title = target.getAttribute('data-tooltip-title') || '';
+			const type = target.getAttribute('data-tooltip-type') || '';
+			const val = target.getAttribute('data-tooltip-value') || '';
+			const extra = target.getAttribute('data-tooltip-extra') || '';
+
+			tooltipTitle.textContent = title;
+			tooltipBody.innerHTML = `
+				<div class="flex justify-between gap-4 font-semibold text-foreground">
+					<span>${type}:</span>
+					<span>${val}</span>
+				</div>
+				${extra ? `<div class="text-[10px] text-muted-foreground mt-0.5 border-t border-border/20 pt-0.5">${extra}</div>` : ''}
+			`;
+
+			tooltip.classList.remove('hidden');
+		});
+
+		document.addEventListener('mousemove', (e) => {
+			if (tooltip.classList.contains('hidden')) return;
+			const offset = 12;
+			const x = Math.min(window.innerWidth - 160, e.clientX + offset);
+			const y = Math.min(window.innerHeight - 80, e.clientY + offset);
+			tooltip.style.left = `${x}px`;
+			tooltip.style.top = `${y}px`;
+		});
+
+		document.addEventListener('mouseout', (e) => {
+			const target = (e.target as HTMLElement).closest('.chart-dot');
+			if (!target) return;
+			tooltip.classList.add('hidden');
 		});
 	})();
 

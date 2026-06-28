@@ -6,9 +6,24 @@ import { glossaryTerms } from '../data/glossary';
 const title = "Body Composition Strategy Glossary | BodyCompOS";
 const description = "Glossary of 30 key scientific body composition and metabolic terms, including BMR, TDEE, hypertrophy, and progressive overload.";
 const canonical = `${DOMAIN}/glossary`;
+
+// DefinedTermSet schema for glossary page SEO
+const glossarySchema = {
+	'@context': 'https://schema.org',
+	'@type': 'DefinedTermSet',
+	'@id': canonical,
+	name: title,
+	description: description,
+	hasDefinedTerm: glossaryTerms.map((t) => ({
+		'@type': 'DefinedTerm',
+		name: t.term,
+		description: t.definition,
+		inDefinedTermSet: canonical,
+	})),
+};
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} schema={glossarySchema}>
 	<section class="site-container py-10 sm:py-16">
 		<div class="max-w-4xl mx-auto">
 			<!-- Breadcrumbs -->

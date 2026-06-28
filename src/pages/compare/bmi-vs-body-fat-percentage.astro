@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import Author from '../../components/Author.astro';
 
 const title = 'BMI vs. Body Fat Percentage - Side-by-Side Comparison | BodyCompOS';
 const description = 'Compare Body Mass Index (BMI) with Body Fat Percentage. Understand the formula differences, the muscular-athlete caveat, and which metric is best for tracking your body composition.';
@@ -15,13 +16,13 @@ const schema = {
 	datePublished: '2026-06-25',
 	dateModified: '2026-06-26',
 	author: {
-		'@type': 'Person',
-		name: 'D. Yadav, CSCS',
+		'@type': 'Organization',
+		name: 'BodyCompOS Editorial Board',
 		url: `${DOMAIN}/about`,
 	},
 	reviewer: {
-		'@type': 'Person',
-		name: 'D. Yadav, CSCS',
+		'@type': 'Organization',
+		name: 'BodyCompOS Scientific Review Board',
 		url: `${DOMAIN}/about`,
 	},
 	publisher: {
@@ -218,5 +219,7 @@ const schema = {
 				<!-- Ad Zone: Sidebar -->
 			</div>
 		</div>
+		
+		<Author className="mt-10" />
 	</section>
 </Layout>

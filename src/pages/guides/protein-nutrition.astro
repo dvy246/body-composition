@@ -4,6 +4,27 @@ import { DOMAIN, articleSchema } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
 import Author from '../../components/Author.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+
+const tocItems = [
+	{ href: '#why-protein-matters', label: 'Why Protein Matters', shortLabel: 'Why Protein Matters' },
+	{ href: '#issn-recommendations', label: 'The ISSN Protein Recommendations', shortLabel: 'ISSN Targets' },
+	{ href: '#leucine-threshold', label: 'Leucine Threshold & mTOR', shortLabel: 'Leucine & mTOR' },
+	{ href: '#protein-quality', label: 'Protein Quality: PDCAAS & DIAAS', shortLabel: 'Quality Scores' },
+	{ href: '#protein-distribution', label: 'Protein Distribution & Timing', shortLabel: 'Timing & Spread' },
+	{ href: '#animal-vs-plant', label: 'Animal vs Plant Sources', shortLabel: 'Animal vs Plant' },
+	{ href: '#special-populations', label: 'Special Populations', shortLabel: 'Special Populations' },
+	{ href: '#reassessment-changes', label: 'Reassessment & Adjustments', shortLabel: 'Reassessment' },
+	{ href: '#faq', label: 'Frequently Asked Questions', shortLabel: 'FAQ' },
+	{ href: '#next-steps', label: 'Next Steps' }
+];
+
+const toolLink = {
+	href: '/calculators/protein-calculator',
+	label: 'Protein Tool',
+	desc: 'Calculate your exact daily protein and meal distribution target.',
+	buttonText: 'Open Protein Tool'
+};
 
 const title = "Daily Protein Intake Guide for Body Composition | BodyCompOS";
 const description = "An in-depth review of optimal daily protein ranges for fat loss, muscle retention, and tissue synthesis based on peer-reviewed ISSN position stands.";
@@ -75,54 +96,9 @@ const schema = [
 			</p>
 		</div>
 
-		<!-- Mobile TOC Accordion (hidden on desktop) -->
-		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
-				<span>On This Page</span>
-				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-			</summary>
-			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
-				<a href="#why-protein-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Protein Matters</a>
-				<a href="#issn-recommendations" class="block text-muted-foreground hover:text-accent transition-colors">2. The ISSN Protein Recommendations</a>
-				<a href="#leucine-threshold" class="block text-muted-foreground hover:text-accent transition-colors">3. Leucine Threshold & mTOR</a>
-				<a href="#protein-quality" class="block text-muted-foreground hover:text-accent transition-colors">4. Protein Quality: PDCAAS & DIAAS</a>
-				<a href="#protein-distribution" class="block text-muted-foreground hover:text-accent transition-colors">5. Protein Distribution & Timing</a>
-				<a href="#animal-vs-plant" class="block text-muted-foreground hover:text-accent transition-colors">6. Animal vs Plant Sources</a>
-				<a href="#special-populations" class="block text-muted-foreground hover:text-accent transition-colors">7. Special Populations</a>
-				<a href="#reassessment-changes" class="block text-muted-foreground hover:text-accent transition-colors">8. Reassessment & Adjustments</a>
-				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
-				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">10. Next Steps</a>
-			</nav>
-		</details>
-
 		<!-- Main editorial body with sticky left column -->
 		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
-			<!-- Left column: Sticky TOC (desktop only) -->
-			<div class="hidden lg:block">
-				<div class="sticky top-24 space-y-6">
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
-						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
-							<a href="#why-protein-matters" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Why Protein Matters</a>
-							<a href="#issn-recommendations" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. ISSN Targets</a>
-							<a href="#leucine-threshold" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. Leucine & mTOR</a>
-							<a href="#protein-quality" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Quality Scores</a>
-							<a href="#protein-distribution" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Timing & Spread</a>
-							<a href="#animal-vs-plant" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. Animal vs Plant</a>
-							<a href="#special-populations" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">7. Special Populations</a>
-							<a href="#reassessment-changes" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">8. Reassessment</a>
-							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">9. FAQ</a>
-							<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">10. Next Steps →</a>
-						</nav>
-					</div>
-
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Protein Tool</h3>
-						<p class="text-[10px] text-muted-foreground leading-relaxed">Calculate your exact daily protein and meal distribution target.</p>
-						<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-3 block">Open Protein Tool</a>
-					</div>
-				</div>
-			</div>
+			<TableOfContents items={tocItems} toolLink={toolLink} />
 
 			<!-- Right column: Main Editorial content -->
 			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">

@@ -1,0 +1,59 @@
+---
+interface Props {
+	items: { href: string; label: string; shortLabel?: string }[];
+	toolLink?: { href: string; label: string; desc: string; buttonText?: string };
+}
+
+const { items, toolLink } = Astro.props;
+---
+
+<!-- Mobile TOC Accordion (hidden on desktop) -->
+<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+	<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
+		<span>On This Page</span>
+		<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+	</summary>
+	<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+		{items.map((item, index) => (
+			<a href={item.href} class="block text-muted-foreground hover:text-accent transition-colors">
+				{index + 1}. {item.label}
+			</a>
+		))}
+	</nav>
+</details>
+
+<!-- Left column: Sticky TOC (desktop only) -->
+<div class="hidden lg:block">
+	<div class="sticky top-24 space-y-6">
+		<div class="surface border border-border p-5 rounded-2xl">
+			<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
+			<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
+				{items.map((item, index) => {
+					const isLast = index === items.length - 1;
+					if (isLast) {
+						return (
+							<a href={item.href} class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">
+								{index + 1}. {item.shortLabel || item.label} →
+							</a>
+						);
+					}
+					return (
+						<a href={item.href} class={`block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none ${index === 0 ? 'active-toc-link' : ''}`}>
+							{index + 1}. {item.shortLabel || item.label}
+						</a>
+					);
+				})}
+			</nav>
+		</div>
+
+		{toolLink && (
+			<div class="surface border border-border p-5 rounded-2xl">
+				<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">{toolLink.label}</h3>
+				<p class="text-[10px] text-muted-foreground leading-relaxed">{toolLink.desc}</p>
+				<a href={toolLink.href} class="button-primary w-full text-center text-xs mt-3 block">
+					{toolLink.buttonText || 'Open Tool'}
+				</a>
+			</div>
+		)}
+	</div>
+</div>

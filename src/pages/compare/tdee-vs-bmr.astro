@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
 
 const title = "TDEE vs BMR: What's the Difference? | BodyCompOS";
 const description = "Understand the critical differences between Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) for calorie planning.";
@@ -28,6 +29,7 @@ const canonical = `${DOMAIN}/compare/tdee-vs-bmr`;
 				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
 					Basal Metabolic Rate (BMR) is your rest benchmark, while Total Daily Energy Expenditure (TDEE) accounts for all daily motion and workouts. Compare their definitions, variables, and applications.
 				</p>
+				<AuthorAttribution role="Metabolic concepts sports nutrition review" references="Matsuura et al. 2012, Harris-Benedict study" />
 			</div>
 
 			<!-- Core comparison structure -->
@@ -80,6 +82,22 @@ const canonical = `${DOMAIN}/compare/tdee-vs-bmr`;
 							Our calculator helps estimate both BMR and TDEE in a single workflow.
 						</p>
 						<a href="/calculators/tdee-calculator" class="button-primary w-full text-center text-xs mt-3 block">Calculate TDEE</a>
+					</div>
+					
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-accent mb-2">Related Tools</h3>
+						<div class="space-y-2 text-[11px] font-semibold">
+							<a href="/tools/plateau-analyzer" class="block text-foreground hover:text-accent transition-colors">Plateau Analyzer ➔</a>
+							<a href="/calculators/calorie-calculator" class="block text-foreground hover:text-accent transition-colors mt-2">Calorie Target Calculator ➔</a>
+						</div>
+					</div>
+
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Other Comparisons</h3>
+						<div class="mt-3 space-y-2 text-xs">
+							<a href="/compare/mifflin-vs-katch-mcardle" class="block text-accent hover:underline font-medium">Mifflin-St Jeor vs. Katch-McArdle</a>
+							<a href="/compare/bmi-vs-body-fat-percentage" class="block text-accent hover:underline font-medium">BMI vs. Body Fat Percentage</a>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -4,6 +4,23 @@ import { DOMAIN, articleSchema } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
 import Author from '../../components/Author.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+
+const tocItems = [
+	{ href: '#defining-plateau', label: 'Defining a True Plateau', shortLabel: 'Defining a Plateau' },
+	{ href: '#common-causes', label: 'Common Causes of Stalls', shortLabel: 'Common Causes' },
+	{ href: '#water-retention-mask', label: 'The Cortisol Water Mask', shortLabel: 'The Cortisol Mask' },
+	{ href: '#breaking-strategies', label: 'Action Plan to Overcome Stalls', shortLabel: 'Action Plan' },
+	{ href: '#refeed-breaks', label: 'Diet Breaks & Refeeds', shortLabel: 'Diet Breaks & Refeeds' },
+	{ href: '#faq', label: 'Frequently Asked Questions', shortLabel: 'FAQ' }
+];
+
+const toolLink = {
+	href: '/tools/plateau-analyzer',
+	label: 'Plateau Tool',
+	desc: 'Let our local analyzer diagnose your trend data and isolate the block.',
+	buttonText: 'Run Analyzer'
+};
 
 const title = "How to Break a Weight Loss Plateau - Scientific Guide | BodyCompOS";
 const description = "Are you in a calorie deficit but not losing weight? Learn the causes of a weight loss plateau, common myths, and science-backed strategies to overcome it.";
@@ -72,46 +89,9 @@ const schema = [
 			</p>
 		</div>
 
-		<!-- Mobile TOC Accordion -->
-		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
-				<span>On This Page</span>
-				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-			</summary>
-			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
-				<a href="#defining-plateau" class="block text-muted-foreground hover:text-accent transition-colors">1. Defining a True Plateau</a>
-				<a href="#common-causes" class="block text-muted-foreground hover:text-accent transition-colors">2. Common Causes of Stalls</a>
-				<a href="#water-retention-mask" class="block text-muted-foreground hover:text-accent transition-colors">3. The Cortisol Water Mask</a>
-				<a href="#breaking-strategies" class="block text-muted-foreground hover:text-accent transition-colors">4. Action Plan to Overcome Stalls</a>
-				<a href="#refeed-breaks" class="block text-muted-foreground hover:text-accent transition-colors">5. Diet Breaks & Refeeds</a>
-				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">6. FAQ</a>
-			</nav>
-		</details>
-
 		<!-- Main grid -->
 		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
-			<!-- Left column: Sticky TOC -->
-			<div class="hidden lg:block">
-				<div class="sticky top-24 space-y-6">
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
-						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
-							<a href="#defining-plateau" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Defining a Plateau</a>
-							<a href="#common-causes" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. Common Causes</a>
-							<a href="#water-retention-mask" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. The Cortisol Mask</a>
-							<a href="#breaking-strategies" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Action Plan</a>
-							<a href="#refeed-breaks" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Diet Breaks & Refeeds</a>
-							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. FAQ</a>
-						</nav>
-					</div>
-
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Plateau Tool</h3>
-						<p class="text-[10px] text-muted-foreground leading-relaxed">Let our local analyzer diagnose your trend data and isolate the block.</p>
-						<a href="/tools/plateau-analyzer" class="button-primary w-full text-center text-xs mt-3 block">Run Analyzer</a>
-					</div>
-				</div>
-			</div>
+			<TableOfContents items={tocItems} toolLink={toolLink} />
 
 			<!-- Right column: Main Editorial -->
 			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">

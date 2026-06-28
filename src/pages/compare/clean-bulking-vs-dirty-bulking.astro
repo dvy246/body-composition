@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
 
 const title = "Clean Bulking vs Dirty Bulking Strategy Comparison | BodyCompOS";
 const description = "Understand the tradeoffs of a controlled surplus (clean bulking) vs. an unconstrained surplus (dirty bulking) for lean muscle growth.";
@@ -28,6 +29,7 @@ const canonical = `${DOMAIN}/compare/clean-bulking-vs-dirty-bulking`;
 				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
 					Should you control your surplus to minimize fat accumulation, or eat with unconstrained calories to push maximum muscle hypertrophy? Side-by-side strategy details.
 				</p>
+				<AuthorAttribution role="Hypertrophy sports science review" references="Garthe et al. 2013, Aragon et al. 2017" />
 			</div>
 
 			<!-- Core comparison structure -->
@@ -80,6 +82,22 @@ const canonical = `${DOMAIN}/compare/clean-bulking-vs-dirty-bulking`;
 							Estimate your maximum genetic muscular potential to plan your lean bulking targets.
 						</p>
 						<a href="/tools/natural-muscle-potential" class="button-primary w-full text-center text-xs mt-3 block">Muscle Potential</a>
+					</div>
+					
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-accent mb-2">Related Tools</h3>
+						<div class="space-y-2 text-[11px] font-semibold">
+							<a href="/tools/cut-or-bulk" class="block text-foreground hover:text-accent transition-colors">Cut or Bulk Selector ➔</a>
+							<a href="/calculators/muscle-gain-calculator" class="block text-foreground hover:text-accent transition-colors mt-2">Muscle Gain Predictor ➔</a>
+						</div>
+					</div>
+
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Other Comparisons</h3>
+						<div class="mt-3 space-y-2 text-xs">
+							<a href="/compare/cardio-vs-weights-for-loss" class="block text-accent hover:underline font-medium">Cardio vs. Weights</a>
+							<a href="/compare/lean-bulk-vs-aggressive-bulk" class="block text-accent hover:underline font-medium">Lean Bulk vs. Aggressive Bulk</a>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -154,5 +154,110 @@ export const glossaryTerms: GlossaryTerm[] = [
 		term: 'Subcutaneous Fat',
 		definition: 'Adipose tissue stored directly beneath the skin layer, serving primarily as thermal insulation and passive energy storage.',
 		category: 'Metrics'
+	},
+	{
+		term: 'Myofibrillar Hypertrophy',
+		definition: 'The growth of muscle fibers driven by an increase in contractile protein density (actin and myosin), leading to improvements in physical strength.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Sarcoplasmic Hypertrophy',
+		definition: 'An increase in the volume of non-contractile fluid (sarcoplasm) in muscle cells, contributing to muscle size and glycogen storage capability without direct strength gains.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Caloric Density',
+		definition: 'The concentration of energy (calories) contained within a given weight or volume of food. Whole, fiber-rich foods typically have lower caloric density.',
+		category: 'Nutrition'
+	},
+	{
+		term: 'Micronutrients',
+		definition: 'Essential dietary elements needed by the body in small quantities (vitamins and minerals) to orchestrate vital physiological and cellular functions.',
+		category: 'Nutrition'
+	},
+	{
+		term: 'Macronutrients',
+		definition: 'Nutrients required by the body in large daily quantities (proteins, fats, and carbohydrates) to provide structure, fuel, and hormonal regulation.',
+		category: 'Nutrition'
+	},
+	{
+		term: 'Essential Amino Acids (EAAs)',
+		definition: 'The nine amino acids that the human body cannot synthesize internally, meaning they must be obtained through dietary sources to support muscle protein synthesis.',
+		category: 'Nutrition'
+	},
+	{
+		term: 'Branched-Chain Amino Acids (BCAAs)',
+		definition: 'Three specific essential amino acids (leucine, isoleucine, and valine) that are metabolized directly inside skeletal muscle rather than the liver.',
+		category: 'Nutrition'
+	},
+	{
+		term: 'Thermic Effect of Activity (TEA)',
+		definition: 'The energy expended during structured physical exercise (running, lifting, cycling). Usually constitutes 5-15% of daily energy expenditure.',
+		category: 'Metabolism'
+	},
+	{
+		term: 'Resting Metabolic Rate (RMR)',
+		definition: 'The number of calories burned by the body at rest in a comfortable environment, slightly less restrictive in testing parameters than BMR.',
+		category: 'Metabolism'
+	},
+	{
+		term: 'Adaptive Thermogenesis',
+		definition: 'The metabolic slowdown that occurs when the body reduces resting energy expenditure in response to prolonged caloric restriction or starvation.',
+		category: 'Metabolism'
+	},
+	{
+		term: 'Lipolysis',
+		definition: 'The biochemical breakdown of stored lipids (triacylglycerols) inside fat cells into free fatty acids and glycerol, allowing them to enter the bloodstream for energy.',
+		category: 'Metabolism'
+	},
+	{
+		term: 'Adipocyte',
+		definition: 'A specialized biological cell designed primarily for the storage of fat, making up the majority of adipose tissue.',
+		category: 'Metrics'
+	},
+	{
+		term: 'Bioelectrical Impedance Analysis (BIA)',
+		definition: 'A method of estimating body composition by passing a weak electrical current through the body and measuring electrical resistance.',
+		category: 'Metrics'
+	},
+	{
+		term: 'Dual-Energy X-Ray Absorptiometry (DEXA)',
+		definition: 'A three-compartment clinical imaging method that measures bone mineral density, fat tissue mass, and lean muscle tissue mass with high accuracy.',
+		category: 'Metrics'
+	},
+	{
+		term: 'Skinfold Caliper Method',
+		definition: 'A body composition assessment technique that measures subcutaneous fat layer thickness at specific anatomical locations using mechanical calipers.',
+		category: 'Metrics'
+	},
+	{
+		term: 'Volume (Training)',
+		definition: 'The total amount of work performed during a training session, typically calculated as Sets × Repetitions × Weight Lifted.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Intensity (Training)',
+		definition: 'The level of effort or load exerted during exercise, often expressed as a percentage of a person\'s One-Repetition Maximum (1RM) or RPE.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Frequency (Training)',
+		definition: 'The number of training sessions performed per week, or the number of times a specific muscle group is trained within a weekly cycle.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Supercompensation',
+		definition: 'The post-training period during which the trained function or parameter has a higher performance capacity than it did prior to the training session.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Detraining',
+		definition: 'The partial or complete loss of training-induced anatomical, physiological, and performance adaptations due to an extended break or reduction in training stimulus.',
+		category: 'Hypertrophy'
+	},
+	{
+		term: 'Leptin',
+		definition: 'A hormone produced by adipose tissue that acts on receptors in the hypothalamus to regulate energy balance and suppress appetite.',
+		category: 'Metabolism'
 	}
 ];

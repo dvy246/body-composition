@@ -14,13 +14,30 @@ const {
 } = Astro.props;
 ---
 
-<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4">
-	<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent shrink-0 shadow-sm" aria-hidden="true">
+<div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground border-t border-border pt-4 select-none">
+	<div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent shrink-0 shadow-sm animate-pulse" aria-hidden="true">
 		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
 	</div>
 	<div>
-		<p><span class="font-semibold text-foreground hover:text-accent transition-colors"><a href="/about">D. Yadav, CSCS</a></span> · {role}</p>
-		<p class="mt-0.5">Published {published} · Last reviewed {reviewed}{references && ` · References: ${references}`}</p>
+		<p>
+			<span class="font-bold text-foreground">By <a href="/about" class="hover:text-accent underline transition-colors">BodyCompOS Editorial Board</a></span>
+			<span class="mx-1.5 text-muted-foreground/40">·</span>
+			<span class="text-muted-foreground">{role}</span>
+		</p>
+		<p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
+			<span>Published {published}</span>
+			<span class="text-muted-foreground/30">•</span>
+			<span class="inline-flex items-center gap-1 font-bold text-success bg-success/10 border border-success/20 px-2 py-0.5 rounded-full text-[10px]">
+				<span class="w-1.5 h-1.5 rounded-full bg-success animate-ping"></span>
+				Last Updated: {reviewed}
+			</span>
+			{references && (
+				<>
+					<span class="text-muted-foreground/30">•</span>
+					<span class="text-muted-foreground truncate max-w-xs sm:max-w-md">Refs: {references}</span>
+				</>
+			)}
+		</p>
 	</div>
 </div>
 

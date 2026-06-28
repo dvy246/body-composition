@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
 
 const title = "Cardio vs Weights for Fat Loss - Training Breakdown | BodyCompOS";
 const description = "Compare weights (resistance training) vs cardio for body composition fat loss and muscle retention.";
@@ -28,6 +29,7 @@ const canonical = `${DOMAIN}/compare/cardio-vs-weights-for-loss`;
 				<p class="text-sm text-muted-foreground mt-3 leading-relaxed">
 					Which training type burns more fat and preserves lean body mass? We analyze the metabolic differences between aerobic cardiovascular work and heavy resistance lifting.
 				</p>
+				<AuthorAttribution role="Clinical training modality review" references="ACSM guidelines, Helms et al. 2014" />
 			</div>
 
 			<!-- Core comparison structure -->
@@ -80,6 +82,22 @@ const canonical = `${DOMAIN}/compare/cardio-vs-weights-for-loss`;
 							Protect muscle tissue further by estimating your daily protein target ranges.
 						</p>
 						<a href="/calculators/protein-calculator" class="button-primary w-full text-center text-xs mt-3 block">Protein Target</a>
+					</div>
+					
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-accent mb-2">Related Tools</h3>
+						<div class="space-y-2 text-[11px] font-semibold">
+							<a href="/tools/cut-or-bulk" class="block text-foreground hover:text-accent transition-colors">Cut or Bulk Selector ➔</a>
+							<a href="/tools/plateau-analyzer" class="block text-foreground hover:text-accent transition-colors mt-2">Weekly Plateau Analyzer ➔</a>
+						</div>
+					</div>
+
+					<div class="surface rounded-2xl p-5 border border-border">
+						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Other Comparisons</h3>
+						<div class="mt-3 space-y-2 text-xs">
+							<a href="/compare/clean-bulking-vs-dirty-bulking" class="block text-accent hover:underline font-medium">Clean vs. Dirty Bulking</a>
+							<a href="/compare/lean-bulk-vs-aggressive-bulk" class="block text-accent hover:underline font-medium">Lean Bulk vs. Aggressive Bulk</a>
+						</div>
 					</div>
 				</div>
 			</div>

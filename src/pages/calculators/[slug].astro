@@ -56,7 +56,7 @@ const relatedCalcs = calculator.related
 <Layout
 	title={calculator.seoTitle || `${calculator.title} | BodyCompOS`}
 	description={calculator.metaDescription || calculator.description}
-	canonical={`${DOMAIN}/calculators/${calculator.slug}`}
+	canonical={calculator.canonicalUrl || `${DOMAIN}/calculators/${calculator.slug}`}
 	schema={[webAppSchema, ...(faqSchema ? [faqSchema] : [])]}
 >
 	<section class="site-container py-10">
@@ -89,7 +89,7 @@ const relatedCalcs = calculator.related
 					<p class="text-xs text-muted-foreground mt-1 font-sans">Science & physiological analysis for strategy selection</p>
 				</div>
 				<div class="text-left sm:text-right shrink-0 font-sans">
-					<p class="text-xs font-semibold text-foreground">Reviewed by D. Yadav, CSCS</p>
+					<p class="text-xs font-semibold text-foreground">Reviewed by BodyCompOS Review Board</p>
 					<p class="text-[10px] text-muted-foreground mt-0.5">Last updated: June 27, 2026 · BodyCompOS Editorial Board</p>
 				</div>
 			</div>
@@ -193,23 +193,78 @@ const relatedCalcs = calculator.related
 				{ title: 'Body Composition Strategy Guide', url: '/body-composition-strategy-guide', desc: 'The comprehensive scientific strategy guide to body composition optimization.' }
 			];
 
+			const toolMap: Record<string, { title: string; url: string; desc: string }[]> = {
+				'tdee-calculator': [
+					{ title: 'Weekly Plateau Analyzer', url: '/tools/plateau-analyzer', desc: 'Identify metabolic adaptations and stalled progress.' },
+					{ title: 'Phase Transition Simulator', url: '/tools/phase-transition', desc: 'Model calorie deficits and surpluses over multiple cycles.' }
+				],
+				'bmr-calculator': [
+					{ title: 'Weekly Plateau Analyzer', url: '/tools/plateau-analyzer', desc: 'Identify metabolic adaptations and stalled progress.' }
+				],
+				'calorie-calculator': [
+					{ title: 'Weekly Plateau Analyzer', url: '/tools/plateau-analyzer', desc: 'Identify metabolic adaptations and stalled progress.' },
+					{ title: 'Phase Transition Simulator', url: '/tools/phase-transition', desc: 'Model calorie deficits and surpluses over multiple cycles.' }
+				],
+				'body-fat-calculator': [
+					{ title: 'Cut or Bulk Strategy Selector', url: '/tools/cut-or-bulk', desc: 'Determine your optimal starting phase based on body statistics.' }
+				],
+				'body-composition-calculator': [
+					{ title: 'Cut or Bulk Strategy Selector', url: '/tools/cut-or-bulk', desc: 'Determine your optimal starting phase based on body statistics.' },
+					{ title: 'Phase Transition Simulator', url: '/tools/phase-transition', desc: 'Model calorie deficits and surpluses over multiple cycles.' }
+				],
+				'ffmi-calculator': [
+					{ title: 'Natural Muscle Potential Calculator', url: '/tools/natural-muscle-potential', desc: 'Estimate your biological lean mass potential bounds.' }
+				],
+				'ideal-weight-calculator': [
+					{ title: 'Natural Muscle Potential Calculator', url: '/tools/natural-muscle-potential', desc: 'Estimate your biological lean mass potential bounds.' }
+				],
+				'bmi-calculator': [
+					{ title: 'Cut or Bulk Strategy Selector', url: '/tools/cut-or-bulk', desc: 'Determine your optimal starting phase based on body statistics.' }
+				]
+			};
+
+			const tools = toolMap[calculator.slug] || [
+				{ title: 'Cut or Bulk Strategy Selector', url: '/tools/cut-or-bulk', desc: 'Determine your optimal starting phase based on body statistics.' }
+			];
+
 			return (
-				<div class="mt-8 border-t border-border/40 pt-8">
-					<h3 class="text-lg font-bold text-foreground mb-4">Related Strategy Guides</h3>
-					<div class="grid gap-3 sm:grid-cols-2">
-						{guides.map(guide => (
-							<a class="app-card block group border border-dashed hover:border-solid transition-all" href={guide.url}>
-								<div class="flex justify-between items-center">
-									<h4 class="text-sm font-bold text-foreground group-hover:text-accent transition-colors">
-										{guide.title}
-									</h4>
-									<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-								</div>
-								<p class="mt-2 text-xs text-muted-foreground leading-relaxed">
-									{guide.desc}
-								</p>
-							</a>
-						))}
+				<div class="mt-8 border-t border-border/40 pt-8 space-y-8">
+					<div>
+						<h3 class="text-base font-bold text-foreground mb-4 uppercase tracking-wider text-accent">Related Strategy Guides</h3>
+						<div class="grid gap-3 sm:grid-cols-2">
+							{guides.map(guide => (
+								<a class="app-card block group border border-dashed hover:border-solid transition-all" href={guide.url}>
+									<div class="flex justify-between items-center">
+										<h4 class="text-xs font-bold text-foreground group-hover:text-accent transition-colors">
+											{guide.title}
+										</h4>
+										<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+									</div>
+									<p class="mt-2 text-xs text-muted-foreground leading-relaxed">
+										{guide.desc}
+									</p>
+								</a>
+							))}
+						</div>
+					</div>
+
+					<div>
+						<h3 class="text-base font-bold text-foreground mb-4 uppercase tracking-wider text-accent">Related Planning Tools</h3>
+						<div class="grid gap-3 sm:grid-cols-2">
+							{tools.map(tool => (
+								<a class="app-card block group border border-dashed hover:border-solid transition-all animate-fade-in" href={tool.url}>
+									<div class="flex justify-between items-center">
+										<h4 class="text-xs font-bold text-foreground group-hover:text-accent transition-colors">
+											{tool.title}
+										</h4>
+										<svg class="text-muted-foreground group-hover:text-accent transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+									</div>
+									<p class="mt-2 text-xs text-muted-foreground leading-relaxed">
+										{tool.desc}
+									</p>
+								</a>
+							))}
+						</div>
 					</div>
 				</div>
 			);

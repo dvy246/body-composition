@@ -4,6 +4,27 @@ import { DOMAIN, articleSchema } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
 import Author from '../../components/Author.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+
+const tocItems = [
+	{ href: '#why-body-fat-matters', label: 'Why Body Fat Matters', shortLabel: 'Why BF Matters' },
+	{ href: '#body-fat-reference-ranges', label: 'BF Reference Ranges', shortLabel: 'BF Reference Ranges' },
+	{ href: '#navy-method', label: 'Navy Circumference Method', shortLabel: 'Navy Method' },
+	{ href: '#method-accuracy', label: 'Method Accuracy Comparison', shortLabel: 'Accuracy Comparison' },
+	{ href: '#skinfold-calipers', label: 'Skinfold Calipers Guide', shortLabel: 'Calipers Guide' },
+	{ href: '#visual-estimation', label: 'Visual Comparison', shortLabel: 'Visual Comparison' },
+	{ href: '#bia-pros-cons', label: 'BIA Pros & Cons', shortLabel: 'BIA Pros & Cons' },
+	{ href: '#health-risk', label: 'Body Fat & Health Risk', shortLabel: 'BF & Health Risk' },
+	{ href: '#faq', label: 'Frequently Asked Questions', shortLabel: 'FAQ' },
+	{ href: '#next-steps', label: 'Next Steps' }
+];
+
+const toolLink = {
+	href: '/calculators/body-fat-calculator',
+	label: 'Estimate Fat',
+	desc: 'Calculate your body fat percentage instantly using Navy measurements.',
+	buttonText: 'Open Calculator'
+};
 
 const title = "Body Fat Percentage Guide - Navy Method & Visual Scales | BodyCompOS";
 const description = "Learn how to measure and track body fat percentage using the US Navy Circumference Method, calipers, DEXA, and visual comparison charts. Includes reference ranges for men and women.";
@@ -76,54 +97,9 @@ const schema = [
 			</p>
 		</div>
 
-		<!-- Mobile TOC Accordion (hidden on desktop) -->
-		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
-			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer bg-muted/10">
-				<span>On This Page</span>
-				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-			</summary>
-			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
-				<a href="#why-body-fat-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Body Fat Matters</a>
-				<a href="#body-fat-reference-ranges" class="block text-muted-foreground hover:text-accent transition-colors">2. BF Reference Ranges</a>
-				<a href="#navy-method" class="block text-muted-foreground hover:text-accent transition-colors">3. Navy Circumference Method</a>
-				<a href="#method-accuracy" class="block text-muted-foreground hover:text-accent transition-colors">4. Method Accuracy Comparison</a>
-				<a href="#skinfold-calipers" class="block text-muted-foreground hover:text-accent transition-colors">5. Skinfold Calipers Guide</a>
-				<a href="#visual-estimation" class="block text-muted-foreground hover:text-accent transition-colors">6. Visual Comparison</a>
-				<a href="#bia-pros-cons" class="block text-muted-foreground hover:text-accent transition-colors">7. BIA Pros & Cons</a>
-				<a href="#health-risk" class="block text-muted-foreground hover:text-accent transition-colors">8. Body Fat & Health Risk</a>
-				<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
-				<a href="#next-steps" class="block text-muted-foreground hover:text-accent transition-colors">10. Next Steps</a>
-			</nav>
-		</details>
-
 		<!-- Main editorial body with sticky left column -->
 		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
-			<!-- Left column: Sticky TOC (desktop only) -->
-			<div class="hidden lg:block">
-				<div class="sticky top-24 space-y-6">
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-3 border-b border-border/40 pb-2">Outline</h3>
-						<nav class="space-y-2 text-xs font-medium" id="sticky-outline-nav">
-							<a href="#why-body-fat-matters" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none active-toc-link">1. Why BF Matters</a>
-							<a href="#body-fat-reference-ranges" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">2. BF Reference Ranges</a>
-							<a href="#navy-method" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">3. Navy Method</a>
-							<a href="#method-accuracy" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">4. Accuracy Comparison</a>
-							<a href="#skinfold-calipers" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">5. Calipers Guide</a>
-							<a href="#visual-estimation" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">6. Visual Comparison</a>
-							<a href="#bia-pros-cons" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">7. BIA Pros & Cons</a>
-							<a href="#health-risk" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">8. BF & Health Risk</a>
-							<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors py-0.5 border-l-2 border-transparent pl-2.5 outline-none">9. FAQ</a>
-							<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border/40 pl-2.5">10. Next Steps →</a>
-						</nav>
-					</div>
-
-					<div class="surface border border-border p-5 rounded-2xl">
-						<h3 class="font-bold text-xs uppercase tracking-wider text-foreground mb-2">Estimate Fat</h3>
-						<p class="text-[10px] text-muted-foreground leading-relaxed">Calculate your body fat percentage instantly using Navy measurements.</p>
-						<a href="/calculators/body-fat-calculator" class="button-primary w-full text-center text-xs mt-3 block">Open Calculator</a>
-					</div>
-				</div>
-			</div>
+			<TableOfContents items={tocItems} toolLink={toolLink} />
 
 			<!-- Right column: Main Editorial content -->
 			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">
