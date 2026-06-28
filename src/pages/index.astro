@@ -23,14 +23,66 @@ const webAppSchema = {
 };
 
 const faqEntries = [
-	['What is a calorie deficit?', 'A calorie deficit occurs when you consume fewer calories than your body burns to sustain life and physical activity. When this energy imbalance happens, your body is forced to mobilize energy from stored tissues, primarily body fat and glycogen, to cover the difference, resulting in weight loss.'],
-	['What is TDEE?', 'TDEE stands for Total Daily Energy Expenditure. It represents the total number of calories your body burns in a 24-hour period, calculated as the sum of your Basal Metabolic Rate (BMR), Thermic Effect of Activity (TEA), Non-Exercise Activity Thermogenesis (NEAT), and Thermic Effect of Food (TEF).'],
-	['How to calculate body fat percentage?', 'For males, use the Navy formula: 86.010 * log10(waist - neck) - 70.041 * log10(height) + 36.76. For females, use: 163.205 * log10(waist + hip - neck) - 97.684 * log10(height) - 78.387 (measurements in inches).'],
-	['What is body recomposition?', 'Body recomposition is the process of simultaneously building muscle mass and losing body fat. Unlike traditional bulk-and-cut cycles, recomposition aims to exchange fat for muscle over time while maintaining relatively stable scale weight.'],
-	['Is BMI accurate?', 'BMI is a reliable screening tool for general population statistics but inaccurate for individuals. It fails to distinguish between muscle mass and fat tissue, often classifying highly muscular athletes as "overweight" or "obese" despite low body fat.'],
-	['How much protein do I need a day?', 'For active individuals, scientific guidelines recommend between 1.6 and 2.2 grams of protein per kilogram of body weight (0.73 to 1.0 gram per pound) daily to promote muscle repair and preserve lean tissue.'],
-	['Is Pilates good for weight loss?', 'Yes, Pilates is a valuable addition to a weight loss strategy. While Pilates burns fewer calories than high-intensity cardiovascular training, it builds core stability, deep abdominal strength, and active lean tissue. Combining Pilates with a calorie deficit and cardiovascular exercise yields high-quality body composition improvements.'],
-	['Does masturbation cause weight loss?', 'No, masturbation does not directly cause weight loss. The energy cost of masturbation is extremely low — approximately 3 to 10 calories per session, which is metabolically insignificant. Weight loss is driven entirely by achieving a sustained calorie deficit through nutrition and daily physical activity.']
+	[
+		'What is a calorie deficit and how do you calculate it?',
+		'A calorie deficit (sometimes searched as calorie defecit) occurs when you consume fewer calories than your body burns to sustain life and physical activity. To calculate a calorie deficit, you first determine your Total Daily Energy Expenditure (TDEE). Eating below this maintenance level forces your body to burn stored body fat for energy. You can use a calorie deficit calculator to establish a safe deficit (typically 300–500 calories below maintenance) for sustainable weight loss.'
+	],
+	[
+		'Does masturbation cause weight loss?',
+		'No, masturbation does not directly cause weight loss. The energy cost of masturbation is extremely low—only about 3 to 10 calories per session, which is metabolically insignificant. Weight loss is driven entirely by achieving a sustained calorie deficit through nutrition and daily physical activity.'
+	],
+	[
+		'Is Pilates good for weight loss?',
+		'Yes, Pilates is excellent for fat loss and body composition, though it works differently than high-intensity cardio. While Pilates burns fewer calories during the session, it builds core stability, deep abdominal strength, and active lean tissue. Combining Pilates with a calorie deficit and strength training creates high-quality body composition improvements.'
+	],
+	[
+		'How to calculate FFMI (Fat-Free Mass Index)?',
+		'To calculate FFMI, you need your height, weight, and body fat percentage. First, find your Lean Body Mass (LBM) in kilograms: LBM = Weight * (1 - (Body Fat % / 100)). Then calculate FFMI: FFMI = LBM / (Height in meters)^2. For individuals taller than 1.8m, normalize the score using the Kouri equation: Normalized FFMI = FFMI + 6.1 * (1.8 - Height in meters).'
+	],
+	[
+		'How much protein do I need a day to build muscle?',
+		'If you want to build muscle, scientific consensus recommends eating 1.6 to 2.2 grams of protein per kilogram of body weight (0.73 to 1.0 gram per pound) daily. How much protein you need a day depends on your activity level and body composition. For an 80kg individual, this equates to roughly 130 to 176 grams of protein per day. Eating enough protein is critical to support muscle protein synthesis and prevent muscle loss during a calorie deficit.'
+	],
+	[
+		'What is protein and what does it do?',
+		'Protein is one of the three primary macronutrients, made up of amino acids that serve as the building blocks of human tissue. What protein does is construct, repair, and maintain skeletal muscle, organs, skin, and hormones. It also has a high thermic effect (TEF) and promotes satiety, making it the most important macronutrient for body recomposition.'
+	],
+	[
+		'How much protein is in an egg?',
+		'There are approximately 6 to 7 grams of protein in one large whole egg (approx. 50g). The protein is split between the egg white (albumen), which contains pure protein, and the yolk, which contains protein along with essential healthy fats, vitamins, and minerals.'
+	],
+	[
+		'What is TDEE and how do I calculate it?',
+		'TDEE stands for Total Daily Energy Expenditure, which represents the total number of calories your body burns in a 24-hour period. To calculate TDEE, you first find your Basal Metabolic Rate (BMR) using Mifflin-St Jeor or Katch-McArdle equations, then multiply it by your Activity Factor (ranging from 1.2 for sedentary to 1.9 for highly active).'
+	],
+	[
+		'How to calculate, measure, and find body fat percentage?',
+		'To calculate body fat percentage, you can use the US Navy Circumference Method, which requires measuring body fat using a tape measure around the waist and neck (and hips for females), along with height. Alternatively, you can measure body fat using skinfold calipers, bioelectrical impedance analysis (BIA) scales, or a DEXA scan. To lose body fat and lower your body fat percentage, you must maintain a consistent calorie deficit while eating adequate protein and doing resistance training.'
+	],
+	[
+		'What is a healthy body fat percentage?',
+		'A healthy body fat percentage varies by sex and age. For men, a healthy range is typically 10% to 20% (with 8-15% considered fit). For women, a healthy range is 20% to 30% (with 15-24% considered fit). Essential fat required for basic physiological function is 3% for men and 12% for women.'
+	],
+	[
+		'What is my ideal weight and how do you calculate it?',
+		'Your ideal weight is not a single number, but rather a healthy range. To calculate ideal body weight, formulas like Devine, Robinson, or Miller equations use height and biological sex. Alternatively, a healthy weight range is often defined as a BMI between 18.5 and 24.9.'
+	],
+	[
+		'How to gain muscle mass fast?',
+		'To gain muscle mass fast and optimize muscle hypertrophy, you must combine progressive overload resistance training (lifting weights 3-5 times a week) with a small calorie surplus (lean bulking at 5-10% above maintenance) and high protein input (1.6-2.2g/kg). Ensure you sleep 7-9 hours per night for recovery.'
+	],
+	[
+		'What is body recomposition and how does it work?',
+		'Body recomposition is the process of simultaneously building muscle and losing fat. It works by using a small calorie deficit or maintenance intake combined with high-protein nutrition and heavy resistance training. This strategy is highly effective for beginners, detrained individuals (including females), and those with higher starting body fat percentages.'
+	],
+	[
+		'What is BMI, how do you calculate it, and is it accurate?',
+		'BMI (Body Mass Index) is calculated by dividing your weight in kilograms by your height in meters squared (BMI = kg / m^2). While it is a quick population-wide screening tool, BMI is not fully accurate for muscular individuals, as it does not distinguish between fat mass and lean muscle tissue.'
+	],
+	[
+		'What are my maintenance calories and how do I find them?',
+		'Your maintenance calories are the daily calories required to maintain your current weight. To find maintenance calories, use a calculator to estimate your TDEE, then consume that number of calories for 2-3 weeks while tracking your weight daily. If your weight remains stable, you have successfully measured your maintenance calories.'
+	]
 ];
 
 const faqSchema = {
@@ -231,6 +283,60 @@ const faqSchema = {
 					<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{calc.description}</p>
 				</a>
 			))}
+		</div>
+	</section>
+
+	<div class="divider-gradient"></div>
+
+	<!-- Pillar Section 4.5: Deep Dive SEO Guide (600+ Words) -->
+	<section class="site-container py-16 max-w-4xl mx-auto space-y-8">
+		<div class="space-y-6">
+			<p class="eyebrow">Comprehensive Guide</p>
+			<h2 class="text-3xl font-black text-foreground sm:text-4xl">The Scientific Guide to Body Composition Analysis & Metabolic Targets</h2>
+			
+			<div class="prose-lite text-sm text-muted-foreground leading-relaxed space-y-6">
+				<p>
+					To achieve your fitness goals, it is crucial to look beyond the scale. While total body weight is a simple number, a deeper <strong>body composition analysis</strong> reveals what that weight is actually made of. By definition, to <strong>define body composition</strong> is to break down your total body weight into two key compartments: <strong>lean mass vs muscle mass</strong> (incorporating bones, water, and organs) and fat mass. To understand <strong>what is body composition</strong> and the <strong>definition of body composition</strong> is to recognize that your physical fitness, metabolic rate, and health risks are dictated by these proportions, not by a single generic scale number.
+				</p>
+				<p>
+					Many people use a commercial <strong>body composition scale</strong> or purchase the <strong>best body composition scale</strong> for home tracking. However, these tools use bioelectrical impedance (BIA) which fluctuates with hydration. For true clinical precision, a DEXA <strong>body composition scan</strong> or <strong>body composition test</strong> offers the gold standard. In the absence of an expensive scan, standard tape measurements evaluated with our US Navy equations serve as a highly reliable, zero-cost alternative. Let's explore how to calculate, interpret, and adjust these markers for your body composition.
+				</p>
+
+				<h3 class="text-xl font-bold text-foreground mt-8">Understanding Your Body Fat Percentage & Lean Mass</h3>
+				<p>
+					Your <strong>body fat percentage</strong> is the proportion of total fat mass relative to your total body weight. You can use our integrated <strong>body fat percentage calculator</strong> to determine your numbers. Once you know your body fat percentage, you can compare it against the standard <strong>body fat percentage chart</strong>. For example, a <strong>healthy body fat percentage for women</strong> is typically 20% to 30%, whereas a <strong>healthy body fat percentage</strong> for men is 10% to 20%. Knowing these limits helps you establish realistic targets instead of aiming for unsustainably low percentages.
+				</p>
+				<p>
+					If you are wondering <strong>how to calculate body fat percentage</strong>, <strong>how to measure body fat percentage</strong>, or <strong>how to find body fat percentage</strong>, the US Navy formula offers a highly validated method. It uses Waist and Neck measurements for men, adding Hip circumference for women, to approximate central adiposity. Knowing <strong>what is a healthy body fat percentage</strong>, <strong>what is my body fat percentage</strong>, and <strong>what is a good body fat percentage</strong> is the first step toward figuring out <strong>how to lower body fat percentage</strong> or <strong>how to lose body fat</strong>. In contrast to fat tissue, your <strong>lean mass</strong> includes everything else (water, organs, and skeletal muscle). By analyzing <strong>what is lean mass</strong> and separating it from body fat, you can track whether weight changes represent true muscle tissue or fluid fluctuations.
+				</p>
+
+				<h3 class="text-xl font-bold text-foreground mt-8">Metabolic Baseline: BMR & TDEE Calculations</h3>
+				<p>
+					Your metabolism is powered by your resting energy expenditure. Your <strong>Basal Metabolic Rate (BMR)</strong> represents the minimum number of calories your body requires to survive at complete rest. To find out <strong>what is BMR</strong>, <strong>BMR meaning</strong>, <strong>what is my BMR</strong>, or <strong>what does BMR stand for</strong> is to identify the metabolic engine of your body. Our integrated <strong>BMR calculator</strong> uses the Mifflin-St Jeor equation by default and switches to the Katch-McArdle formula when body fat is provided. This is crucial because **what is BMR in body composition** is directly linked to your active tissue mass: muscle burns more energy than fat even at rest.
+				</p>
+				<p>
+					To calculate your total daily intake, you must understand your <strong>Total Daily Energy Expenditure (TDEE)</strong>. To answer <strong>what is TDEE</strong> or <strong>what is my TDEE</strong> is to evaluate your BMR multiplied by your physical activity factor. If you want to know <strong>how to calculate BMR</strong>, you can use our <strong>bmr calculator for women</strong> or <strong>bmr calculator to lose weight</strong>. Once you calculate TDEE, you establish your **maintenance calories**—the daily calorie intake needed to keep your weight stable. Knowing <strong>what are my maintenance calories</strong>, <strong>how to calculate maintenance calories</strong>, and <strong>how to find maintenance calories</strong> helps you plan your nutritional phases with mathematical accuracy.
+				</p>
+
+				<h3 class="text-xl font-bold text-foreground mt-8">Calorie Deficits & Protein Intake for Recomposition</h3>
+				<p>
+					To lose body fat, you must establish a <strong>calorie deficit</strong>. If you are asking <strong>what is a calorie deficit</strong>, <strong>what is calorie deficit</strong>, or <strong>what is a calorie defecit</strong>, it means consuming fewer daily calories than your TDEE. Eating in a calorie deficit forces your body to burn its own fat stores for energy. To find your optimal deficit size, you can use our **calorie deficit calculator** (or **calorie defecit calculator** / **calorie defecit calc**). A safe target is a moderate 15% to 20% deficit, which supports fat loss without compromising muscle tissue. For most adults, a **1000 calorie deficit** is too extreme, and a safer range is 300 to 500 calories below maintenance.
+				</p>
+				<p>
+					To protect your muscles while in a deficit, you must eat enough protein. A <strong>protein calculator</strong> is essential to divide your calories into proper macronutrients. If you use a <strong>protein calculator for muscle gain</strong>, <strong>protein calculator for muscle growth</strong>, or a <strong>protein calculator to build muscle</strong>, you will find that active individuals require 1.6 to 2.2 grams of protein per kilogram of body weight. For women, a <strong>protein calculator for weight loss female</strong> ensures that calorie restrictions do not lead to muscle wasting. You can easily hit these targets by planning **calorie defecit meals** and high-protein foods; for reference, knowing **how much protein in an egg** (about 6g) helps you build a precise **calorie defecit meal plan** to hit your daily protein targets.
+				</p>
+				<p>
+					This combination of a moderate calorie deficit and high protein intake is the foundation of **body recomposition**. If you want to know <strong>what is body recomposition</strong>, <strong>how does body recomposition work</strong>, or <strong>how to body recomposition</strong>, it is the process of building muscle while simultaneously losing fat. Many wonder: **can you build muscle in a calorie deficit**? The answer is yes, particularly for beginners or those with higher starting body fat percentages. A <strong>body recomposition calculator</strong> helps set target calorie ranges to ensure you feed muscle growth while promoting fat mobilization.
+				</p>
+
+				<h3 class="text-xl font-bold text-foreground mt-8">Comparing BMI vs. Ideal Body Weight</h3>
+				<p>
+					Finally, we must distinguish between Body Mass Index (BMI) and ideal weight. To **calculate BMI** or find <strong>what is my BMI</strong>, you use the formula: `BMI = Weight (kg) / Height (m)^2`. Once computed, you compare it to a standard **bmi chart** or **bmi scale** to check if you fall into the **normal bmi** or **healthy bmi** range. While BMI is a quick population screening tool, it lacks context for muscular builds: a bodybuilder can have an "overweight" BMI despite single-digit body fat.
+				</p>
+				<p>
+					To get a more personalized metric, use an <strong>ideal weight calculator</strong>. This tool estimates your **ideal weight** range based on your height, sex, and skeletal frame, helping you establish a healthy target. Whether you are looking for the **ideal weight for age and height**, **ideal weight for women**, or specific ranges like **ideal weight for 5'4 female** or **ideal weight for 5'2 female in kg**, our platform provides clear, evidence-based targets.
+				</p>
+			</div>
 		</div>
 	</section>
 

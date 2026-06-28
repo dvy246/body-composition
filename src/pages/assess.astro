@@ -50,11 +50,11 @@ const assessSchema = {
 
 				<!-- Wizard Progress Stepper -->
 				<div class="mb-8 mt-6">
-					<div class="flex items-center justify-between relative max-w-md mx-auto" style="position: relative; max-width: 28rem; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: space-between;">
+					<div class="flex items-center justify-between relative max-w-md mx-auto">
 						<!-- Progress Line Wrapper -->
-						<div class="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-0.5 -z-10 pointer-events-none" style="position: absolute; left: 1rem; right: 1rem; top: 50%; transform: translateY(-50%); height: 2px; z-index: -10; pointer-events: none;">
-							<div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: var(--border);"></div>
-							<div id="step-progress-line" style="position: absolute; left: 0; top: 0; bottom: 0; background-color: var(--accent); transition: all 0.3s ease; width: 0%;"></div>
+						<div class="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-0.5 -z-10 pointer-events-none">
+							<div class="absolute inset-0 bg-border"></div>
+							<div id="step-progress-line" class="absolute left-0 top-0 bottom-0 bg-accent transition-all duration-300" style="width: 0%;"></div>
 						</div>
 						
 						<!-- Step 1 -->
@@ -105,7 +105,28 @@ const assessSchema = {
 						</div>
 						<div class="field">
 							<label for="height">Height <span data-strategy-height-unit>(cm)</span></label>
-							<input id="height" name="height" type="number" min="120" max="230" placeholder="e.g. 175" required />
+							<div id="height-metric-container">
+								<input id="height" name="height" type="number" min="120" max="230" placeholder="e.g. 175" required />
+							</div>
+							<div id="height-imperial-container" class="hidden flex gap-2">
+								<div class="flex-1 select-wrap">
+									<select id="height-ft" class="w-full">
+										<option value="3">3 ft</option>
+										<option value="4">4 ft</option>
+										<option value="5" selected>5 ft</option>
+										<option value="6">6 ft</option>
+										<option value="7">7 ft</option>
+										<option value="8">8 ft</option>
+									</select>
+								</div>
+								<div class="flex-1 select-wrap">
+									<select id="height-in" class="w-full">
+										{Array.from({ length: 12 }, (_, i) => (
+											<option value={i} selected={i === 9}>{i} in</option>
+										))}
+									</select>
+								</div>
+							</div>
 						</div>
 						<div class="field">
 							<label for="weight">Weight <span data-strategy-weight-unit>(kg)</span></label>
@@ -443,8 +464,54 @@ const assessSchema = {
 	let strategyUnit = typeof localStorage !== 'undefined' ? localStorage.getItem('bodycompos.preferredUnit') || 'metric' : 'metric';
 	let currentStep = 1;
 
+	function syncHeightFromFtIn() {
+		const heightFtSelect = document.getElementById('height-ft') as HTMLSelectElement | null;
+		const heightInSelect = document.getElementById('height-in') as HTMLSelectElement | null;
+		const heightInput = document.getElementById('height') as HTMLInputElement | null;
+		if (heightFtSelect && heightInSelect && heightInput) {
+			const totalInches = parseInt(heightFtSelect.value) * 12 + parseInt(heightInSelect.value);
+			heightInput.value = String(totalInches);
+			clearError('height');
+		}
+	}
+
+	function syncFtInFromHeight(inchesValue: number) {
+		const heightFtSelect = document.getElementById('height-ft') as HTMLSelectElement | null;
+		const heightInSelect = document.getElementById('height-in') as HTMLSelectElement | null;
+		if (heightFtSelect && heightInSelect && inchesValue > 0) {
+			const ft = Math.floor(inchesValue / 12);
+			const inches = Math.round(inchesValue % 12);
+			
+			if (ft >= 3 && ft <= 8) {
+				heightFtSelect.value = String(ft);
+			} else if (ft < 3) {
+				heightFtSelect.value = '3';
+			} else {
+				heightFtSelect.value = '8';
+			}
+			
+			if (inches >= 0 && inches < 12) {
+				heightInSelect.value = String(inches);
+			} else {
+				heightInSelect.value = '0';
+			}
+		}
+	}
+
+	// Attach change events to feet/inches selects
+	(function() {
+		const heightFtSelect = document.getElementById('height-ft');
+		const heightInSelect = document.getElementById('height-in');
+		if (heightFtSelect) heightFtSelect.addEventListener('change', syncHeightFromFtIn);
+		if (heightInSelect) heightInSelect.addEventListener('change', syncHeightFromFtIn);
+	})();
+
 	// Initial imperial conversion if saved unit is imperial
+	const metricContainer = document.getElementById('height-metric-container');
+	const imperialContainer = document.getElementById('height-imperial-container');
 	if (strategyUnit === 'imperial') {
+		if (metricContainer) metricContainer.classList.add('hidden');
+		if (imperialContainer) imperialContainer.classList.remove('hidden');
 		const form = document.querySelector('#strategy-form') as HTMLFormElement | null;
 		const weightSelect = document.getElementById('weight') as HTMLSelectElement | null;
 		if (form && weightSelect) {
@@ -452,6 +519,7 @@ const assessSchema = {
 			form.height.max = '91';
 			form.height.placeholder = 'e.g. 70';
 			form.height.value = '69';
+			syncFtInFromHeight(69);
 			document.querySelectorAll('[data-strategy-unit]').forEach(b => b.setAttribute('aria-pressed', String(b.getAttribute('data-strategy-unit') === strategyUnit)));
 			document.querySelectorAll('[data-strategy-height-unit]').forEach(l => l.textContent = '(in)');
 			document.querySelectorAll('[data-strategy-weight-unit]').forEach(l => l.textContent = '(lb)');
@@ -465,6 +533,9 @@ const assessSchema = {
 			
 			rebuildWeightSelect(weightSelect, 'imperial', 180);
 		}
+	} else {
+		if (metricContainer) metricContainer.classList.remove('hidden');
+		if (imperialContainer) imperialContainer.classList.add('hidden');
 	}
 
 	const form = document.querySelector('#strategy-form') as HTMLFormElement;
@@ -620,9 +691,11 @@ const assessSchema = {
 				const waist = Number(waistInput.value);
 				const waMin = strategyUnit === 'metric' ? 40 : 16;
 				const waMax = strategyUnit === 'metric' ? 220 : 87;
+				let isWaistValid = true;
 				if (!waistInput.value || waist < waMin || waist > waMax) {
 					showError('waist', `Waist must be between ${waMin} and ${waMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
 					isValid = false;
+					isWaistValid = false;
 				} else {
 					clearError('waist');
 				}
@@ -631,24 +704,43 @@ const assessSchema = {
 				const neck = Number(neckInput.value);
 				const nMin = strategyUnit === 'metric' ? 20 : 8;
 				const nMax = strategyUnit === 'metric' ? 80 : 31;
+				let isNeckValid = true;
 				if (!neckInput.value || neck < nMin || neck > nMax) {
 					showError('neck', `Neck must be between ${nMin} and ${nMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
 					isValid = false;
+					isNeckValid = false;
 				} else {
 					clearError('neck');
 				}
 
 				const sex = sexSelect?.value;
+				let isHipValid = true;
+				let hip = 0;
 				if (sex === 'female') {
 					const hipInput = document.getElementById('hip') as HTMLInputElement;
-					const hip = Number(hipInput.value);
+					hip = Number(hipInput.value);
 					const hiMin = strategyUnit === 'metric' ? 40 : 16;
 					const hiMax = strategyUnit === 'metric' ? 220 : 87;
 					if (!hipInput.value || hip < hiMin || hip > hiMax) {
 						showError('hip', `Hip must be between ${hiMin} and ${hiMax} ${strategyUnit === 'metric' ? 'cm' : 'inches'}.`);
 						isValid = false;
+						isHipValid = false;
 					} else {
 						clearError('hip');
+					}
+				}
+
+				if (isWaistValid && isNeckValid) {
+					if (sex === 'male') {
+						if (waist <= neck) {
+							showError('waist', 'Waist circumference must be larger than neck circumference.');
+							isValid = false;
+						}
+					} else if (isHipValid) {
+						if (waist + hip <= neck) {
+							showError('waist', 'Waist + Hip circumference must be larger than neck circumference.');
+							isValid = false;
+						}
 					}
 				}
 			} else {
@@ -717,6 +809,23 @@ const assessSchema = {
 
 			// Rebuild weight select dropdown dynamically
 			rebuildWeightSelect(weightSelect, targetUnit as 'metric' | 'imperial', currentWeightVal);
+
+			// Update height display containers
+			const metricContainer = document.getElementById('height-metric-container');
+			const imperialContainer = document.getElementById('height-imperial-container');
+			const heightInput = document.getElementById('height') as HTMLInputElement | null;
+			if (strategyUnit === 'imperial') {
+				if (metricContainer) metricContainer.classList.add('hidden');
+				if (imperialContainer) imperialContainer.classList.remove('hidden');
+				if (heightInput) {
+					const inches = parseFloat(heightInput.value) || 69;
+					syncFtInFromHeight(inches);
+					heightInput.value = String(inches);
+				}
+			} else {
+				if (metricContainer) metricContainer.classList.remove('hidden');
+				if (imperialContainer) imperialContainer.classList.add('hidden');
+			}
 
 			allFields.forEach(clearError); // clear any active validation checks
 		});

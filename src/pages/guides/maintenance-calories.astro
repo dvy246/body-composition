@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN, articleSchema } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import Author from '../../components/Author.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
 
 const title = "How to Calculate Maintenance Calories - Metabolic Adaptation Guide | BodyCompOS";
@@ -449,33 +450,6 @@ const schema = [
 					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
 						<p><strong>Educational Disclaimer:</strong> This guide is for educational purposes only. Daily caloric expenditures are estimated and can vary based on individual thyroid function, health conditions, and activity. Individuals with a history of metabolic disease, eating disorders, or other clinical concerns should consult a qualified healthcare professional before making significant dietary changes. All calculator outputs are estimates and may not reflect individual outcomes.</p>
 					</div>
-
-					<!-- Author Bio for EEAT -->
-					<div class="border-t border-border pt-6">
-						<Author />
-					</div>
-
-				</div>
-			</div>
-
-			<!-- Sidebar -->
-			<div class="space-y-6">
-				<!-- 1. On This Page (sticky TOC) -->
-				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
-					<nav class="space-y-1.5 text-xs">
-						<a href="#understanding-maintenance" class="block text-muted-foreground hover:text-accent transition-colors">1. Understanding Maintenance</a>
-						<a href="#tdee-components" class="block text-muted-foreground hover:text-accent transition-colors">2. Components of TDEE</a>
-						<a href="#bmr-formulas" class="block text-muted-foreground hover:text-accent transition-colors">3. BMR Formulas</a>
-						<a href="#activity-factor" class="block text-muted-foreground hover:text-accent transition-colors">4. Activity Factor</a>
-						<a href="#verification-protocol" class="block text-muted-foreground hover:text-accent transition-colors">5. Verification Protocol</a>
-						<a href="#metabolic-adaptation" class="block text-muted-foreground hover:text-accent transition-colors">6. Metabolic Adaptation</a>
-						<a href="#reverse-dieting" class="block text-muted-foreground hover:text-accent transition-colors">7. Reverse Dieting</a>
-						<a href="#recalculation" class="block text-muted-foreground hover:text-accent transition-colors">8. Recalculation Rules</a>
-						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
-						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
-					</nav>
-				</div>
 
 					<!-- Author Bio for EEAT -->
 					<div class="border-t border-border pt-6">

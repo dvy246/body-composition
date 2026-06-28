@@ -58,7 +58,7 @@ const steps = [
 						Don't know your fat percentage? Estimate it in easy steps using the most accurate US Navy circumference method and automatically send it to your strategy calculations.
 					</p>
 				</div>
-				<a href="/calculators/body-composition-calculator" class="button-secondary text-center text-xs shrink-0 whitespace-nowrap px-3 py-2">Estimate Fat % ➔</a>
+				<a href="/calculators/body-fat-calculator" class="button-secondary text-center text-xs shrink-0 whitespace-nowrap px-3 py-2">Estimate Fat % ➔</a>
 			</div>
 
 			<!-- Workflow Diagram -->
@@ -181,7 +181,28 @@ const steps = [
 					</div>
 					<div class="field">
 						<label for="sf-height">Height <span data-strategy-height-unit>(cm)</span></label>
-						<input id="sf-height" name="height" type="number" min="120" max="230" step="0.1" placeholder="e.g. 175" required />
+						<div id="sf-height-metric-container">
+							<input id="sf-height" name="height" type="number" min="120" max="230" step="0.1" placeholder="e.g. 175" required />
+						</div>
+						<div id="sf-height-imperial-container" class="hidden flex gap-2">
+							<div class="flex-1 select-wrap">
+								<select id="sf-height-ft" class="w-full">
+									<option value="3">3 ft</option>
+									<option value="4">4 ft</option>
+									<option value="5" selected>5 ft</option>
+									<option value="6">6 ft</option>
+									<option value="7">7 ft</option>
+									<option value="8">8 ft</option>
+								</select>
+							</div>
+							<div class="flex-1 select-wrap">
+								<select id="sf-height-in" class="w-full">
+									{Array.from({ length: 12 }, (_, i) => (
+										<option value={i} selected={i === 9}>{i} in</option>
+									))}
+								</select>
+							</div>
+						</div>
 					</div>
 					<div class="field">
 						<label for="sf-weight">Weight <span data-strategy-weight-unit>(kg)</span></label>
@@ -510,8 +531,54 @@ const steps = [
 	let strategyUnit = typeof localStorage !== 'undefined' ? localStorage.getItem('bodycompos.preferredUnit') || 'metric' : 'metric';
 	autoFillBodyFat();
 
+	function syncHeightFromFtIn() {
+		const heightFtSelect = document.getElementById('sf-height-ft') as HTMLSelectElement | null;
+		const heightInSelect = document.getElementById('sf-height-in') as HTMLSelectElement | null;
+		const heightInput = document.getElementById('sf-height') as HTMLInputElement | null;
+		if (heightFtSelect && heightInSelect && heightInput) {
+			const totalInches = parseInt(heightFtSelect.value) * 12 + parseInt(heightInSelect.value);
+			heightInput.value = String(totalInches);
+			clearError('sf-height');
+		}
+	}
+
+	function syncFtInFromHeight(inchesValue: number) {
+		const heightFtSelect = document.getElementById('sf-height-ft') as HTMLSelectElement | null;
+		const heightInSelect = document.getElementById('sf-height-in') as HTMLSelectElement | null;
+		if (heightFtSelect && heightInSelect && inchesValue > 0) {
+			const ft = Math.floor(inchesValue / 12);
+			const inches = Math.round(inchesValue % 12);
+			
+			if (ft >= 3 && ft <= 8) {
+				heightFtSelect.value = String(ft);
+			} else if (ft < 3) {
+				heightFtSelect.value = '3';
+			} else {
+				heightFtSelect.value = '8';
+			}
+			
+			if (inches >= 0 && inches < 12) {
+				heightInSelect.value = String(inches);
+			} else {
+				heightInSelect.value = '0';
+			}
+		}
+	}
+
+	// Attach change events to feet/inches selects
+	(function() {
+		const heightFtSelect = document.getElementById('sf-height-ft');
+		const heightInSelect = document.getElementById('sf-height-in');
+		if (heightFtSelect) heightFtSelect.addEventListener('change', syncHeightFromFtIn);
+		if (heightInSelect) heightInSelect.addEventListener('change', syncHeightFromFtIn);
+	})();
+
 	// Initialize imperial values on load if saved preference is imperial
+	const metricContainer = document.getElementById('sf-height-metric-container');
+	const imperialContainer = document.getElementById('sf-height-imperial-container');
 	if (strategyUnit === 'imperial') {
+		if (metricContainer) metricContainer.classList.add('hidden');
+		if (imperialContainer) imperialContainer.classList.remove('hidden');
 		const form = document.querySelector('#strategy-form') as HTMLFormElement | null;
 		const weightSelect = document.getElementById('sf-weight') as HTMLSelectElement | null;
 		if (form && weightSelect) {
@@ -519,11 +586,15 @@ const steps = [
 			form.height.max = '91';
 			form.height.placeholder = 'e.g. 70';
 			form.height.value = '69';
+			syncFtInFromHeight(69);
 			document.querySelectorAll('[data-strategy-unit]').forEach(b => b.setAttribute('aria-pressed', String(b.getAttribute('data-strategy-unit') === strategyUnit)));
 			document.querySelectorAll('[data-strategy-height-unit]').forEach(l => l.textContent = '(in)');
 			document.querySelectorAll('[data-strategy-weight-unit]').forEach(l => l.textContent = '(lb)');
 			rebuildWeightSelect(weightSelect, 'imperial', 180);
 		}
+	} else {
+		if (metricContainer) metricContainer.classList.remove('hidden');
+		if (imperialContainer) imperialContainer.classList.add('hidden');
 	}
 
 	// Visual Body Fat Estimator Interactivity
@@ -581,6 +652,23 @@ const steps = [
 
 			// Rebuild the weight select dropdown dynamically
 			rebuildWeightSelect(sfWeightSelect, targetUnit as 'metric' | 'imperial', currentWeightVal);
+
+			// Update height display containers
+			const metricContainer = document.getElementById('sf-height-metric-container');
+			const imperialContainer = document.getElementById('sf-height-imperial-container');
+			const heightInput = document.getElementById('sf-height') as HTMLInputElement | null;
+			if (strategyUnit === 'imperial') {
+				if (metricContainer) metricContainer.classList.add('hidden');
+				if (imperialContainer) imperialContainer.classList.remove('hidden');
+				if (heightInput) {
+					const inches = parseFloat(heightInput.value) || 69;
+					syncFtInFromHeight(inches);
+					heightInput.value = String(inches);
+				}
+			} else {
+				if (metricContainer) metricContainer.classList.remove('hidden');
+				if (imperialContainer) imperialContainer.classList.add('hidden');
+			}
 
 			document.querySelectorAll('[data-strategy-unit]').forEach(b => {
 				b.setAttribute('aria-pressed', String(b.getAttribute('data-strategy-unit') === strategyUnit));

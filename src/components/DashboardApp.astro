@@ -21,15 +21,15 @@
 				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
 				Print Report
 			</button>
-			<button id="export-data-btn" class="button-secondary text-xs py-2 min-h-10">
+			<button id="export-data-btn-header" class="button-secondary text-xs py-2 min-h-10">
 				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
 				Export Data
 			</button>
-			<button id="import-data-btn" class="button-secondary text-xs py-2 min-h-10">
+			<button id="import-data-btn-header" class="button-secondary text-xs py-2 min-h-10">
 				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
 				Import Data
 			</button>
-			<input type="file" id="import-file-input" class="hidden" accept=".json" />
+			<input type="file" id="dashboard-import-file" class="hidden" accept=".json" />
 		</div>
 	</div>
 
@@ -186,19 +186,12 @@
 					</div>
 					<div class="field">
 						<label for="weight">Weight <span data-dashboard-weight-unit>(kg)</span></label>
-						<div class="select-wrap">
-							<select id="weight" required>
-								<option value="0">Select Weight</option>
-								{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
-									<option value={w}>{w}</option>
-								))}
-							</select>
-						</div>
+						<input id="weight" type="number" step="0.1" min="20" max="550" placeholder="e.g. 75.4" required />
 					</div>
 					<div class="field">
 						<label for="bodyFat" class="flex justify-between items-center">
 							<span>Body Fat % (optional)</span>
-							<a href="/calculators/body-composition-calculator" class="text-[10px] text-accent font-bold hover:underline">Estimate it ➔</a>
+							<a href="/calculators/body-fat-calculator" class="text-[10px] text-accent font-bold hover:underline">Estimate it ➔</a>
 						</label>
 						<input id="bodyFat" type="number" step="0.1" min="3" max="60" placeholder="e.g., 18" />
 					</div>
@@ -209,14 +202,7 @@
 					</div>
 					<div class="field sm:col-span-2">
 						<label for="goalWeight">Target Weight <span data-dashboard-weight-unit>(kg)</span></label>
-						<div class="select-wrap">
-							<select id="goalWeight" required>
-								<option value="0">Select Weight</option>
-								{Array.from({ length: 231 }, (_, i) => i + 20).map(w => (
-									<option value={w} selected={w === 75}>{w}</option>
-								))}
-							</select>
-						</div>
+						<input id="goalWeight" type="number" step="0.1" min="20" max="550" placeholder="e.g. 70.0" required />
 					</div>
 					<button class="button-primary sm:col-span-2 mt-2" type="submit">Save Weekly Check-In</button>
 				</form>
@@ -230,13 +216,12 @@
 				</div>
 				
 				<div class="grid gap-3 sm:grid-cols-2 my-6">
-					<button id="export-data-btn" class="button-secondary text-xs justify-center">
+					<button id="export-data-btn-admin" class="button-secondary text-xs justify-center" type="button">
 						Export Logs (JSON)
 					</button>
-					<label class="button-secondary text-xs justify-center cursor-pointer text-center flex items-center">
+					<button id="import-data-btn-admin" class="button-secondary text-xs justify-center" type="button">
 						Import Logs (JSON)
-						<input id="import-data-file" type="file" accept=".json" class="hidden" />
-					</label>
+					</button>
 				</div>
 
 				<div class="border-t border-border/40 pt-4">
@@ -385,7 +370,7 @@
 		sanitizeAssessment,
 		formatWeight as fmtWeight,
 	} from '../lib/engines';
-	import { rebuildWeightSelect } from '../lib/units';
+
 
 	const today = new Date().toISOString().slice(0, 10);
 	const dateInput = document.querySelector('#date') as HTMLInputElement;
@@ -441,14 +426,21 @@
 		const form = document.querySelector('#checkin-form') as HTMLFormElement;
 		if (!form) return;
 		
-		const weightSelect = form.querySelector('#weight') as HTMLSelectElement | null;
-		const goalWeightSelect = form.querySelector('#goalWeight') as HTMLSelectElement | null;
-		const currentWeight = weightSelect ? Number(weightSelect.value) : 0;
-		const currentGoal = goalWeightSelect ? Number(goalWeightSelect.value) : 0;
+		const weightInput = form.querySelector('#weight') as HTMLInputElement | null;
+		const goalWeightInput = form.querySelector('#goalWeight') as HTMLInputElement | null;
 		
-		// Rebuild select options dynamically
-		rebuildWeightSelect(weightSelect, unit, currentWeight);
-		rebuildWeightSelect(goalWeightSelect, unit, currentGoal);
+		if (weightInput && weightInput.value) {
+			const wVal = Number(weightInput.value);
+			weightInput.value = String(round(unit === 'imperial' ? kgToLb(wVal) : lbToKg(wVal), 1));
+			weightInput.min = unit === 'imperial' ? '44' : '20';
+			weightInput.max = unit === 'imperial' ? '550' : '250';
+		}
+		if (goalWeightInput && goalWeightInput.value) {
+			const gVal = Number(goalWeightInput.value);
+			goalWeightInput.value = String(round(unit === 'imperial' ? kgToLb(gVal) : lbToKg(gVal), 1));
+			goalWeightInput.min = unit === 'imperial' ? '44' : '20';
+			goalWeightInput.max = unit === 'imperial' ? '550' : '250';
+		}
 		
 		dashboardUnit = unit;
 		if (typeof localStorage !== 'undefined') {
@@ -466,7 +458,17 @@
 		if (!container) return;
 
 		if (checkins.length < 2) {
-			container.innerHTML = '<div class="grid min-h-60 place-items-center rounded-xl border border-border bg-muted/10 text-sm font-semibold text-muted-foreground">Add at least two check-ins to generate weight projections.</div>';
+			container.innerHTML = `
+				<div class="flex flex-col items-center justify-center p-8 text-center min-h-[240px] rounded-2xl border border-dashed border-border bg-muted/5">
+					<div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-4">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+					</div>
+					<h4 class="font-bold text-sm text-foreground">Awaiting Weight Check-In Logs</h4>
+					<p class="text-xs text-muted-foreground max-w-sm mt-1 leading-relaxed">
+						Please log at least two check-ins in the Check-in Database panel to initialize the dual-line forecasting curves, trend pacing, and completion ETA indicators.
+					</p>
+				</div>
+			`;
 			return;
 		}
 
@@ -494,6 +496,21 @@
 		const actualPoints = pointsStr.slice(0, actualCount);
 		const forecastPoints = pointsStr.slice(actualCount - 1); // overlap last actual point
 
+		// Draw closed polygons for area gradients
+		let actualAreaPoints = '';
+		if (actualPoints.length >= 2) {
+			const firstX = actualPoints[0].split(',')[0];
+			const lastX = actualPoints[actualPoints.length - 1].split(',')[0];
+			actualAreaPoints = `${firstX},140 ${actualPoints.join(' ')} ${lastX},140`;
+		}
+
+		let forecastAreaPoints = '';
+		if (forecastPoints.length >= 2) {
+			const firstX = forecastPoints[0].split(',')[0];
+			const lastX = forecastPoints[forecastPoints.length - 1].split(',')[0];
+			forecastAreaPoints = `${firstX},140 ${forecastPoints.join(' ')} ${lastX},140`;
+		}
+
 		// Render Body Fat Trend points (plotted on secondary scale if available)
 		let bfElements = '';
 		if (bfValues.length >= 2) {
@@ -509,7 +526,12 @@
 			}).filter(Boolean);
 
 			const bfPolylinePoints = bfPoints.map(p => `${p.x},${p.y}`).join(' ');
+			const bfFirstX = bfPoints[0].x;
+			const bfLastX = bfPoints[bfPoints.length - 1].x;
+			const bfAreaPoints = `${bfFirstX},140 ${bfPolylinePoints} ${bfLastX},140`;
+
 			bfElements = `
+				<polygon points="${bfAreaPoints}" fill="url(#bf-chart-grad)" opacity="0.4"></polygon>
 				<polyline points="${bfPolylinePoints}" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-dasharray="2,2" opacity="0.85"></polyline>
 				${bfPoints.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="var(--success)"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
 			`;
@@ -517,10 +539,29 @@
 
 		container.innerHTML = `
 			<svg viewBox="0 0 400 180" role="img" aria-label="Dual-line actual and forecasted weight trend chart" class="h-60 w-full overflow-visible">
+				<defs>
+					<linearGradient id="actual-chart-grad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="var(--accent)" stop-opacity="0.15" />
+						<stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+					</linearGradient>
+					<linearGradient id="forecast-chart-grad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="var(--warning)" stop-opacity="0.1" />
+						<stop offset="100%" stop-color="var(--warning)" stop-opacity="0" />
+					</linearGradient>
+					<linearGradient id="bf-chart-grad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="var(--success)" stop-opacity="0.1" />
+						<stop offset="100%" stop-color="var(--success)" stop-opacity="0" />
+					</linearGradient>
+				</defs>
+				
 				<!-- Background Grid -->
 				<line x1="30" y1="40" x2="370" y2="40" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
 				<line x1="30" y1="90" x2="370" y2="90" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
 				<line x1="30" y1="140" x2="370" y2="140" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
+
+				<!-- Closed Areas with Gradients -->
+				${actualAreaPoints ? `<polygon points="${actualAreaPoints}" fill="url(#actual-chart-grad)"></polygon>` : ''}
+				${forecastAreaPoints ? `<polygon points="${forecastAreaPoints}" fill="url(#forecast-chart-grad)"></polygon>` : ''}
 
 				<!-- Actual Weight Line -->
 				${actualPoints.length >= 2 ? `<polyline points="${actualPoints.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>` : ''}
@@ -1232,20 +1273,27 @@
 		ctx.fillText(latest ? latest.recommended.replace(/-/g, ' ').toUpperCase() : 'NO ASSESSMENT', 30, 165);
 
 		// Stats Grid
-		ctx.fillStyle = '#94a3b8';
-		ctx.font = '500 12px sans-serif';
-		ctx.fillText('CURRENT WEIGHT', 30, 220);
-		ctx.fillStyle = '#ffffff';
-		ctx.font = '800 24px sans-serif';
-		const lastCheck = checkins[0];
-		ctx.fillText(lastCheck ? `${lastCheck.weight} kg` : (latest ? `${latest.weightKg} kg` : '-'), 30, 250);
+		const unitLabel = dashboardUnit === 'metric' ? 'kg' : 'lb';
+		const startWVal = latest ? latest.weightKg : 0;
+		const currentWVal = lastCheck ? lastCheck.weight : (latest ? latest.weightKg : 0);
+		const goalWVal = latest ? (latest.goalWeight || latest.targetWeight || 75) : 0;
+
+		const dispCurrentW = currentWVal ? round(dashboardUnit === 'metric' ? currentWVal : kgToLb(currentWVal), 1) : null;
+		const dispGoalW = goalWVal ? round(dashboardUnit === 'metric' ? goalWVal : kgToLb(goalWVal), 1) : null;
 
 		ctx.fillStyle = '#94a3b8';
 		ctx.font = '500 12px sans-serif';
-		ctx.fillText('TARGET WEIGHT', 220, 220);
+		ctx.fillText(`CURRENT WEIGHT (${unitLabel})`, 30, 220);
 		ctx.fillStyle = '#ffffff';
 		ctx.font = '800 24px sans-serif';
-		ctx.fillText(latest ? `${latest.goalWeight} kg` : '-', 220, 250);
+		ctx.fillText(dispCurrentW ? `${dispCurrentW} ${unitLabel}` : '-', 30, 250);
+
+		ctx.fillStyle = '#94a3b8';
+		ctx.font = '500 12px sans-serif';
+		ctx.fillText(`TARGET WEIGHT (${unitLabel})`, 220, 220);
+		ctx.fillStyle = '#ffffff';
+		ctx.font = '800 24px sans-serif';
+		ctx.fillText(dispGoalW ? `${dispGoalW} ${unitLabel}` : '-', 220, 250);
 
 		ctx.fillStyle = '#94a3b8';
 		ctx.font = '500 12px sans-serif';
@@ -1290,7 +1338,17 @@
 		const withBf = checkins.filter(c => c.bodyFat != null).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
 		if (withBf.length < 2) {
-			container.innerHTML = '<div class="grid min-h-48 place-items-center rounded-xl border border-border bg-muted/10 text-sm font-semibold text-muted-foreground">Log at least two check-ins with body fat % to see the trend.</div>';
+			container.innerHTML = `
+				<div class="flex flex-col items-center justify-center p-8 text-center min-h-[180px] rounded-2xl border border-dashed border-border bg-muted/5">
+					<div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success mb-3">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+					</div>
+					<h4 class="font-bold text-sm text-foreground">Awaiting Body Fat Logs</h4>
+					<p class="text-xs text-muted-foreground max-w-sm mt-1 leading-relaxed">
+						Please log at least two check-ins with body fat % estimates to generate the composition timeline.
+					</p>
+				</div>
+			`;
 			if (tableContainer) tableContainer.classList.add('hidden');
 			return;
 		}
@@ -1307,13 +1365,24 @@
 		});
 
 		const polylinePoints = points.map(p => `${p.x},${p.y}`).join(' ');
+		const bfFirstX = points[0].x;
+		const bfLastX = points[points.length - 1].x;
+		const bfAreaPoints = `${bfFirstX},140 ${polylinePoints} ${bfLastX},140`;
 
 		container.innerHTML = `
 			<svg viewBox="0 0 400 180" role="img" aria-label="Body fat percentage trend chart" class="h-48 w-full overflow-visible">
+				<defs>
+					<linearGradient id="bf-chart-grad-only" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="var(--success)" stop-opacity="0.15" />
+						<stop offset="100%" stop-color="var(--success)" stop-opacity="0" />
+					</linearGradient>
+				</defs>
+				
 				<line x1="30" y1="40" x2="370" y2="40" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
 				<line x1="30" y1="90" x2="370" y2="90" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
 				<line x1="30" y1="140" x2="370" y2="140" stroke="var(--border)" stroke-width="0.5" opacity="0.3" />
 
+				<polygon points="${bfAreaPoints}" fill="url(#bf-chart-grad-only)"></polygon>
 				<polyline points="${polylinePoints}" fill="none" stroke="var(--success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
 
 				${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--card)" stroke="var(--success)" stroke-width="2.5"><title>${p.date}: Body Fat ${p.val}%</title></circle>`).join('')}
@@ -1542,39 +1611,61 @@
 		window.print();
 	});
 
-	// Data management triggers
-	document.getElementById('export-data-btn')?.addEventListener('click', () => {
-		const checkins = getCheckins();
-		const assessments = getAssessments();
-		const latestAssessment = getLatestAssessment();
-		const database = { schemaVersion: 1, checkins, assessments, latestAssessment };
-		
-		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(database));
-		const dlAnchorElem = document.createElement('a');
-		dlAnchorElem.setAttribute("href", dataStr);
-		dlAnchorElem.setAttribute("download", `bodycompos-profile-backup-${today}.json`);
-		dlAnchorElem.click();
-	});
+	// Unified Data Administration System
+	const importInput = document.getElementById('dashboard-import-file') as HTMLInputElement;
+	
+	document.getElementById('import-data-btn-header')?.addEventListener('click', () => importInput?.click());
+	document.getElementById('import-data-btn-admin')?.addEventListener('click', () => importInput?.click());
 
-	document.getElementById('import-data-file')?.addEventListener('change', (event) => {
-		const input = event.target as HTMLInputElement;
-		if (!input.files || input.files.length === 0) return;
-		
-		const file = input.files[0];
+	function handleExport() {
+		const backup = {
+			'bodycompos.preferredUnit': localStorage.getItem('bodycompos.preferredUnit'),
+			'bodycompos.checkins': localStorage.getItem('bodycompos.checkins'),
+			'bodycompos.assessments': localStorage.getItem('bodycompos.assessments'),
+			'bodycompos.latestAssessment': localStorage.getItem('bodycompos.latestAssessment'),
+		};
+		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+		const downloadAnchor = document.createElement('a');
+		downloadAnchor.setAttribute("href", dataStr);
+		downloadAnchor.setAttribute("download", `bodycompos_backup_${new Date().toISOString().split('T')[0]}.json`);
+		document.body.appendChild(downloadAnchor);
+		downloadAnchor.click();
+		downloadAnchor.remove();
+	}
+
+	document.getElementById('export-data-btn-header')?.addEventListener('click', handleExport);
+	document.getElementById('export-data-btn-admin')?.addEventListener('click', handleExport);
+
+	importInput?.addEventListener('change', (e) => {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+		if (!file) return;
+
 		const reader = new FileReader();
-		reader.onload = (e) => {
+		reader.onload = (event) => {
 			try {
-				const data = JSON.parse(e.target?.result as string);
-				const checkins = Array.isArray(data.checkins) ? data.checkins.map(sanitizeCheckin).filter(Boolean) : [];
-				const assessments = Array.isArray(data.assessments) ? data.assessments.map(sanitizeAssessment).filter(Boolean) : [];
-				const latest = sanitizeAssessment(data.latestAssessment) || assessments[0] || null;
-				localStorage.setItem('bodycompos.checkins', JSON.stringify(checkins));
-				localStorage.setItem('bodycompos.assessments', JSON.stringify(assessments));
-				if (latest) localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(latest));
-				alert(`Database profile imported: ${checkins.length} check-ins and ${assessments.length} assessments.`);
-				render();
+				const backup = JSON.parse(event.target?.result as string);
+				if (backup.schemaVersion === 1) {
+					if (backup.checkins) localStorage.setItem('bodycompos.checkins', JSON.stringify(backup.checkins));
+					if (backup.assessments) localStorage.setItem('bodycompos.assessments', JSON.stringify(backup.assessments));
+					if (backup.latestAssessment) localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(backup.latestAssessment));
+				} else {
+					const keys = [
+						'bodycompos.preferredUnit',
+						'bodycompos.checkins',
+						'bodycompos.assessments',
+						'bodycompos.latestAssessment'
+					];
+					keys.forEach(key => {
+						if (backup[key] !== undefined && backup[key] !== null) {
+							localStorage.setItem(key, typeof backup[key] === 'string' ? backup[key] : JSON.stringify(backup[key]));
+						}
+					});
+				}
+				alert('Data profile imported successfully! Reloading workspace...');
+				window.location.reload();
 			} catch (err) {
-				alert('Error importing JSON file. Verify formatting.');
+				alert('Invalid file format. Please import a valid body composition backup JSON file.');
 			}
 		};
 		reader.readAsText(file);
@@ -1711,73 +1802,14 @@
 				`}
 			</div>
 		`;
-		if (helperResultTitle && helperResultDesc && helperResult) {
-			helperResultTitle.textContent = title;
-			helperResultDesc.textContent = desc;
-			helperResult.classList.remove('hidden');
-			helperResult.classList.add('animate-fade-in-up');
-		}
 	});
 
-	// Export Local Storage Data
-	document.getElementById('export-data-btn')?.addEventListener('click', () => {
-		const backup: Record<string, string | null> = {};
-		const keys = [
-			'bodycompos.unit',
-			'bodycompos.assessment',
-			'bodycompos.checkins',
-			'bodycompos.estimatedBodyFat'
-		];
-		
-		keys.forEach(key => {
-			backup[key] = localStorage.getItem(key);
-		});
-
-		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
-		const downloadAnchor = document.createElement('a');
-		downloadAnchor.setAttribute("href", dataStr);
-		downloadAnchor.setAttribute("download", `bodycompos_backup_${new Date().toISOString().split('T')[0]}.json`);
-		document.body.appendChild(downloadAnchor);
-		downloadAnchor.click();
-		downloadAnchor.remove();
-	});
-
-	// Trigger Hidden Import File Input
-	const importInput = document.getElementById('import-file-input') as HTMLInputElement;
-	document.getElementById('import-data-btn')?.addEventListener('click', () => {
-		importInput?.click();
-	});
-
-	// Read and Apply Imported JSON Data
-	importInput?.addEventListener('change', (e) => {
-		const target = e.target as HTMLInputElement;
-		const file = target.files?.[0];
-		if (!file) return;
-
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			try {
-				const backup = JSON.parse(event.target?.result as string);
-				Object.keys(backup).forEach(key => {
-					if (backup[key] !== null) {
-						localStorage.setItem(key, backup[key]);
-					}
-				});
-				alert('Data imported successfully! Reloading workspace...');
-				window.location.reload();
-			} catch (err) {
-				alert('Invalid JSON file format. Please try again.');
-			}
-		};
-		reader.readAsText(file);
-	});
-
-	// Initial population of selects and active unit state update on page load
+	// Initial population of inputs and active unit state update on page load
 	(function() {
 		const form = document.querySelector('#checkin-form') as HTMLFormElement | null;
 		if (form) {
-			const weightSelect = form.querySelector('#weight') as HTMLSelectElement | null;
-			const goalWeightSelect = form.querySelector('#goalWeight') as HTMLSelectElement | null;
+			const weightInput = form.querySelector('#weight') as HTMLInputElement | null;
+			const goalWeightInput = form.querySelector('#goalWeight') as HTMLInputElement | null;
 			const latest = getLatestAssessment();
 			const checkins = getCheckins();
 
@@ -1788,8 +1820,16 @@
 			const currentWeightVal = dashboardUnit === 'metric' ? rawCurrentWeight : round(kgToLb(rawCurrentWeight), 1);
 			const goalWeightVal = dashboardUnit === 'metric' ? rawGoalWeight : round(kgToLb(rawGoalWeight), 1);
 
-			rebuildWeightSelect(weightSelect, dashboardUnit as 'metric' | 'imperial', currentWeightVal);
-			rebuildWeightSelect(goalWeightSelect, dashboardUnit as 'metric' | 'imperial', goalWeightVal);
+			if (weightInput) {
+				weightInput.value = String(currentWeightVal);
+				weightInput.min = dashboardUnit === 'imperial' ? '44' : '20';
+				weightInput.max = dashboardUnit === 'imperial' ? '550' : '250';
+			}
+			if (goalWeightInput) {
+				goalWeightInput.value = String(goalWeightVal);
+				goalWeightInput.min = dashboardUnit === 'imperial' ? '44' : '20';
+				goalWeightInput.max = dashboardUnit === 'imperial' ? '550' : '250';
+			}
 		}
 
 		document.querySelectorAll('[data-dashboard-unit]').forEach((button) => {

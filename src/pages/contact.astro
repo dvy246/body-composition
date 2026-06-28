@@ -203,6 +203,17 @@ const schema = {
 
 			if (!isValid) return;
 
+			// Capture values for mailto email draft
+			const nameVal = (form.querySelector('[name="name"]') as HTMLInputElement).value.trim();
+			const emailVal = (form.querySelector('[name="email"]') as HTMLInputElement).value.trim();
+			const categoryVal = (form.querySelector('[name="category"]') as HTMLSelectElement).value;
+			const subjectVal = (form.querySelector('[name="subject"]') as HTMLInputElement).value.trim();
+			const messageVal = (form.querySelector('[name="message"]') as HTMLTextAreaElement).value.trim();
+
+			// Construct mailto link
+			const emailBody = `Name: ${nameVal}\nEmail: ${emailVal}\nCategory: ${categoryVal}\n\nMessage:\n${messageVal}`;
+			const mailtoUrl = `mailto:yadavdivy77@gmail.com?subject=${encodeURIComponent(`[BodyCompOS Contact] ${subjectVal}`)}&body=${encodeURIComponent(emailBody)}`;
+
 			// Capture user name for validation summary
 			const userNameInput = form.querySelector('[name="name"]') as HTMLInputElement;
 			const userName = userNameInput.value.trim();
@@ -219,6 +230,9 @@ const schema = {
 					Sending...
 				`;
 			}
+
+			// Open default mail client with prefilled data
+			window.location.href = mailtoUrl;
 
 			// Transition to success card after 900ms delay
 			setTimeout(() => {

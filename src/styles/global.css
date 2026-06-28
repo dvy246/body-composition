@@ -937,9 +937,70 @@ a {
 }
 
 /* Fix specificity overrides for hidden custom elements */
+.field.hidden,
 .result-placeholder.hidden,
 .button-primary.hidden,
 .button-secondary.hidden,
 .button-ghost.hidden {
 	display: none !important;
+}
+
+/* ─── Premium Dropdown Styles ────────────────────────────── */
+.nav-dropdown {
+	position: relative;
+}
+
+.dropdown-menu {
+	position: absolute;
+	left: 50%;
+	top: 100%;
+	z-index: 50;
+	padding-top: 0.5rem;
+	width: 18rem;
+	transform: translateX(-50%) scale(0.95);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1), opacity 150ms ease, visibility 150ms ease;
+}
+
+.dropdown-menu::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 0.5rem;
+}
+
+.nav-dropdown:hover .dropdown-menu,
+.nav-dropdown:focus-within .dropdown-menu {
+	transform: translateX(-50%) scale(1);
+	opacity: 1 !important;
+	visibility: visible !important;
+	pointer-events: auto !important;
+}
+
+.dropdown-menu-container {
+	border-radius: 0.75rem;
+	border: 1px solid var(--border);
+	background: var(--card);
+	backdrop-filter: blur(12px);
+	padding: 0.5rem;
+	box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-item {
+	display: block;
+	border-radius: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--muted-foreground);
+	transition: background-color 150ms ease, color 150ms ease;
+}
+
+.dropdown-item:hover {
+	background: var(--muted);
+	color: var(--foreground);
 }

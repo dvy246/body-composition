@@ -71,11 +71,55 @@ const breadcrumbSchema = pathname ? {
 
 const finalSchema = [organizationSchema, breadcrumbSchema, ...schemaItems].filter(Boolean);
 
-const nav = [
+interface NavItem {
+	href: string;
+	label: string;
+	items?: { href: string; label: string }[];
+}
+
+const nav: NavItem[] = [
 	{ href: '/', label: 'Strategy Finder' },
-	{ href: '/guides', label: 'Guides' },
-	{ href: '/calculators', label: 'Calculators' },
-	{ href: '/compare', label: 'Compare' },
+	{ 
+		href: '/guides', 
+		label: 'Guides',
+		items: [
+			{ href: '/guides/body-fat-percentage', label: 'Body Fat Percentage' },
+			{ href: '/guides/body-recomposition', label: 'Body Recomposition' },
+			{ href: '/guides/maintenance-calories', label: 'Maintenance Calories' },
+			{ href: '/guides/protein-nutrition', label: 'Protein Nutrition' },
+			{ href: '/guides/should-i-cut-or-bulk', label: 'Should I Cut or Bulk' },
+			{ href: '/guides/weight-loss-plateau-guide', label: 'Weight Loss Plateaus' },
+		]
+	},
+	{ 
+		href: '/calculators', 
+		label: 'Calculators',
+		items: [
+			{ href: '/calculators/tdee-calculator', label: 'TDEE Calculator' },
+			{ href: '/calculators/bmr-calculator', label: 'BMR Calculator' },
+			{ href: '/calculators/calorie-calculator', label: 'Calorie Calculator' },
+			{ href: '/calculators/protein-calculator', label: 'Protein Calculator' },
+			{ href: '/calculators/body-fat-calculator', label: 'Body Fat Calculator' },
+			{ href: '/calculators/body-composition-calculator', label: 'Body Composition' },
+			{ href: '/calculators/ffmi-calculator', label: 'FFMI Calculator' },
+			{ href: '/calculators/macro-calculator', label: 'Macro Calculator' },
+			{ href: '/calculators/ideal-weight-calculator', label: 'Ideal Weight' },
+			{ href: '/calculators/bmi-calculator', label: 'BMI Calculator' },
+		]
+	},
+	{ 
+		href: '/compare', 
+		label: 'Compare',
+		items: [
+			{ href: '/compare/mifflin-vs-katch-mcardle', label: 'Mifflin vs Katch' },
+			{ href: '/compare/tdee-vs-bmr', label: 'TDEE vs BMR' },
+			{ href: '/compare/clean-bulking-vs-dirty-bulking', label: 'Clean vs Dirty Bulking' },
+			{ href: '/compare/cardio-vs-weights-for-loss', label: 'Cardio vs Weights' },
+			{ href: '/compare/bmi-vs-body-fat-percentage', label: 'BMI vs Body Fat %' },
+			{ href: '/compare/cut-vs-recomp', label: 'Cut vs Recomp' },
+			{ href: '/compare/lean-bulk-vs-aggressive-bulk', label: 'Lean vs Aggressive Bulk' },
+		]
+	},
 	{ href: '/body-composition-strategy-guide', label: 'How It Works' },
 	{ href: '/dashboard', label: 'Strategy Dashboard' },
 	{ href: '/faq', label: 'FAQ' },
@@ -149,9 +193,30 @@ function isCurrent(href: string) {
 					<span>BodyCompOS</span>
 				</a>
 				<nav class="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
-					{nav.map((item) => (
-						<a class="nav-link" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>{item.label}</a>
-					))}
+					{nav.map((item) => {
+						if (item.items) {
+							return (
+								<div class="nav-dropdown group">
+									<a class="nav-link flex items-center gap-1" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>
+										{item.label}
+										<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform group-hover:rotate-180">
+											<path d="M1 1l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+										</svg>
+									</a>
+									<div class="dropdown-menu">
+										<div class="dropdown-menu-container">
+											{item.items.map((subItem) => (
+												<a class="dropdown-item" href={subItem.href}>{subItem.label}</a>
+											))}
+										</div>
+									</div>
+								</div>
+							);
+						}
+						return (
+							<a class="nav-link" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>{item.label}</a>
+						);
+					})}
 				</nav>
 				<div class="flex items-center gap-3">
 					<div class="theme-toggle" aria-label="Color theme">
@@ -169,11 +234,25 @@ function isCurrent(href: string) {
 				</div>
 			</div>
 		</header>
-		<div id="mobile-menu" class="fixed inset-0 top-16 z-30 hidden bg-background/98 backdrop-blur lg:hidden" aria-hidden="true" tabindex="-1">
-			<nav class="flex flex-col gap-4 p-6 text-lg font-bold" aria-label="Mobile navigation">
-				{nav.map((item) => (
-					<a class="nav-link text-xl py-3 border-b border-border" href={item.href}>{item.label}</a>
-				))}
+		<div id="mobile-menu" class="fixed inset-0 top-16 z-30 hidden overflow-y-auto bg-background/98 backdrop-blur lg:hidden" aria-hidden="true" tabindex="-1">
+			<nav class="flex flex-col gap-2 p-6 text-lg font-bold" aria-label="Mobile navigation">
+				{nav.map((item) => {
+					if (item.items) {
+						return (
+							<div class="flex flex-col border-b border-border py-2">
+								<a class="nav-link text-lg font-extrabold text-foreground" href={item.href}>{item.label}</a>
+								<div class="mt-1.5 flex flex-col gap-1 pl-4 mb-2">
+									{item.items.map((subItem) => (
+										<a class="text-sm font-semibold text-muted-foreground hover:text-foreground py-1.5 transition-colors" href={subItem.href}>{subItem.label}</a>
+									))}
+								</div>
+							</div>
+						);
+					}
+					return (
+						<a class="nav-link text-lg py-3 border-b border-border" href={item.href}>{item.label}</a>
+					);
+				})}
 				<a class="button-primary mt-6 text-center" href="/assess">Start assessment</a>
 			</nav>
 		</div>

@@ -4,9 +4,11 @@ import { allPagePaths, absoluteUrl } from '../data/site';
 export const GET: APIRoute = () => {
 	const todayStr = new Date().toISOString().slice(0, 10);
 	
-	const xmlUrls = allPagePaths.map(path => {
-		const loc = absoluteUrl(path === '' ? '' : `/${path}`);
-		const changefreq = path === '' || path === 'dashboard' ? 'daily' : 'weekly';
+	const xmlUrls = allPagePaths
+		.filter(path => path !== 'dashboard')
+		.map(path => {
+			const loc = absoluteUrl(path === '' ? '' : `/${path}`);
+			const changefreq = path === '' ? 'daily' : 'weekly';
 		const priority = path === '' ? '1.0' : path.startsWith('calculators/') ? '0.8' : '0.5';
 		
 		return `  <url>

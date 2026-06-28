@@ -37,8 +37,8 @@ export function round(n: number, digits = 0) {
 }
 
 export function proteinRange(weightKg: number, goal: Goal) {
-	const low = goal === 'maintain' ? 1.4 : 1.6;
-	const high = goal === 'aggressive-bulk' ? 2 : 2.2;
+	const low = 1.6;
+	const high = goal === 'aggressive-bulk' ? 2.0 : 2.2;
 	return { low: round(weightKg * low), high: round(weightKg * high) };
 }
 
@@ -460,12 +460,14 @@ export function calculateNavyBodyFat({ sex, waistCm, neckCm, hipCm, heightCm }: 
 	if (sex === 'male') {
 		const diff = waistIn - neckIn;
 		if (diff <= 0 || heightIn <= 0) return 0;
-		return round(86.010 * Math.log10(diff) - 70.041 * Math.log10(heightIn) + 36.76, 1);
+		const result = round(86.010 * Math.log10(diff) - 70.041 * Math.log10(heightIn) + 36.76, 1);
+		return Math.min(Math.max(result, 2), 60);
 	} else {
 		const hipIn = (hipCm || 0) / 2.54;
 		const val = waistIn + hipIn - neckIn;
 		if (val <= 0 || heightIn <= 0) return 0;
-		return round(163.205 * Math.log10(val) - 97.684 * Math.log10(heightIn) - 78.387, 1);
+		const result = round(163.205 * Math.log10(val) - 97.684 * Math.log10(heightIn) - 78.387, 1);
+		return Math.min(Math.max(result, 5), 60);
 	}
 }
 
@@ -570,17 +572,32 @@ export function strategyMultiplier(mode: string, goal: string): number {
 		'fat-loss': 0.85,
 		maintain: 1,
 		'lean-bulk': 1.08,
+		'aggressive-bulk': 1.15,
 		recomp: 0.98,
 	};
 	if (mode === 'deficit' || mode === 'deficit-calories' || mode === 'weight-loss-calories') return goalMap['fat-loss'] ?? 0.85;
-	if (mode === 'surplus' || mode === 'surplus-calories' || mode === 'weight-gain-calories' || mode === 'muscle') return goalMap['lean-bulk'] ?? 1.08;
+	if (mode === 'surplus' || mode === 'surplus-calories' || mode === 'weight-gain-calories' || mode === 'muscle') {
+		return goal === 'aggressive-bulk' ? (goalMap['aggressive-bulk'] ?? 1.15) : (goalMap['lean-bulk'] ?? 1.08);
+	}
 	if (mode === 'recomp') return goalMap.recomp;
 	if (mode === 'maintenance-calories' || mode === 'daily-needs') return 1;
 	return goalMap[goal] ?? 1;
 }
 
 export function macros(calories: number, weightKg: number, goal: string) {
-	const protein = round(weightKg * (goal === 'maintain' ? 1.6 : 1.9));
+	let multiplier = 1.9;
+	if (goal === 'maintain' || goal === 'maintenance') {
+		multiplier = 1.6;
+	} else if (goal === 'fat-loss' || goal === 'cut') {
+		multiplier = 2.2;
+	} else if (goal === 'recomp' || goal === 'body-recomposition') {
+		multiplier = 2.0;
+	} else if (goal === 'lean-bulk') {
+		multiplier = 1.8;
+	} else if (goal === 'aggressive-bulk') {
+		multiplier = 1.7;
+	}
+	const protein = round(weightKg * multiplier);
 	const fat = round((calories * 0.28) / 9);
 	const carbs = round(Math.max(0, (calories - protein * 4 - fat * 9) / 4));
 	return { protein, fat, carbs };
@@ -589,8 +606,8 @@ export function macros(calories: number, weightKg: number, goal: string) {
 export function idealWeightRange(sex: Sex, heightCm: number) {
 	const heightIn = cmToIn(heightCm);
 	const overFiveFeet = Math.max(0, heightIn - 60);
-	const midpoint = sex === 'male' ? 48 + 2.7 * overFiveFeet : 45.5 + 2.2 * overFiveFeet;
-	return { low: midpoint * 0.9, midpoint, high: midpoint * 1.1 };
+	const midpoint = sex === 'male' ? 50.0 + 2.3 * overFiveFeet : 45.5 + 2.3 * overFiveFeet;
+	return { low: round(midpoint * 0.9, 1), midpoint: round(midpoint, 1), high: round(midpoint * 1.1, 1) };
 }
 
 export function targetWeightFromBodyFat(weightKg: number, bodyFat: number, targetBodyFat: number) {

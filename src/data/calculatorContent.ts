@@ -87,6 +87,21 @@ export const calculatorArticles: Record<string, CalculatorArticle> = {
 			['Why does my waist size change daily?', 'Waist measurements can fluctuate by 1-2 cm due to digestive bloat, sodium intake, hydration levels, and glycogen storage. To ensure reliable trends, measure yourself first thing in the morning, after using the restroom, and calculate a weekly average.'],
 		],
 	},
+	'body-composition-calculator': {
+		slug: 'body-composition-calculator',
+		title: 'Body Composition: Compartmentalized Lean & Fat Mass Breakdown',
+		subtitle: 'Deconstructing total body weight into active muscle, organs, bone, and stored lipids',
+		category: 'Body Composition Index',
+		icon: 'composition',
+		intro: 'Your scale weight alone is a poor indicator of metabolic health, physical capability, and cosmetic structure. A change in weight could represent a loss of fat tissue, a gain in muscle tissue, or simple shifts in hydration. The BodyCompOS Body Composition Calculator compartmentalizes your total body mass into Fat Mass (adipose tissue) and Lean Body Mass (LBM, representing muscle, organs, bone, and water). Knowing these baseline shares allows you to track structural changes rather than arbitrary scale variations.',
+		useTarget: 'Enter your height, weight, and known body fat percentage. (If you do not know your body fat percentage, click the link to calculate it first using the Navy method). The tool will output your BMI, Lean Mass in kilograms, and Fat Mass in kilograms, along with a visual index breakdown.',
+		assumptions: 'This calculator assumes a two-compartment model of body composition, which divides the body into Fat Mass and Lean Body Mass. The calculations are exact mathematical proportions: Lean Mass = Weight * (1 - Body Fat / 100), and Fat Mass = Weight * (Body Fat / 100). BMI is calculated using the standard Quetelet formula: Weight / Height^2.',
+		workedExample: 'Step-by-step example for an individual weighing 80 kg (176 lbs) with a body fat percentage of 20%:\n1. Convert fat percentage to ratio: 20 / 100 = 0.20.\n2. Compute Fat Mass: 80 kg * 0.20 = 16 kg.\n3. Compute Lean Mass: 80 kg * (1 - 0.20) = 64 kg.\nCompartments: 64 kg Lean Mass and 16 kg Fat Mass.',
+		faqs: [
+			['What is a healthy range for lean body mass?', 'Lean body mass includes everything that is not body fat. There is no single healthy range, as LBM varies dramatically with height and muscular training age. However, higher relative LBM correlates with improved metabolic rate, insulin sensitivity, and physical strength.'],
+			['How do I track if I am losing fat or muscle?', 'If your scale weight is decreasing but your waist size is also shrinking while gym strength is stable, you are successfully losing fat while protecting muscle. If weight drops but strength plummets, you may be losing muscle.'],
+		],
+	},
 	'ffmi-calculator': {
 		slug: 'ffmi-calculator',
 		title: 'Fat-Free Mass Index (FFMI): Muscle Mass Context',

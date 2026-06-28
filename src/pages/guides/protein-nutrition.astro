@@ -1,6 +1,8 @@
+---
 import Layout from '../../layouts/Layout.astro';
 import { DOMAIN, articleSchema } from '../../data/site';
 import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import Author from '../../components/Author.astro';
 import QuickAnswer from '../../components/QuickAnswer.astro';
 
 const title = "Daily Protein Intake Guide for Body Composition | BodyCompOS";
@@ -128,7 +130,7 @@ const schema = [
 
 					<!-- 1. Why Protein Matters -->
 					<section>
-						<h2 id="why-protein-matters" class="text-xl font-bold text-foreground mb-3">1. Why Protein Matters</h2>rs for Body Composition</h2>
+						<h2 id="why-protein-matters" class="text-xl font-bold text-foreground mb-3">1. Why Protein Matters</h2>
 						<p>
 							Unlike carbohydrates and fats, which serve primarily as fuel sources, dietary protein provides the amino acid building blocks for cellular repair and skeletal muscle tissue synthesis. When you resistance train, you create mechanical tension that signals your body to repair and reinforce muscle fibers — a process known as Muscle Protein Synthesis (MPS). Without a consistent supply of dietary amino acids, this repair process is incomplete, and over time, you lose the adaptive response to training.
 						</p>
@@ -542,33 +544,6 @@ const schema = [
 					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
 						<p><strong>Educational Disclaimer:</strong> The information in this guide is for educational purposes only. High protein intakes require healthy renal clearance. Individuals with pre-existing kidney disease, hepatic issues, or other clinical concerns should consult a qualified medical professional before starting a high-protein diet. All protein targets are estimates based on population-level research and may not reflect individual responses.</p>
 					</div>
-
-					<!-- Author Bio for EEAT -->
-					<div class="border-t border-border pt-6">
-						<Author />
-					</div>
-
-				</div>
-			</div>
-
-			<!-- Sidebar -->
-			<div class="space-y-6">
-				<!-- 1. On This Page (sticky TOC) -->
-				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
-					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
-					<nav class="space-y-1.5 text-xs">
-						<a href="#why-protein-matters" class="block text-muted-foreground hover:text-accent transition-colors">1. Why Protein Matters</a>
-						<a href="#issn-recommendations" class="block text-muted-foreground hover:text-accent transition-colors">2. ISSN Recommendations</a>
-						<a href="#leucine-threshold" class="block text-muted-foreground hover:text-accent transition-colors">3. Leucine Threshold & mTOR</a>
-						<a href="#protein-quality" class="block text-muted-foreground hover:text-accent transition-colors">4. Protein Quality (PDCAAS)</a>
-						<a href="#protein-distribution" class="block text-muted-foreground hover:text-accent transition-colors">5. Distribution & Timing</a>
-						<a href="#animal-vs-plant" class="block text-muted-foreground hover:text-accent transition-colors">6. Animal vs Plant Sources</a>
-						<a href="#special-populations" class="block text-muted-foreground hover:text-accent transition-colors">7. Special Populations</a>
-						<a href="#reassessment-changes" class="block text-muted-foreground hover:text-accent transition-colors">8. Reassessment & Adjustments</a>
-						<a href="#faq" class="block text-muted-foreground hover:text-accent transition-colors">9. FAQ</a>
-						<a href="#next-steps" class="block text-accent font-semibold hover:underline mt-2 pt-2 border-t border-border">10. Next Steps →</a>
-					</nav>
-				</div>
 
 					<!-- Author Bio for EEAT -->
 					<div class="border-t border-border pt-6">
