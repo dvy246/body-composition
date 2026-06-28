@@ -315,7 +315,6 @@ const schema = [
 		const proteinKcal = avgProtein * 4;
 		const carbKcal = Math.max(0, t - proteinKcal - fatKcal);
 		const carbG = Math.round(carbKcal / 4);
-		const totalKcal = proteinKcal + carbKcal + fatKcal;
 
 		const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 		const setBar = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.min(100, pct) + '%'; };
@@ -325,9 +324,9 @@ const schema = [
 		setText('target-carbs', carbG + ' g');
 		setText('target-fats', fatG + ' g');
 		setBar('bar-calories', 100);
-		setBar('bar-protein', (proteinKcal / totalKcal) * 100);
-		setBar('bar-carbs', (carbKcal / totalKcal) * 100);
-		setBar('bar-fats', (fatKcal / totalKcal) * 100);
+		setBar('bar-protein', (proteinKcal / t) * 100);
+		setBar('bar-carbs', (carbKcal / t) * 100);
+		setBar('bar-fats', (fatKcal / t) * 100);
 	}
 
 	// Checklist with localStorage persistence
