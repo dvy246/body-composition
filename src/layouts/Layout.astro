@@ -89,6 +89,8 @@ const nav: NavItem[] = [
 			{ href: '/guides/protein-nutrition', label: 'Protein Nutrition' },
 			{ href: '/guides/should-i-cut-or-bulk', label: 'Should I Cut or Bulk' },
 			{ href: '/guides/weight-loss-plateau-guide', label: 'Weight Loss Plateaus' },
+			{ href: '/guides/how-to-eat-in-a-calorie-deficit', label: 'Eating in a Deficit' },
+			{ href: '/guides/high-protein-diet-for-body-composition', label: 'High Protein Diet' },
 		]
 	},
 	{ 
@@ -119,6 +121,19 @@ const nav: NavItem[] = [
 			{ href: '/compare/bmi-vs-body-fat-percentage', label: 'BMI vs Body Fat %' },
 			{ href: '/compare/cut-vs-recomp', label: 'Cut vs Recomp' },
 			{ href: '/compare/lean-bulk-vs-aggressive-bulk', label: 'Lean vs Aggressive Bulk' },
+			{ href: '/compare/lean-bulk-vs-maingaining', label: 'Lean Bulk vs Maingaining' },
+		]
+	},
+	{
+		href: '/build-your-day',
+		label: 'Build Your Day',
+		items: [
+			{ href: '/build-your-day', label: 'Strategy Overview' },
+			{ href: '/build-your-day/cutting', label: 'Cutting Protocols' },
+			{ href: '/build-your-day/lean-bulk', label: 'Lean Bulk Protocols' },
+			{ href: '/build-your-day/recomp', label: 'Recomposition Protocols' },
+			{ href: '/build-your-day/maintain', label: 'Maintenance Protocols' },
+			{ href: '/build-your-day/aggressive-bulk', label: 'Aggressive Bulk Protocols' },
 		]
 	},
 	{ href: '/body-composition-strategy-guide', label: 'How It Works' },
@@ -137,6 +152,15 @@ function isCurrent(href: string) {
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-G6X21LS8KB"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-G6X21LS8KB');
+		</script>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

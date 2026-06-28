@@ -263,23 +263,14 @@ const assessSchema = {
 							<div>
 								<p class="text-xs font-bold uppercase text-accent tracking-wider">Assessment Result</p>
 								<p id="res-recommended" class="mt-1 text-2xl font-black text-foreground"></p>
+								<p id="res-goal-bias" class="text-xs text-muted-foreground mt-1"></p>
 							</div>
-							<span id="res-confidence" class="badge badge-accent shrink-0 mt-1"></span>
 						</div>
 
 						<div class="grid gap-3 sm:grid-cols-2">
 							<div class="result-card">
 								<p class="text-xs font-bold uppercase text-muted-foreground">Alternative Strategy</p>
 								<p id="res-alternative" class="mt-1 text-base font-bold text-foreground"></p>
-								<div class="flex items-center gap-2 mt-1.5">
-									<span id="res-alt-confidence" class="text-xs text-muted-foreground"></span>
-									<div class="mini-bar flex-1 max-w-20"><span id="res-alt-confidence-bar"></span></div>
-								</div>
-							</div>
-							<div class="result-card">
-								<p class="text-xs font-bold uppercase text-muted-foreground">Strategy Confidence</p>
-								<p id="res-confidence-label" class="mt-1 text-xl font-black text-foreground"></p>
-								<div class="mini-bar mt-2"><span id="res-confidence-bar"></span></div>
 							</div>
 						</div>
 
@@ -382,7 +373,13 @@ const assessSchema = {
 								</div>
 								<!-- Step 3 -->
 								<div class="relative">
-									<span class="absolute -left-[21px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent text-[8px] font-bold text-white">3</span>
+									<span class="absolute -left-[21px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-success text-[8px] font-bold text-white">3</span>
+									<p class="text-xs font-bold text-foreground">Build Your Day</p>
+									<p class="text-[11px] text-muted-foreground mt-0.5">Translate your <strong><span id="pathway-calories">target</span> calories</strong> into actual meals with personalized food guidance, portion estimates, and a daily checklist — <a id="pathway-nutrition-link" href="#" class="text-accent underline font-semibold hover:no-underline">Build Your Day →</a>.</p>
+								</div>
+								<!-- Step 4 -->
+								<div class="relative">
+									<span class="absolute -left-[21px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent text-[8px] font-bold text-white">4</span>
 									<p class="text-xs font-bold text-foreground">Execute and Monitor Trends</p>
 									<p class="text-[11px] text-muted-foreground mt-0.5">Stay consistent for 3 weeks before adjusting anything. Follow weight trends, not individual daily fluctuations.</p>
 								</div>
@@ -931,39 +928,18 @@ const assessSchema = {
 			placeholder.classList.add('hidden');
 			content.classList.remove('hidden');
 
-			// Recommended Strategy & Confidence
+			// Recommended Strategy
 			const recEl = document.getElementById('res-recommended');
 			if (recEl) recEl.textContent = labels[rec.recommended];
-			
-			const confEl = document.getElementById('res-confidence');
-			if (confEl) confEl.textContent = `${rec.confidence}% Confidence`;
 
-			// Alternative Strategy & Confidence Bar
+			const goalBiasEl = document.getElementById('res-goal-bias');
+			if (goalBiasEl) {
+				goalBiasEl.textContent = `Your preference: ${labels[f.goalBias.value]}`;
+			}
+			
+			// Alternative Strategy
 			const altEl = document.getElementById('res-alternative');
 			if (altEl) altEl.textContent = labels[rec.alternative];
-			
-			const altConfLabel = document.getElementById('res-alt-confidence');
-			if (altConfLabel) altConfLabel.textContent = `Confidence: ${rec.alternativeConfidence}%`;
-			
-			const altBar = document.getElementById('res-alt-confidence-bar');
-			if (altBar) {
-				setTimeout(() => {
-					altBar.style.width = `${rec.alternativeConfidence}%`;
-				}, 50);
-			}
-
-			// Strategy Confidence & Bar
-			const confLabel = document.getElementById('res-confidence-label');
-			if (confLabel) {
-				animateCounter(confLabel, 0, rec.confidence, 800);
-			}
-			
-			const confBar = document.getElementById('res-confidence-bar');
-			if (confBar) {
-				setTimeout(() => {
-					confBar.style.width = `${rec.confidence}%`;
-				}, 50);
-			}
 
 			// Calories & Protein
 			const targetCalEl = document.getElementById('res-target');
@@ -1084,31 +1060,36 @@ const assessSchema = {
 					guide: 'Should I Cut or Bulk Guide',
 					guideUrl: '/guides/should-i-cut-or-bulk',
 					compare: 'Cut vs. Recomp Comparison',
-					compareUrl: '/compare/cut-vs-recomp'
+					compareUrl: '/compare/cut-vs-recomp',
+					nutritionUrl: '/build-your-day/cutting'
 				},
 				'lean-bulk': {
 					guide: 'Should I Cut or Bulk Guide',
 					guideUrl: '/guides/should-i-cut-or-bulk',
 					compare: 'Lean vs. Aggressive Bulk Comparison',
-					compareUrl: '/compare/lean-bulk-vs-aggressive-bulk'
+					compareUrl: '/compare/lean-bulk-vs-aggressive-bulk',
+					nutritionUrl: '/build-your-day/lean-bulk'
 				},
 				'aggressive-bulk': {
 					guide: 'Should I Cut or Bulk Guide',
 					guideUrl: '/guides/should-i-cut-or-bulk',
 					compare: 'Lean vs. Aggressive Bulk Comparison',
-					compareUrl: '/compare/lean-bulk-vs-aggressive-bulk'
+					compareUrl: '/compare/lean-bulk-vs-aggressive-bulk',
+					nutritionUrl: '/build-your-day/aggressive-bulk'
 				},
 				recomp: {
 					guide: 'Science of Body Recomposition',
 					guideUrl: '/guides/body-recomposition',
 					compare: 'Cut vs. Recomp Comparison',
-					compareUrl: '/compare/cut-vs-recomp'
+					compareUrl: '/compare/cut-vs-recomp',
+					nutritionUrl: '/build-your-day/recomp'
 				},
 				maintain: {
 					guide: 'Maintenance Calories Guide',
 					guideUrl: '/guides/maintenance-calories',
 					compare: 'BMI vs. Body Fat Comparison',
-					compareUrl: '/compare/bmi-vs-body-fat-percentage'
+					compareUrl: '/compare/bmi-vs-body-fat-percentage',
+					nutritionUrl: '/build-your-day/maintain'
 				}
 			};
 
@@ -1124,6 +1105,16 @@ const assessSchema = {
 			if (compareLink) {
 				compareLink.textContent = guideInfo.compare;
 				compareLink.href = guideInfo.compareUrl;
+			}
+
+			const nutritionLink = document.getElementById('pathway-nutrition-link') as HTMLAnchorElement;
+			const caloriesSpan = document.getElementById('pathway-calories');
+
+			if (nutritionLink) {
+				nutritionLink.href = guideInfo.nutritionUrl;
+			}
+			if (caloriesSpan && target) {
+				caloriesSpan.textContent = Math.round(target).toLocaleString();
 			}
 
 			// Setup Save Button listener

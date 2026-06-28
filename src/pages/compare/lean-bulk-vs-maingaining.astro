@@ -1,0 +1,245 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
+
+const title = 'Lean Bulk vs. Maingaining - Side-by-Side Comparison | BodyCompOS';
+const description = 'Compare lean bulking (controlled calorie surplus) with maingaining (maintenance calorie intake). Understand the tradeoffs in muscle gain rate, fat accumulation, and who each suits best.';
+const canonical = `${DOMAIN}/compare/lean-bulk-vs-maingaining`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: '2026-06-27',
+	dateModified: '2026-06-28',
+	author: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Editorial Board',
+		url: `${DOMAIN}/about`,
+	},
+	reviewer: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Scientific Review Board',
+		url: `${DOMAIN}/about`,
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
+	<section class="site-container py-10 sm:py-12">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/compare">Compare</a>
+			<span>/</span>
+			<span class="text-foreground">Lean Bulk vs. Maingaining</span>
+		</nav>
+
+		<!-- Hero -->
+		<div class="max-w-4xl">
+			<p class="eyebrow">Muscle Growth Strategy</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				Lean Bulk vs. Maingaining <br />
+				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Grow Faster or Stay Lean?</span>
+			</h1>
+			<!-- EEAT Attribution -->
+			<AuthorAttribution 
+				role="Peer-Reviewed sports nutrition meta-analysis comparison" 
+				references="Slater et al. 2019, Morton et al. 2018, Schoenfeld et al. 2017" 
+			/>
+		</div>
+
+		<!-- Mobile TOC Accordion (hidden on desktop) -->
+		<details class="lg:hidden mt-8 surface border border-border rounded-2xl overflow-hidden">
+			<summary class="flex items-center justify-between px-5 py-4 text-sm font-bold text-foreground cursor-pointer">
+				<span>On This Page</span>
+				<svg class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+			</summary>
+			<nav class="px-5 pb-4 space-y-1.5 text-xs border-t border-border pt-3">
+				<a href="#energy-balance-difference" class="block text-muted-foreground hover:text-accent transition-colors">1. The Energy Balance Difference</a>
+				<a href="#tradeoff-matrix" class="block text-muted-foreground hover:text-accent transition-colors">2. Side-by-Side Tradeoff Matrix</a>
+				<a href="#biological-mechanics" class="block text-muted-foreground hover:text-accent transition-colors">3. Biological Mechanics</a>
+				<a href="#how-to-choose" class="block text-muted-foreground hover:text-accent transition-colors">4. How to Choose Your Direction</a>
+			</nav>
+		</details>
+
+		<!-- Grid Layout -->
+		<div class="mt-10 max-w-5xl grid gap-8 lg:grid-cols-[1fr_300px]">
+			<div class="content-panel bg-card border border-border p-6 sm:p-8 rounded-2xl">
+				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
+					
+					<section>
+						<h2 id="energy-balance-difference" class="text-xl font-bold text-foreground mb-3">1. The Energy Balance Difference</h2>
+						<p>
+							The fundamental difference between <strong>Lean Bulking</strong> and <strong>Maingaining</strong> lies in how they manipulate energy balance to support muscle growth.
+						</p>
+						<p class="mt-3">
+							A <strong>Lean Bulk</strong> requires a controlled calorie surplus — typically 5% to 10% above your Total Daily Energy Expenditure (TDEE). This surplus provides the extra energy needed for muscle protein synthesis beyond what maintenance calories can support. The tradeoff is that some of the surplus calories will be stored as body fat, even with optimal nutrient timing.
+						</p>
+						<p class="mt-3">
+							<strong>Maingaining (Body Recomposition)</strong> targets caloric parity or a micro-surplus (0% to +5% above TDEE). The goal is to provide exactly enough energy to support muscle repair and growth from training, while minimizing fat accumulation. This approach is slower for muscle gain but produces minimal fat spillover, making it ideal for those who want to stay lean year-round.
+						</p>
+					</section>
+
+					<!-- Side-by-Side Table -->
+					<section>
+						<h2 id="tradeoff-matrix" class="text-xl font-bold text-foreground mb-4">2. Side-by-Side Tradeoff Matrix</h2>
+						<div class="overflow-x-auto rounded-xl border border-border">
+							<table class="w-full text-left border-collapse text-xs">
+								<thead>
+									<tr class="bg-muted/50 text-foreground border-b border-border">
+										<th class="p-3 font-bold">Parameter</th>
+										<th class="p-3 font-bold">Lean Bulk</th>
+										<th class="p-3 font-bold">Maingaining (Recomp)</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border/60">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Primary Goal</td>
+										<td class="p-3">Maximize muscle growth rate</td>
+										<td class="p-3">Slow muscle gain with minimal fat</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Energy Balance</td>
+										<td class="p-3">Calorie Surplus (+5% to +10% TDEE)</td>
+										<td class="p-3">Caloric Parity (0% to +5% TDEE)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Muscle Gain Rate</td>
+										<td class="p-3">0.25-0.5% body weight per week</td>
+										<td class="p-3">Very slow (0.1-0.25% per week)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Fat Gain Risk</td>
+										<td class="p-3">Moderate (some fat spillover expected)</td>
+										<td class="p-3">Minimal to none</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Protein Target</td>
+										<td class="p-3">1.6 - 2.0 g/kg body weight</td>
+										<td class="p-3">1.8 - 2.2 g/kg body weight</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Adherence Difficulty</td>
+										<td class="p-3">Low (more food, easier training)</td>
+										<td class="p-3">Moderate (scale barely moves)</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Optimal Candidates</td>
+										<td class="p-3">Intermediate lifters, low body fat</td>
+										<td class="p-3">Beginners, detrained, prefer lean look</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Typical Phase Length</td>
+										<td class="p-3">8 to 16 weeks</td>
+										<td class="p-3">12 to 24 weeks (or indefinite)</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+
+					<section>
+						<h2 id="biological-mechanics" class="text-xl font-bold text-foreground mb-3">3. Biological Mechanics</h2>
+						<p>
+							The difference between lean bulking and maingaining is ultimately about energy partitioning — how your body allocates surplus calories between muscle tissue and fat stores.
+						</p>
+						<p class="mt-3">
+							During a lean bulk, the calorie surplus drives higher rates of muscle protein synthesis (MPS) by providing a consistent energy surplus. Insulin levels are higher, which reduces muscle protein breakdown (MPB) and creates a more anabolic environment. The tradeoff is that some of the surplus inevitably gets stored as fat — this is biologically unavoidable.
+						</p>
+						<p class="mt-3">
+							During maingaining, the body relies on energy from food plus stored body fat to fuel MPS. This requires higher protein intake (1.8-2.2 g/kg) to ensure amino acids are available for muscle repair even when total energy is limited. Fat gain is minimal because there is no energy surplus to store, but MPS rates are lower, resulting in slower muscle growth.
+						</p>
+						<p class="mt-3">
+							The choice between these approaches depends on your tolerance for temporary fat gain, your training experience, and your timeline for achieving your physique goals.
+						</p>
+					</section>
+
+					<section>
+						<h2 id="how-to-choose" class="text-xl font-bold text-foreground mb-3">4. How to Choose Your Direction</h2>
+						<p>
+							Use this rule of thumb to decide:
+						</p>
+						<div class="mt-4 grid gap-4 sm:grid-cols-2">
+							<div class="surface border border-border p-4 rounded-xl">
+								<h3 class="font-bold text-foreground mb-1 text-xs">Choose Lean Bulk If:</h3>
+								<ul class="pl-4 list-disc space-y-1 text-xs">
+									<li>You have 2+ years of consistent lifting experience.</li>
+									<li>Your body fat is low (under 12% male, under 20% female).</li>
+									<li>You want to maximize muscle gain in a dedicated phase.</li>
+									<li>You have the discipline to cut later if needed.</li>
+								</ul>
+							</div>
+							<div class="surface border border-border p-4 rounded-xl">
+								<h3 class="font-bold text-foreground mb-1 text-xs">Choose Maingaining If:</h3>
+								<ul class="pl-4 list-disc space-y-1 text-xs">
+									<li>You are a beginner or returning after a break.</li>
+									<li>You prefer staying lean year-round.</li>
+									<li>You have a low tolerance for seeing the scale go up.</li>
+									<li>You are satisfied with slower, sustainable progress.</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="my-6 p-5 border border-border rounded-xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+									Not sure which approach fits you?
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Run the interactive Strategy Finder to get a personalized recommendation based on your body fat, training experience, and goals.</p>
+							</div>
+							<a href="/assess" class="button-primary text-xs shrink-0 whitespace-nowrap">Run Strategy Finder ➔</a>
+						</div>
+					</section>
+
+					<!-- YMYL Warning -->
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> This strategy comparison is for educational planning purposes. Caloric surpluses and body composition modifications alter hormone balances. Individuals with pre-existing conditions or eating disorders should obtain professional medical supervision before initiating metabolic change phases.</p>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Sidebar -->
+			<div class="space-y-6">
+				<!-- 1. On This Page (sticky TOC) -->
+				<div class="hidden lg:block sticky top-24 surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground mb-3">On This Page</h3>
+					<nav class="space-y-1.5 text-xs">
+						<a href="#energy-balance-difference" class="block text-muted-foreground hover:text-accent transition-colors">1. The Energy Balance Difference</a>
+						<a href="#tradeoff-matrix" class="block text-muted-foreground hover:text-accent transition-colors">2. Side-by-Side Tradeoff Matrix</a>
+						<a href="#biological-mechanics" class="block text-muted-foreground hover:text-accent transition-colors">3. Biological Mechanics</a>
+						<a href="#how-to-choose" class="block text-muted-foreground hover:text-accent transition-colors">4. How to Choose Your Direction</a>
+					</nav>
+				</div>
+
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Interactive Analysis</h3>
+					<p class="text-xs text-muted-foreground mt-2">Let our algorithm evaluate your biological metrics and suggest the optimal strategy.</p>
+					<a href="/assess" class="button-primary w-full text-center text-xs mt-4 block">Start Strategy Assessment</a>
+				</div>
+
+				<div class="surface border border-border p-5 rounded-2xl">
+					<h3 class="font-bold text-sm text-foreground">Other Comparisons</h3>
+					<div class="mt-3 space-y-2 text-xs">
+						<a href="/compare/clean-bulking-vs-dirty-bulking" class="block text-accent hover:underline font-medium">Clean Bulking vs. Dirty Bulking</a>
+						<a href="/compare/cut-vs-recomp" class="block text-accent hover:underline font-medium">Cut vs. Recomp</a>
+						<a href="/compare/lean-bulk-vs-aggressive-bulk" class="block text-accent hover:underline font-medium">Lean vs. Aggressive Bulk</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

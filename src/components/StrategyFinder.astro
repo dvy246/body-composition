@@ -322,12 +322,8 @@ const steps = [
 								<p class="text-xs font-bold uppercase text-accent tracking-wider">Strategy Result</p>
 								<p id="sf-res-recommended" class="mt-1 text-xl font-black text-foreground"></p>
 								<p id="sf-res-reasons" class="mt-1 text-xs text-muted-foreground"></p>
+								<p id="sf-res-goal-bias" class="text-xs text-muted-foreground mt-1"></p>
 							</div>
-							<span class="badge badge-accent shrink-0 mt-1 text-sm select-none">
-								<span id="sf-res-confidence">0</span>%
-								<br/>
-								<span class="font-normal text-[10px]">confidence</span>
-							</span>
 						</div>
 
 						<!-- Metric grid -->
@@ -426,7 +422,7 @@ const steps = [
 			</div>
 			<div>
 				<h3 class="font-bold text-foreground group-hover:text-accent transition-colors">Strategy Recommendation</h3>
-				<p class="text-sm text-muted-foreground mt-1 leading-relaxed">Cut, lean bulk, recomp, or maintain — with confidence score and alternative pathway.</p>
+				<p class="text-sm text-muted-foreground mt-1 leading-relaxed">Cut, lean bulk, recomp, or maintain — with alternative pathway.</p>
 			</div>
 			<span class="text-xs font-semibold text-accent mt-auto flex items-center gap-1">
 				Start Assessment
@@ -842,10 +838,15 @@ const steps = [
 				reasonsEl.textContent = `${rec.reasons[0]} · ${rec.reasons[1]}`;
 			}
 
+			const goalBiasEl = document.getElementById('sf-res-goal-bias');
+			if (goalBiasEl) {
+				goalBiasEl.textContent = `Your preference: ${goalLabels[rawInput.goalBias]}`;
+			}
+
 			// Alternative Option
 			const altEl = document.getElementById('sf-res-alternative');
 			if (altEl) {
-				altEl.textContent = `${goalLabels[rec.alternative]} · ${rec.alternativeConfidence}% match`;
+				altEl.textContent = goalLabels[rec.alternative];
 			}
 
 			// Pace & Timeline
@@ -864,9 +865,6 @@ const steps = [
 
 			const pHighEl = document.getElementById('sf-res-protein-high');
 			if (pHighEl) animateCounter(pHighEl, 0, proteinHigh, 800);
-
-			const confEl = document.getElementById('sf-res-confidence');
-			if (confEl) animateCounter(confEl, 0, rec.confidence, 800);
 
 			// Programmatic progress bars
 			const caloriesBar = document.getElementById('sf-res-calories-bar');

@@ -1,0 +1,395 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DOMAIN, articleSchema } from '../../data/site';
+import AuthorAttribution from '../../components/AuthorAttribution.astro';
+import Author from '../../components/Author.astro';
+import QuickAnswer from '../../components/QuickAnswer.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+
+const tocItems = [
+	{ href: '#what-is-a-deficit', label: 'What Is a Calorie Deficit', shortLabel: 'What Is a Deficit' },
+	{ href: '#why-protein-matters', label: 'Why Protein Is Critical in a Deficit', shortLabel: 'Protein in a Deficit' },
+	{ href: '#food-choices', label: 'Food Choices That Maximize Satiety', shortLabel: 'Food Choices' },
+	{ href: '#sample-day', label: 'Sample Day at Different Deficit Levels', shortLabel: 'Sample Day' },
+	{ href: '#common-mistakes', label: 'Common Mistakes', shortLabel: 'Common Mistakes' },
+	{ href: '#faq', label: 'Frequently Asked Questions', shortLabel: 'FAQ' },
+	{ href: '#next-steps', label: 'Next Steps' }
+];
+
+const toolLink = {
+	href: '/build-your-day/cutting',
+	label: 'Cutting Nutrition',
+	desc: 'Get personalized fat loss nutrition guidance based on your assessment data.',
+	buttonText: 'Open Cutting Guide'
+};
+
+const title = "How to Eat in a Calorie Deficit for Body Composition | BodyCompOS";
+const description = "Learn what to eat in a calorie deficit to lose fat while preserving muscle. Science-based food choices, portion strategies, and sample days for bodybuilders and athletes.";
+const canonical = `${DOMAIN}/guides/how-to-eat-in-a-calorie-deficit`;
+
+const faqEntries = [
+	['How big should my calorie deficit be?', 'For body composition purposes, a deficit of 15-25% below your maintenance TDEE is the standard recommendation. This typically translates to 300-500 kcal below maintenance for most people. Deficits larger than 25% accelerate muscle loss and metabolic adaptation without significantly faster fat loss over time.'],
+	['Can I build muscle in a calorie deficit?', 'Building significant muscle in a deficit is difficult for experienced lifters. Beginners and detrained individuals can experience recomposition (simultaneous fat loss and muscle gain) under specific conditions — high protein intake (2.0-2.4 g/kg), adequate training stimulus, and a modest deficit of no more than 15%.'],
+	['What foods should I prioritize in a deficit?', 'Prioritize high-protein foods (lean meats, fish, eggs, dairy, tofu), high-fiber vegetables (leafy greens, cruciferous vegetables), and slow-digesting carbohydrates (oats, quinoa, sweet potatoes, legumes). These food choices maximize satiety per calorie and provide the micronutrients needed for training performance.'],
+	['How fast will I lose weight in a deficit?', 'A sustainable rate is 0.5-1.0% of body weight per week. For a 80 kg person, this means 0.4-0.8 kg per week. Faster rates typically include disproportionate muscle loss and greater metabolic adaptation. Track weight trends over 3-4 weeks rather than daily fluctuations.'],
+	['Do I need to do cardio while in a deficit?', 'Cardio is not required for fat loss but can help create additional deficit without further reducing food intake. Low-intensity steady state (LISS) cardio like walking is preferred over high-intensity modalities during a deficit, as it preserves recovery for resistance training. Aim for 8,000-10,000 steps daily.'],
+	['How do I know when to stop my deficit?', 'Stop your deficit when you reach your target body fat percentage, when performance decreases significantly for 2+ weeks despite adequate protein, or when you have been dieting for 12-16 weeks and need a diet break. Transition to maintenance calories for 2-4 weeks before starting a new phase.'],
+];
+
+const schema = [
+	articleSchema(title, description, canonical),
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqEntries.map(([q, a]) => ({
+			'@type': 'Question',
+			name: q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: a,
+			},
+		})),
+	},
+];
+---
+
+<Layout title={title} description={description} canonical={canonical} schema={schema}>
+	<section class="site-container py-10 sm:py-12">
+		<!-- Breadcrumbs -->
+		<nav class="flex mb-6 text-xs font-semibold text-muted-foreground gap-2" aria-label="Breadcrumb">
+			<a class="hover:text-accent transition-colors" href="/">Home</a>
+			<span>/</span>
+			<a class="hover:text-accent transition-colors" href="/guides">Guides</a>
+			<span>/</span>
+			<span class="text-foreground">Eating in a Deficit</span>
+		</nav>
+
+		<!-- Content Hero -->
+		<div class="max-w-4xl">
+			<p class="eyebrow">Fat Loss Nutrition</p>
+			<h1 class="mt-3 text-4xl font-black leading-tight sm:text-5xl text-foreground">
+				How to Eat in a Calorie Deficit <br/>
+				<span class="text-accent bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">Preserve Muscle While Losing Fat</span>
+			</h1>
+			<p class="mt-5 text-lg leading-relaxed text-muted-foreground">
+				A calorie deficit is the foundation of fat loss, but how you structure your nutrition determines whether you lose mostly fat or mostly muscle. This guide covers evidence-based food choices, protein requirements, meal timing, and common pitfalls — all backed by sports nutrition research.
+			</p>
+
+			<QuickAnswer 
+				title="Direct Nutritional Answer"
+				answer="To lose fat while preserving muscle, set your calorie intake at 15-25% below maintenance TDEE, consume 2.0-2.4 g of protein per kg of body weight daily, prioritize high-fiber whole foods for satiety, and distribute protein across 4-5 meals. Track weight trends over 3-4 weeks before making adjustments."
+			/>
+
+			<!-- Author / E-E-A-T Attribution -->
+			<AuthorAttribution 
+				role="Reviewed by certified sports nutrition researchers" 
+				references="Helms et al. 2014, Aragon et al. 2017, Slater et al. 2019" 
+				published="June 2026"
+				reviewed="June 27, 2026"
+			/>
+			<p class="mt-4 text-xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				7 min read
+			</p>
+		</div>
+
+		<!-- Main editorial body with sticky left column -->
+		<div class="mt-8 lg:mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
+			<TableOfContents items={tocItems} toolLink={toolLink} />
+
+			<!-- Right column: Main Editorial content -->
+			<div class="content-panel bg-card border border-border p-6 sm:p-10 rounded-2xl max-w-4xl shadow-sm">
+				<div class="prose-lite space-y-8 text-sm text-muted-foreground leading-relaxed">
+
+					<!-- 1. What Is a Calorie Deficit -->
+					<section>
+						<h2 id="what-is-a-deficit" class="text-xl font-bold text-foreground mb-3">1. What Is a Calorie Deficit</h2>
+						<p>
+							A calorie deficit occurs when your energy intake from food and drink is less than your total daily energy expenditure (TDEE). Your body makes up the difference by oxidizing stored energy — primarily body fat and, to a lesser extent, muscle tissue if protein intake is insufficient.
+						</p>
+						<p class="mt-3">
+							For body composition purposes, the goal of a deficit is to maximize fat loss while minimizing muscle loss. This requires precise manipulation of three variables: deficit size (calories below maintenance), protein intake (g per kg of body weight), and training stimulus (resistance training to signal muscle preservation).
+						</p>
+						<p class="mt-3">
+							The standard recommendation for a controlled cut is a deficit of <strong>15-25% below maintenance TDEE</strong>. For most people, this translates to 300-500 kcal below maintenance. Larger deficits accelerate short-term weight loss but increase muscle loss, metabolic adaptation, and the risk of rebound weight gain.
+						</p>
+						<div class="mt-4 rounded-xl border-l-4 border-accent bg-accent/5 p-4 text-xs">
+							<p class="font-bold text-foreground flex items-center gap-1.5">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								Key Insight
+							</p>
+							<p class="mt-1 text-muted-foreground">
+								Your maintenance TDEE is not static — it decreases as you lose weight. Recalculate your targets after every 5 kg of weight loss to maintain the correct deficit size. Use our TDEE Calculator to get your updated numbers.
+							</p>
+						</div>
+					</section>
+
+					<!-- 2. Why Protein Is Critical in a Deficit -->
+					<section>
+						<h2 id="why-protein-matters" class="text-xl font-bold text-foreground mb-3">2. Why Protein Is Critical in a Deficit</h2>
+						<p>
+							Protein is the single most important macronutrient during a calorie deficit. When you are in negative energy balance, your body increases amino acid oxidation to maintain glucose homeostasis via gluconeogenesis. Without adequate dietary protein, the amino acids are stripped from your skeletal muscle tissue — effectively burning muscle for fuel.
+						</p>
+						<p class="mt-3">
+							Research by Helms et al. (2014) in the Journal of the International Society of Sports Nutrition recommends that athletes in a calorie deficit consume <strong>2.0 to 2.4 g of protein per kg of body weight</strong> (0.91-1.09 g/lb). This is higher than the general recommendation of 1.6-2.2 g/kg for maintenance or surplus phases.
+						</p>
+						<p class="mt-3">
+							Higher protein intake during a deficit also improves satiety, increases the thermic effect of food (TEF), and supports immune function. The TEF of protein is 20-30%, compared to 5-10% for carbohydrates and 0-3% for fat — meaning a higher protein intake effectively increases your daily energy expenditure.
+						</p>
+						<div class="my-6 p-5 border border-border rounded-xl bg-accent/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+							<div>
+								<h4 class="font-bold text-foreground text-sm flex items-center gap-2">
+									<svg class="text-accent shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+									Calculate Your Protein Target
+								</h4>
+								<p class="text-xs text-muted-foreground mt-1">Get precise protein recommendations for your cutting phase based on your body weight.</p>
+							</div>
+							<a href="/calculators/protein-calculator" class="button-primary text-xs shrink-0 whitespace-nowrap">Protein Calculator ➔</a>
+						</div>
+					</section>
+
+					<!-- 3. Food Choices That Maximize Satiety -->
+					<section>
+						<h2 id="food-choices" class="text-xl font-bold text-foreground mb-3">3. Food Choices That Maximize Satiety</h2>
+						<p>
+							The biggest challenge of a calorie deficit is hunger management. Choosing foods with high satiety per calorie — meaning they make you feel full for the least caloric cost — is the key to adherence.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Food Category</th>
+										<th class="p-3">Examples</th>
+										<th class="p-3">Why It Helps</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Lean Proteins</td>
+										<td class="p-3 font-mono">Chicken breast, turkey, fish, egg whites, Greek yogurt, tofu</td>
+										<td class="p-3">High TEF, high satiety, muscle preservation</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">High-Volume Vegetables</td>
+										<td class="p-3 font-mono">Leafy greens, broccoli, cauliflower, zucchini, bell peppers</td>
+										<td class="p-3">Bulk without calories, fiber slows digestion</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Slow-Digesting Carbs</td>
+										<td class="p-3 font-mono">Oats, quinoa, sweet potatoes, brown rice, legumes</td>
+										<td class="p-3">Steady energy, fiber content, sustained fullness</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Healthy Fats</td>
+										<td class="p-3 font-mono">Avocado, nuts, olive oil, fatty fish</td>
+										<td class="p-3">Hormone function, fat-soluble vitamin absorption</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Low-Calorie Beverages</td>
+										<td class="p-3 font-mono">Water, black coffee, unsweetened tea, sparkling water</td>
+										<td class="p-3">Hydration, appetite suppression, zero calories</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							A practical strategy is to build each meal around a lean protein source, fill half your plate with vegetables, add a moderate portion of slow-digesting carbohydrates, and include a small amount of healthy fat. This template ensures satiety, nutrient density, and adherence to your calorie target.
+						</p>
+					</section>
+
+					<!-- 4. Sample Day at Different Deficit Levels -->
+					<section>
+						<h2 id="sample-day" class="text-xl font-bold text-foreground mb-3">4. Sample Day at Different Deficit Levels</h2>
+						<p>
+							Here are examples of what a day of eating might look like at different deficit levels. These are educational examples based on standard nutrition guidelines — not personalized prescriptions.
+						</p>
+						<div class="my-5 overflow-x-auto">
+							<table class="w-full text-left text-xs border-collapse">
+								<thead>
+									<tr class="border-b border-border bg-muted/40 font-semibold text-foreground">
+										<th class="p-3">Meal</th>
+										<th class="p-3">~1,800 kcal (moderate deficit)</th>
+										<th class="p-3">~2,200 kcal (small deficit)</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-border">
+									<tr>
+										<td class="p-3 font-bold text-foreground">Breakfast</td>
+										<td class="p-3">3 eggs + 1 cup spinach + 1 slice whole wheat toast</td>
+										<td class="p-3">3 eggs + 1/2 cup oats + 1 scoop whey + berries</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Lunch</td>
+										<td class="p-3">150g chicken breast + 2 cups mixed greens + 1 tbsp vinaigrette</td>
+										<td class="p-3">150g chicken breast + 1 cup quinoa + 2 cups roasted vegetables</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Dinner</td>
+										<td class="p-3">150g white fish + 2 cups broccoli + 1/2 cup brown rice</td>
+										<td class="p-3">150g salmon + 1 cup sweet potato + 2 cups asparagus</td>
+									</tr>
+									<tr class="bg-muted/10">
+										<td class="p-3 font-bold text-foreground">Snacks</td>
+										<td class="p-3">1 apple + 1 tbsp almond butter OR 1 scoop whey</td>
+										<td class="p-3">200g Greek yogurt + berries + 1 scoop whey</td>
+									</tr>
+									<tr>
+										<td class="p-3 font-bold text-foreground">Protein Total</td>
+										<td class="p-3 font-mono text-success">~150 g</td>
+										<td class="p-3 font-mono text-success">~180 g</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p>
+							These examples show that even at different calorie levels, protein stays high and meals are built around whole foods. The key difference is portion sizes of carbohydrates and fats, not food quality.
+						</p>
+					</section>
+
+					<!-- 5. Common Mistakes -->
+					<section>
+						<h2 id="common-mistakes" class="text-xl font-bold text-foreground mb-3">5. Common Mistakes</h2>
+						<div class="space-y-4">
+							<div class="rounded-xl border border-border p-4">
+								<p class="font-bold text-foreground text-xs flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-destructive shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+									Too Large a Deficit
+								</p>
+								<p class="mt-1 text-xs text-muted-foreground">Cutting calories too aggressively (30%+ below maintenance) accelerates muscle loss, crashes training performance, and triggers metabolic adaptation that slows fat loss over time. Stick to 15-25% below maintenance.</p>
+							</div>
+							<div class="rounded-xl border border-border p-4">
+								<p class="font-bold text-foreground text-xs flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-destructive shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+									Too Little Protein
+								</p>
+								<p class="mt-1 text-xs text-muted-foreground">Dropping protein to save calories is counterproductive. Protein has the highest satiety and thermic effect of all macronutrients. Keep protein at 2.0-2.4 g/kg even if you need to reduce carbs or fats further.</p>
+							</div>
+							<div class="rounded-xl border border-border p-4">
+								<p class="font-bold text-foreground text-xs flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-destructive shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+									Ignoring Fiber
+								</p>
+								<p class="mt-1 text-xs text-muted-foreground">Fiber is critical for satiety, digestion, and blood sugar regulation during a deficit. Target 25-35 g of fiber daily from vegetables, fruits, legumes, and whole grains. Low-fiber diets increase hunger and constipation.</p>
+							</div>
+							<div class="rounded-xl border border-border p-4">
+								<p class="font-bold text-foreground text-xs flex items-center gap-1.5">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-destructive shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+									Not Adjusting After Weight Loss
+								</p>
+								<p class="mt-1 text-xs text-muted-foreground">As you lose weight, your maintenance TDEE decreases. A deficit that worked at 90 kg may be maintenance at 80 kg. Recalculate your targets after every 5 kg of weight loss using the Calorie Calculator.</p>
+							</div>
+						</div>
+					</section>
+
+					<!-- 6. FAQ -->
+					<section>
+						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">6. Frequently Asked Questions</h2>
+						<div class="space-y-3">
+							{faqEntries.map(([question, answer]) => (
+								<div class="rounded-xl border border-border bg-card p-5">
+									<h3 class="font-bold text-sm text-foreground">{question}</h3>
+									<p class="mt-2 text-xs leading-relaxed text-muted-foreground">{answer}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<!-- 7. Next Steps -->
+					<section>
+						<h2 id="next-steps" class="text-xl font-bold text-foreground mb-3">7. Next Steps</h2>
+						<p class="mb-4">Use these tools and guides to build your complete cutting nutrition strategy:</p>
+						<div class="grid gap-3 sm:grid-cols-2">
+							<a href="/build-your-day/cutting" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">1</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Build Your Cutting Day</p>
+								<p class="mt-1 text-xs text-muted-foreground">Personalized fat loss nutrition based on your targets</p>
+							</a>
+							<a href="/calculators/calorie-calculator" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">2</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Set Your Calorie Target</p>
+								<p class="mt-1 text-xs text-muted-foreground">Calculate your personalized deficit</p>
+							</a>
+							<a href="/guides/protein-nutrition" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">3</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Read Protein Guide</p>
+								<p class="mt-1 text-xs text-muted-foreground">Deep dive into protein science for fat loss</p>
+							</a>
+							<a href="/dashboard" class="surface border border-border rounded-xl p-4 text-center group hover:border-accent/40 transition-colors">
+								<span class="flex h-7 w-7 items-center justify-center rounded-full bg-accent/10 text-accent text-xs font-bold mx-auto">4</span>
+								<p class="mt-2 text-xs font-bold text-foreground group-hover:text-accent transition-colors">Track Your Progress</p>
+								<p class="mt-1 text-xs text-muted-foreground">Weekly check-ins and trend analysis</p>
+							</a>
+						</div>
+						<div class="mt-6 rounded-xl border border-border bg-muted/20 p-5">
+							<p class="font-bold text-foreground text-xs mb-2">Related Reading</p>
+							<div class="grid sm:grid-cols-2 gap-2 text-xs">
+								<a href="/guides/protein-nutrition" class="text-accent hover:underline">Protein Nutrition Guide →</a>
+								<a href="/guides/high-protein-diet-for-body-composition" class="text-accent hover:underline">High Protein Diet Guide →</a>
+								<a href="/guides/maintenance-calories" class="text-accent hover:underline">Maintenance Calories Guide →</a>
+								<a href="/guides/should-i-cut-or-bulk" class="text-accent hover:underline">Should I Cut or Bulk Guide →</a>
+							</div>
+						</div>
+					</section>
+
+					<!-- YMYL Disclaimer -->
+					<div class="border-t border-border pt-6 text-xs text-muted-foreground">
+						<p><strong>Educational Disclaimer:</strong> The information in this guide is for educational purposes only. Calorie restriction and body composition changes may affect hormone levels, metabolic rate, and psychological well-being. Individuals with a history of eating disorders, metabolic conditions, or other clinical concerns should consult a qualified medical professional before starting any calorie-restricted diet.</p>
+					</div>
+
+					<!-- Author Bio for EEAT -->
+					<div class="border-t border-border pt-6">
+						<Author />
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	// Scroll highlight observer for the sticky left Table of Contents
+	const outlineNav = document.getElementById('sticky-outline-nav');
+	if (outlineNav) {
+		const links = outlineNav.querySelectorAll('a[href^="#"]');
+		const headings = Array.from(links).map(link => {
+			const id = link.getAttribute('href');
+			return id ? document.querySelector(id) : null;
+		}).filter(Boolean) as Element[];
+
+		const observerOptions = {
+			root: null,
+			rootMargin: '-10% 0px -75% 0px',
+			threshold: 0
+		};
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute('id');
+					links.forEach(link => {
+						const href = link.getAttribute('href');
+						if (href === `#${id}`) {
+							link.classList.add('active-toc-link');
+							link.classList.remove('text-muted-foreground');
+							link.classList.add('text-accent');
+						} else {
+							link.classList.remove('active-toc-link');
+							link.classList.add('text-muted-foreground');
+							link.classList.remove('text-accent');
+						}
+					});
+				}
+			});
+		}, observerOptions);
+
+		headings.forEach(h => observer.observe(h));
+	}
+</script>
+
+<style>
+	.active-toc-link {
+		border-left-color: var(--accent) !important;
+		font-weight: 700;
+	}
+</style>
