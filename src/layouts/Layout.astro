@@ -40,7 +40,7 @@ const organizationSchema = {
 	description: SITE.description,
 	contactPoint: {
 		'@type': 'ContactPoint',
-		email: 'hello@bodycompos.com',
+		email: 'hello@bodystrategyhub.com',
 		contactType: 'customer support',
 		areaServed: 'US',
 		availableLanguage: 'English',
@@ -197,7 +197,10 @@ function isCurrent(href: string) {
 			document.documentElement.dataset.theme = storedTheme || (systemDark ? 'dark' : 'light');
 		</script>
 		{SITE.adsenseId && (
-			<script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`} crossorigin="anonymous"></script>
+			<>
+				<script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseId}`} crossorigin="anonymous"></script>
+				<meta name="google-adsense-account" content={SITE.adsenseId} />
+			</>
 		)}
 	</head>
 	<body>

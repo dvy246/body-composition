@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-	site: 'https://bodycompos.com',
+	site: 'https://bodystrategyhub.com',
 	integrations: [],
 	redirects: {
 		'/calculators/bmr-calculator': '/calculators/tdee-calculator',

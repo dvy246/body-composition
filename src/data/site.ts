@@ -1,10 +1,10 @@
 export const SITE = {
 	name: 'BodyCompOS',
-	origin: 'https://bodycompos.com',
+	origin: 'https://bodystrategyhub.com',
 	description:
 		'BodyCompOS is a local-first body composition strategy platform for assessment, calorie and protein targets, forecasting, and progress reassessment.',
 	lastUpdated: '2026-06-27',
-	adsenseId: '', // Set your Google AdSense Publisher ID (e.g. 'ca-pub-XXXXXXXXXXXXXXXX') here to enable Auto Ads
+	adsenseId: 'ca-pub-5910777021067126', // Set your Google AdSense Publisher ID (e.g. 'ca-pub-XXXXXXXXXXXXXXXX') here to enable Auto Ads
 };
 
 export const DOMAIN = SITE.origin;
