@@ -5,8 +5,7 @@ export default defineConfig({
 	site: 'https://bodystrategyhub.com',
 	integrations: [],
 	redirects: {
-		'/calculators/bmr-calculator': '/calculators/tdee-calculator',
-		'/calculators/body-fat-calculator': '/calculators/body-composition-calculator',
+		'/calculators/basal-metabolic-rate-calculator': '/calculators/bmr-calculator',
 		'/terms': '/terms-conditions',
 		'/privacy': '/privacy-policy',
 	},

@@ -1,11 +1,21 @@
 import type { APIRoute } from 'astro';
-import { allPagePaths, absoluteUrl } from '../data/site';
+import { allPagePaths, absoluteUrl, calculators } from '../data/site';
 
 export const GET: APIRoute = () => {
 	const todayStr = new Date().toISOString().slice(0, 10);
 	
 	const xmlUrls = allPagePaths
-		.filter(path => path !== 'dashboard')
+		.filter(path => {
+			if (path === 'dashboard') return false;
+			if (path.startsWith('calculators/')) {
+				const slug = path.replace('calculators/', '');
+				const calc = calculators.find((c) => c.slug === slug);
+				if (calc && calc.canonicalUrl && !calc.canonicalUrl.endsWith(`/calculators/${slug}`)) {
+					return false;
+				}
+			}
+			return true;
+		})
 		.map(path => {
 			const loc = absoluteUrl(path === '' ? '' : `/${path}`);
 			const changefreq = path === '' ? 'daily' : 'weekly';
