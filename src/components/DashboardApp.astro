@@ -1943,6 +1943,22 @@
 				goalWeightInput.value = String(goalWeightVal);
 				goalWeightInput.min = dashboardUnit === 'imperial' ? '44' : '20';
 				goalWeightInput.max = dashboardUnit === 'imperial' ? '550' : '250';
+				goalWeightInput.addEventListener('change', () => {
+					const latestVal = getLatestAssessment();
+					if (latestVal) {
+						const rawVal = Number(goalWeightInput.value);
+						const valKg = dashboardUnit === 'metric' ? rawVal : lbToKg(rawVal);
+						latestVal.goalWeight = round(valKg, 1);
+						localStorage.setItem('bodycompos.latestAssessment', JSON.stringify(latestVal));
+
+						const history = JSON.parse(localStorage.getItem('bodycompos.assessments') || '[]');
+						if (history.length > 0) {
+							history[0].goalWeight = round(valKg, 1);
+							localStorage.setItem('bodycompos.assessments', JSON.stringify(history));
+						}
+						render();
+					}
+				});
 			}
 		}
 

@@ -313,7 +313,6 @@ export const calculators: Calculator[] = [
 		interpretation: 'Eat at this calorie level to keep your weight stable. If weight changes over 3 weeks, your actual maintenance differs.',
 		related: ['calorie-calculator', 'daily-calorie-needs-calculator'],
 		faqs: defaultFaqs,
-		canonicalUrl: `${DOMAIN}/calculators/tdee-calculator`
 	},
 	{
 		slug: 'calorie-deficit-calculator',
@@ -331,7 +330,6 @@ export const calculators: Calculator[] = [
 			['Is a 1000 calorie deficit too big?', 'Yes. For most people, a 1000 calorie deficit is too aggressive, as it forces the body to burn skeletal muscle tissue for fuel, slows thyroid production, and triggers unmanageable hunger.'],
 			...defaultFaqs
 		],
-		canonicalUrl: `${DOMAIN}/calculators/weight-loss-calories-calculator`
 	},
 	{
 		slug: 'calorie-surplus-calculator',
@@ -349,7 +347,6 @@ export const calculators: Calculator[] = [
 			['Do I need to eat in a surplus on rest days?', 'Yes. Muscle recovery and synthesis take up to 48 hours following a resistance training session, so keeping calories in a consistent surplus supports muscle growth.'],
 			...defaultFaqs
 		],
-		canonicalUrl: `${DOMAIN}/calculators/weight-gain-calories-calculator`
 	},
 	{
 		slug: 'target-calorie-calculator',
@@ -363,7 +360,6 @@ export const calculators: Calculator[] = [
 		interpretation: 'Consistently follow this daily calorie target to direct body composition changes.',
 		related: ['tdee-calculator', 'calorie-calculator'],
 		faqs: defaultFaqs,
-		canonicalUrl: `${DOMAIN}/calculators/calorie-calculator`
 	},
 	{
 		slug: 'daily-calorie-needs-calculator',
@@ -377,7 +373,6 @@ export const calculators: Calculator[] = [
 		interpretation: 'Your total calorie burn budget. Use this as the foundation to design deficits or surpluses.',
 		related: ['maintenance-calorie-calculator', 'tdee-calculator'],
 		faqs: defaultFaqs,
-		canonicalUrl: `${DOMAIN}/calculators/tdee-calculator`
 	},
 	{
 		slug: 'weight-loss-calories-calculator',
