@@ -5,9 +5,32 @@ import { DOMAIN } from '../../data/site';
 const title = "Phase Transition Calculator - Cut to Bulk Bridge | BodyCompOS";
 const description = "Calculate your transition phase parameters when shifting between calorie deficits (cutting) and surpluses (bulking) to optimize hormone recovery.";
 const canonical = `${DOMAIN}/tools/phase-transition`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: title,
+	description: description,
+	url: canonical,
+	applicationCategory: 'HealthApplication',
+	operatingSystem: 'All',
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'USD',
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
 	<section class="site-container py-10 sm:py-16">
 		<div class="max-w-3xl mx-auto">
 			<!-- Breadcrumbs -->

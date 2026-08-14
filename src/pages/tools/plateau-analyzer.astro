@@ -5,9 +5,32 @@ import { DOMAIN } from '../../data/site';
 const title = "Weight Loss Plateau Analyzer - Deficit Diagnostics | BodyCompOS";
 const description = "Answer questions about your calorie deficit, tracking precision, and daily activity to diagnose your fat loss plateau and get a step-by-step course correction plan.";
 const canonical = `${DOMAIN}/tools/plateau-analyzer`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: title,
+	description: description,
+	url: canonical,
+	applicationCategory: 'HealthApplication',
+	operatingSystem: 'All',
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'USD',
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
 	<section class="site-container py-10 sm:py-16">
 		<div class="max-w-3xl mx-auto">
 			<!-- Breadcrumbs -->

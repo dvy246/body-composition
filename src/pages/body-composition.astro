@@ -21,7 +21,7 @@ const pillarSchema = {
 	description,
 	datePublished: '2026-06-26',
 	dateModified: '2026-06-26',
-	author: { '@type': 'Person', name: 'BodyCompOS Editorial Board', url: `${DOMAIN}/about` },
+	author: { '@type': 'Organization', name: 'BodyCompOS Editorial Board', url: `${DOMAIN}/about` },
 	publisher: { '@type': 'Organization', name: 'BodyCompOS', logo: { '@type': 'ImageObject', url: `${DOMAIN}/favicon.svg` } },
 	hasPart: [
 		...guideLinks.map(g => ({ '@type': 'Article', headline: g.title, description: g.desc, url: `${DOMAIN}${g.href}` })),

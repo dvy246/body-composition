@@ -73,14 +73,6 @@ const schema = [
 			url: `${DOMAIN}${s.href}`,
 		})),
 	},
-	{
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: DOMAIN },
-			{ '@type': 'ListItem', position: 2, name: 'Build Your Day', item: canonical },
-		],
-	},
 ];
 ---
 

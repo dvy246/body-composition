@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CalculatorTool from '../../components/CalculatorTool.astro';
+import QuickAnswer from '../../components/QuickAnswer.astro';
 import { calculators, DOMAIN } from '../../data/site';
 import { calculatorArticles } from '../../data/calculatorContent';
 
@@ -51,6 +52,8 @@ const webAppSchema = {
 const relatedCalcs = calculator.related
 	? calculator.related.map((slug) => calculators.find((c) => c.slug === slug)).filter(Boolean)
 	: [];
+
+const directAnswer = calculator.description;
 ---
 
 <Layout
@@ -68,6 +71,9 @@ const relatedCalcs = calculator.related
 			<span>/</span>
 			<span class="text-foreground">{calculator.title}</span>
 		</nav>
+
+		<!-- Direct Answer for AEO & Featured Snippets -->
+		<QuickAnswer title={`${calculator.title} Direct Overview`} answer={directAnswer} />
 
 		<!-- Active Calculator Tool -->
 		<CalculatorTool 

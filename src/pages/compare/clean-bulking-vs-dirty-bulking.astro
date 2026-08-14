@@ -6,9 +6,36 @@ import AuthorAttribution from '../../components/AuthorAttribution.astro';
 const title = "Clean Bulking vs Dirty Bulking Strategy Comparison | BodyCompOS";
 const description = "Understand the tradeoffs of a controlled surplus (clean bulking) vs. an unconstrained surplus (dirty bulking) for lean muscle growth.";
 const canonical = `${DOMAIN}/compare/clean-bulking-vs-dirty-bulking`;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: '2026-06-25',
+	dateModified: '2026-06-27',
+	author: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Editorial Board',
+		url: `${DOMAIN}/about`,
+	},
+	reviewer: {
+		'@type': 'Organization',
+		name: 'BodyCompOS Scientific Review Board',
+		url: `${DOMAIN}/about`,
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
+};
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} schema={[schema]}>
 	<section class="site-container py-10 sm:py-16">
 		<div class="max-w-4xl mx-auto">
 			<!-- Breadcrumbs -->

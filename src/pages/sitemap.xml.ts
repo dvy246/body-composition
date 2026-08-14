@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
-import { allPagePaths, absoluteUrl, calculators } from '../data/site';
+import { allPagePaths, absoluteUrl, calculators, SITE } from '../data/site';
 
 export const GET: APIRoute = () => {
-	const todayStr = new Date().toISOString().slice(0, 10);
+	const lastmodDate = SITE.lastUpdated || '2026-06-27';
 	
 	const xmlUrls = allPagePaths
 		.filter(path => {
@@ -23,7 +23,7 @@ export const GET: APIRoute = () => {
 		
 		return `  <url>
     <loc>${loc}</loc>
-    <lastmod>${todayStr}</lastmod>
+    <lastmod>${lastmodDate}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;

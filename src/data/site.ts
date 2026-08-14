@@ -537,14 +537,20 @@ export function getCalculator(slug: string) {
 	return calculators.find((calculator) => calculator.slug === slug);
 }
 
-export function articleSchema(title: string, description: string, canonical: string) {
+export function articleSchema(
+	title: string,
+	description: string,
+	canonical: string,
+	datePublished = '2026-06-25',
+	dateModified = '2026-06-27'
+) {
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: title,
 		description,
-		datePublished: '2026-06-25',
-		dateModified: '2026-06-27',
+		datePublished,
+		dateModified,
 		author: {
 			'@type': 'Organization',
 			name: 'BodyCompOS',

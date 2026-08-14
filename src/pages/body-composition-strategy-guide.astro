@@ -49,43 +49,28 @@ const faqSchema = {
 	mainEntity: [
 		{
 			'@type': 'Question',
-			name: 'Should beginners cut or bulk?',
-			acceptedAnswer: { '@type': 'Answer', text: 'It depends on starting body fat. Beginners with higher body fat benefit more from a cut. Beginners who are already lean can lean bulk. Many beginners can also recomp (build muscle while losing fat) because their bodies are highly responsive to new training.' },
+			name: 'What is the optimal duration for each body composition phase?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Cutting phases typically run 8 to 16 weeks to prevent metabolic adaptation and diet fatigue. Lean bulking phases should last 16 to 24+ weeks to allow measurable muscle accretion. Maintenance bridge phases should last 2 to 6 weeks between intense phases.' },
 		},
 		{
 			'@type': 'Question',
-			name: 'Can I build muscle while losing fat?',
-			acceptedAnswer: { '@type': 'Answer', text: 'Yes — this is called body recomposition. It is most effective for beginners, people returning after a break, and individuals with higher body fat. Advanced lifters cannot build significant muscle in a deficit.' },
+			name: 'Why is a maintenance bridge phase essential after a cut?',
+			acceptedAnswer: { '@type': 'Answer', text: 'A maintenance phase normalizes thyroid hormones, leptin levels, and resting metabolic rate while establishing a new metabolic baseline before introducing a caloric surplus for muscle growth.' },
 		},
 		{
 			'@type': 'Question',
-			name: 'How long should I stay in a calorie deficit?',
-			acceptedAnswer: { '@type': 'Answer', text: 'A typical cut lasts 8-16 weeks. Beyond 16 weeks, diet fatigue and metabolic adaptation make further progress difficult. If you still have fat to lose after 16 weeks, take a 4-6 week maintenance break before starting another cut phase.' },
+			name: 'How should I track body composition progress when scale weight stalls?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Track waist-to-height circumference, standardized progress photos under consistent lighting, and gym performance logs. During recomposition, muscle gain offsets fat loss on the scale while body dimensions and leanness visibly improve.' },
 		},
 		{
 			'@type': 'Question',
-			name: 'How often should I recalculate calories?',
-			acceptedAnswer: { '@type': 'Answer', text: 'Recalculate after every 5-7 kg of weight change, or every 4-6 weeks during a cut or bulk. Your maintenance calories drift as your weight changes.' },
+			name: 'When and how should I adjust caloric targets during a phase?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Recalculate calories every 4 to 6 weeks or after every 5% to 7% change in body weight. As weight shifts, your basal metabolic rate and the thermic cost of movement change accordingly.' },
 		},
 		{
 			'@type': 'Question',
-			name: 'What is body recomposition?',
-			acceptedAnswer: { '@type': 'Answer', text: 'Body recomposition is the process of losing fat and gaining muscle at the same time. It requires eating near maintenance calories with high protein and consistent resistance training. Progress is slower than dedicated phases.' },
-		},
-		{
-			'@type': 'Question',
-			name: 'Should skinny fat people cut or bulk?',
-			acceptedAnswer: { '@type': 'Answer', text: 'Skinny fat describes low muscle mass with moderate body fat. A lean bulk is usually better — building muscle improves body composition more effectively than cutting. Beginners in this category often see strong recomposition results during their first 6-12 months of consistent training.' },
-		},
-		{
-			'@type': 'Question',
-			name: 'Do I need to know my body fat percentage?',
-			acceptedAnswer: { '@type': 'Answer', text: 'It helps significantly. If you do not know yours, the Body Fat Calculator uses waist and neck measurements to estimate it (Navy Method). You can also use the Strategy Finder with an estimate and adjust later.' },
-		},
-		{
-			'@type': 'Question',
-			name: 'How do I know when to switch strategies?',
-			acceptedAnswer: { '@type': 'Answer', text: 'Switch when you reach your goal (target body fat or weight), when progress stalls for 3+ weeks despite high adherence, or when diet fatigue becomes unmanageable. Do not switch based on a single week of data.' },
+			name: 'What is the difference between phased periodization and recomposition?',
+			acceptedAnswer: { '@type': 'Answer', text: 'Phased periodization alternates dedicated fat loss (cutting) and muscle building (bulking) blocks for faster directional progress. Recomposition works simultaneously at maintenance calories, which is best for novices and detrained lifters.' },
 		},
 	],
 };
@@ -840,36 +825,24 @@ const howToSchema = {
 						<h2 id="faq" class="text-xl font-bold text-foreground mb-3">8. Frequently Asked Questions</h2>
 						<div class="space-y-3">
 							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">Should beginners cut or bulk?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">It depends on starting body fat. Beginners with higher body fat benefit more from a cut. Beginners who are already lean can lean bulk. Many beginners can also recomp (build muscle while losing fat) because their bodies are highly responsive to new training. The <a href="/assess" class="text-accent underline hover:no-underline">Strategy Finder</a> accounts for training experience in its recommendation.</p>
+								<h3 class="font-bold text-sm text-foreground">What is the optimal duration for each body composition phase?</h3>
+								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Cutting phases typically run 8 to 16 weeks to prevent metabolic adaptation and diet fatigue. Lean bulking phases should last 16 to 24+ weeks to allow measurable muscle accretion. Maintenance bridge phases should last 2 to 6 weeks between intense phases.</p>
 							</div>
 							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">Can I build muscle while losing fat?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Yes — this is called body recomposition. It is most effective for beginners, people returning after a break, and individuals with higher body fat. Advanced lifters cannot build significant muscle in a deficit. See the recomp section above and the <a href="/guides/body-recomposition" class="text-accent underline hover:no-underline">Body Recomposition Guide</a>.</p>
+								<h3 class="font-bold text-sm text-foreground">Why is a maintenance bridge phase essential after a cut?</h3>
+								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">A maintenance phase normalizes thyroid hormones, leptin levels, and resting metabolic rate while establishing a new metabolic baseline before introducing a caloric surplus for muscle growth. See the <a href="/calculators/maintenance-calorie-calculator" class="text-accent underline hover:no-underline">Maintenance Calorie Calculator</a>.</p>
 							</div>
 							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">How long should I stay in a calorie deficit?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">A typical cut lasts 8-16 weeks. Beyond 16 weeks, diet fatigue and metabolic adaptation make further progress difficult. If you still have fat to lose after 16 weeks, take a 4-6 week maintenance break before starting another cut phase.</p>
+								<h3 class="font-bold text-sm text-foreground">How should I track body composition progress when scale weight stalls?</h3>
+								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Track waist-to-height circumference, standardized progress photos under consistent lighting, and gym performance logs. During recomposition, muscle gain offsets fat loss on the scale while body dimensions and leanness visibly improve. The <a href="/dashboard" class="text-accent underline hover:no-underline">Dashboard</a> helps track longitudinal trends.</p>
 							</div>
 							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">How often should I recalculate calories?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Recalculate after every 5-7 kg of weight change, or every 4-6 weeks during a cut or bulk. Your maintenance calories drift as your weight changes. Use the <a href="/calculators/maintenance-calorie-calculator" class="text-accent underline hover:no-underline">Maintenance Calorie Calculator</a> for updated numbers.</p>
+								<h3 class="font-bold text-sm text-foreground">When and how should I adjust caloric targets during a phase?</h3>
+								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Recalculate calories every 4 to 6 weeks or after every 5% to 7% change in body weight. As weight shifts, your basal metabolic rate and the thermic cost of movement change accordingly.</p>
 							</div>
 							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">What is body recomposition?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Body recomposition is the process of losing fat and gaining muscle at the same time. It requires eating near maintenance calories with high protein and consistent resistance training. Progress is slower than dedicated phases. The <a href="/calculators/body-recomposition-calculator" class="text-accent underline hover:no-underline">Recomposition Calculator</a> can help set starting targets. See the <a href="/guides/body-recomposition" class="text-accent underline hover:no-underline">full guide</a> for details.</p>
-							</div>
-							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">Should skinny fat people cut or bulk?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Skinny fat describes low muscle mass with moderate body fat. A lean bulk is usually better — building muscle improves body composition more effectively than cutting. Beginners in this category often see strong recomposition results during their first 6-12 months of consistent training.</p>
-							</div>
-							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">Do I need to know my body fat percentage?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">It helps significantly. If you do not know yours, the <a href="/calculators/body-fat-calculator" class="text-accent underline hover:no-underline">Body Fat Calculator</a> uses waist and neck measurements to estimate it (Navy Method). You can also use the Strategy Finder with an estimate and adjust later.</p>
-							</div>
-							<div class="rounded-xl border border-border bg-card p-5">
-								<h3 class="font-bold text-sm text-foreground">How do I know when to switch strategies?</h3>
-								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Switch when you reach your goal (target body fat or weight), when progress stalls for 3+ weeks despite high adherence, or when diet fatigue becomes unmanageable. Do not switch based on a single week of data — the <a href="/dashboard" class="text-accent underline hover:no-underline">Dashboard</a> helps track trends.</p>
+								<h3 class="font-bold text-sm text-foreground">What is the difference between phased periodization and recomposition?</h3>
+								<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Phased periodization alternates dedicated fat loss (cutting) and muscle building (bulking) blocks for faster directional progress. Recomposition works simultaneously at maintenance calories, which is best for novices and detrained lifters. See our <a href="/guides/body-recomposition" class="text-accent underline hover:no-underline">Body Recomposition Guide</a>.</p>
 							</div>
 						</div>
 					</section>
