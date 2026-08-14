@@ -4,10 +4,25 @@ import { DOMAIN } from '../data/site';
 
 const assessSchema = {
 	'@context': 'https://schema.org',
-	'@type': 'WebPage',
+	'@type': 'WebApplication',
 	name: 'Body Composition Strategy Finder - Free Assessment | BodyCompOS',
 	description: 'Get a personalized body composition strategy recommendation — cut, bulk, recomp, or maintain — with calorie targets, protein range, pace estimate, and timeline.',
 	url: `${DOMAIN}/assess`,
+	applicationCategory: 'HealthApplication',
+	operatingSystem: 'All',
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'USD',
+	},
+	publisher: {
+		'@type': 'Organization',
+		name: 'BodyCompOS',
+		logo: {
+			'@type': 'ImageObject',
+			url: `${DOMAIN}/favicon.svg`,
+		},
+	},
 };
 ---
 

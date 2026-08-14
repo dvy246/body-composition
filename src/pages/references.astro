@@ -168,10 +168,22 @@ const references = [
 
 const schema = {
 	'@context': 'https://schema.org',
-	'@type': 'WebPage',
+	'@type': 'CollectionPage',
 	name: pageTitle,
 	description: pageDescription,
 	url: canonicalUrl,
+	mainEntity: {
+		'@type': 'ItemList',
+		name: 'Clinical Sports Nutrition & Body Composition Citations',
+		numberOfItems: references.length,
+		itemListElement: references.map((ref, index) => ({
+			'@type': 'ListItem',
+			position: index + 1,
+			name: `${ref.authors} (${ref.year}) - ${ref.title}`,
+			description: ref.annotation,
+			url: ref.link,
+		})),
+	},
 };
 ---
 

@@ -69,7 +69,16 @@ const breadcrumbSchema = pathname ? {
 	}),
 } : null;
 
-const finalSchema = [organizationSchema, breadcrumbSchema, ...schemaItems].filter(Boolean);
+const websiteSchema = !pathname ? {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: SITE.name,
+	url: SITE.origin,
+	description: SITE.description,
+	inLanguage: 'en-US',
+} : null;
+
+const finalSchema = [websiteSchema, organizationSchema, breadcrumbSchema, ...schemaItems].filter(Boolean);
 
 interface NavItem {
 	href: string;

@@ -59,7 +59,7 @@ const faqSchema = {
 		"name": item.q,
 		"acceptedAnswer": {
 			"@type": "Answer",
-			"text": `<p>${item.a}</p>`
+			"text": item.a
 		}
 	}))
 };
