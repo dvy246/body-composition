@@ -83,73 +83,99 @@ const finalSchema = [websiteSchema, organizationSchema, breadcrumbSchema, ...sch
 interface NavItem {
 	href: string;
 	label: string;
-	items?: { href: string; label: string }[];
+	align?: 'left' | 'center' | 'right';
+	isWide?: boolean;
+	isGrid?: boolean;
+	footerLink?: { href: string; label: string };
+	items?: { 
+		href: string; 
+		label: string; 
+		badge?: string;
+	}[];
 }
 
 const nav: NavItem[] = [
-	{ href: '/', label: 'Strategy Finder' },
-	{ 
-		href: '/guides', 
-		label: 'Guides',
-		items: [
-			{ href: '/guides/body-fat-percentage', label: 'Body Fat Percentage' },
-			{ href: '/guides/body-recomposition', label: 'Body Recomposition' },
-			{ href: '/guides/maintenance-calories', label: 'Maintenance Calories' },
-			{ href: '/guides/protein-nutrition', label: 'Protein Nutrition' },
-			{ href: '/guides/should-i-cut-or-bulk', label: 'Should I Cut or Bulk' },
-			{ href: '/guides/weight-loss-plateau-guide', label: 'Weight Loss Plateaus' },
-			{ href: '/guides/how-to-eat-in-a-calorie-deficit', label: 'Eating in a Deficit' },
-			{ href: '/guides/high-protein-diet-for-body-composition', label: 'High Protein Diet' },
-		]
-	},
 	{ 
 		href: '/calculators', 
 		label: 'Calculators',
+		isWide: true,
+		isGrid: true,
+		footerLink: { href: '/calculators', label: 'Explore All 19 Calculators ➔' },
 		items: [
-			{ href: '/calculators/calories', label: 'Calorie & Energy Hub' },
+			{ href: '/calculators/calories', label: 'Calorie & Energy Hub', badge: 'Hub' },
 			{ href: '/calculators/tdee-calculator', label: 'TDEE Calculator' },
 			{ href: '/calculators/bmr-calculator', label: 'BMR Calculator' },
-			{ href: '/calculators/calorie-calculator', label: 'Calorie Calculator' },
+			{ href: '/calculators/calorie-calculator', label: 'Daily Calorie Target' },
 			{ href: '/calculators/protein-calculator', label: 'Protein Calculator' },
-			{ href: '/calculators/body-fat-calculator', label: 'Body Fat Calculator' },
+			{ href: '/calculators/calorie-deficit-calculator', label: 'Calorie Deficit' },
+			{ href: '/calculators/body-fat-calculator', label: 'Body Fat % (Navy)' },
+			{ href: '/calculators/ffmi-calculator', label: 'FFMI Muscle Index' },
 			{ href: '/calculators/body-composition-calculator', label: 'Body Composition' },
-			{ href: '/calculators/ffmi-calculator', label: 'FFMI Calculator' },
-			{ href: '/calculators/macro-calculator', label: 'Macro Calculator' },
-			{ href: '/calculators/ideal-weight-calculator', label: 'Ideal Weight' },
+			{ href: '/calculators/macro-calculator', label: 'Macro Split Planner' },
+			{ href: '/calculators/ideal-weight-calculator', label: 'Ideal Body Weight' },
 			{ href: '/calculators/bmi-calculator', label: 'BMI Calculator' },
+		]
+	},
+	{
+		href: '/assess',
+		label: 'Strategy & Tools',
+		items: [
+			{ href: '/assess', label: 'Strategy Finder Assessment', badge: 'Free' },
+			{ href: '/build-your-day', label: 'Build Your Day Meal Hub' },
+			{ href: '/tools/cut-or-bulk', label: 'Cut or Bulk Diagnostic' },
+			{ href: '/tools/plateau-analyzer', label: 'Plateau Diagnostic Analyzer' },
+			{ href: '/tools/natural-muscle-potential', label: 'Natural Muscle Potential' },
+			{ href: '/tools/phase-transition', label: 'Phase Transition Planner' },
+			{ href: '/dashboard', label: 'Personal Progress Dashboard' },
+		]
+	},
+	{ 
+		href: '/guides', 
+		label: 'Guides',
+		isWide: true,
+		isGrid: true,
+		footerLink: { href: '/guides', label: 'Explore All Strategy Guides ➔' },
+		items: [
+			{ href: '/guides/should-i-cut-or-bulk', label: 'Should I Cut or Bulk?' },
+			{ href: '/guides/body-recomposition', label: 'Body Recomposition Guide' },
+			{ href: '/guides/maintenance-calories', label: 'Maintenance Calories & TDEE' },
+			{ href: '/guides/protein-nutrition', label: 'Protein Nutrition (ISSN)' },
+			{ href: '/guides/body-fat-percentage', label: 'Body Fat Percentage Scales' },
+			{ href: '/guides/weight-loss-plateau-guide', label: 'Weight Loss Plateau Guide' },
+			{ href: '/guides/how-to-eat-in-a-calorie-deficit', label: 'Eating in a Deficit' },
+			{ href: '/guides/high-protein-diet-for-body-composition', label: 'High Protein Diet Execution' },
 		]
 	},
 	{ 
 		href: '/compare', 
 		label: 'Compare',
+		isWide: true,
+		isGrid: true,
+		footerLink: { href: '/compare', label: 'Explore All Comparisons ➔' },
 		items: [
-			{ href: '/compare/mifflin-vs-katch-mcardle', label: 'Mifflin vs Katch' },
-			{ href: '/compare/tdee-vs-bmr', label: 'TDEE vs BMR' },
+			{ href: '/compare/mifflin-vs-katch-mcardle', label: 'Mifflin vs Katch-McArdle' },
+			{ href: '/compare/tdee-vs-bmr', label: 'TDEE vs BMR Baselines' },
+			{ href: '/compare/cut-vs-recomp', label: 'Cut vs Body Recomp' },
 			{ href: '/compare/clean-bulking-vs-dirty-bulking', label: 'Clean vs Dirty Bulking' },
-			{ href: '/compare/cardio-vs-weights-for-loss', label: 'Cardio vs Weights' },
-			{ href: '/compare/bmi-vs-body-fat-percentage', label: 'BMI vs Body Fat %' },
-			{ href: '/compare/cut-vs-recomp', label: 'Cut vs Recomp' },
-			{ href: '/compare/lean-bulk-vs-aggressive-bulk', label: 'Lean vs Aggressive Bulk' },
 			{ href: '/compare/lean-bulk-vs-maingaining', label: 'Lean Bulk vs Maingaining' },
+			{ href: '/compare/cardio-vs-weights-for-loss', label: 'Cardio vs Weights' },
+			{ href: '/compare/lean-bulk-vs-aggressive-bulk', label: 'Lean vs Aggressive Bulk' },
+			{ href: '/compare/bmi-vs-body-fat-percentage', label: 'BMI vs Body Fat %' },
 		]
 	},
-	{
-		href: '/build-your-day',
-		label: 'Build Your Day',
+	{ 
+		href: '/about', 
+		label: 'More',
+		align: 'right',
 		items: [
-			{ href: '/build-your-day', label: 'Strategy Overview' },
-			{ href: '/build-your-day/cutting', label: 'Cutting Protocols' },
-			{ href: '/build-your-day/lean-bulk', label: 'Lean Bulk Protocols' },
-			{ href: '/build-your-day/recomp', label: 'Recomposition Protocols' },
-			{ href: '/build-your-day/maintain', label: 'Maintenance Protocols' },
-			{ href: '/build-your-day/aggressive-bulk', label: 'Aggressive Bulk Protocols' },
+			{ href: '/body-composition-strategy-guide', label: 'How It Works (Framework)' },
+			{ href: '/glossary', label: 'Strategy Glossary (30 Terms)' },
+			{ href: '/references', label: 'Scientific References & DOIs' },
+			{ href: '/faq', label: 'Frequently Asked Questions' },
+			{ href: '/about', label: 'About & Editorial Board' },
+			{ href: '/contact', label: 'Contact & Formula Vetting' },
 		]
 	},
-	{ href: '/body-composition-strategy-guide', label: 'How It Works' },
-	{ href: '/dashboard', label: 'Strategy Dashboard' },
-	{ href: '/faq', label: 'FAQ' },
-	{ href: '/about', label: 'About Us' },
-	{ href: '/contact', label: 'Contact Us' },
 ];
 
 function isCurrent(href: string) {
@@ -163,7 +189,7 @@ function isCurrent(href: string) {
 	<head>
 		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-G6X21LS8KB"></script>
-		<script is:inline>
+		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
@@ -176,6 +202,7 @@ function isCurrent(href: string) {
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-title" content="bodystrategy" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -220,7 +247,7 @@ function isCurrent(href: string) {
 		<a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-card focus:px-4 focus:py-3 focus:shadow-lg" href="#main">Skip to content</a>
 		<header class="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur">
 			<div class="site-container flex min-h-16 items-center justify-between gap-4">
-				<a href="/" class="flex items-center gap-3 font-bold">
+				<a href="/" class="flex items-center gap-2.5 font-bold tracking-tight shrink-0">
 					<span class="brand-mark" aria-label="BodyCompOS">
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<circle cx="13.5" cy="7.5" r="1.8" fill="currentColor"/>
@@ -231,44 +258,80 @@ function isCurrent(href: string) {
 							<line x1="11.6" y1="14.3" x2="12.8" y2="20.7" />
 						</svg>
 					</span>
-					<span>BodyCompOS</span>
+					<span class="text-base font-extrabold text-foreground">BodyCompOS</span>
 				</a>
-				<nav class="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+				<nav class="hidden items-center gap-1 xl:gap-1.5 lg:flex" aria-label="Primary navigation">
 					{nav.map((item) => {
 						if (item.items) {
+							const isRight = item.align === 'right';
+							const isWide = item.isWide;
+							const isGrid = item.isGrid;
 							return (
 								<div class="nav-dropdown group">
-									<a class="nav-link flex items-center gap-1" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>
-										{item.label}
-										<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform group-hover:rotate-180">
+									<a class="nav-link flex items-center gap-1 whitespace-nowrap" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>
+										<span>{item.label}</span>
+										<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform duration-150 group-hover:rotate-180 opacity-70">
 											<path d="M1 1l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
 										</svg>
 									</a>
-									<div class="dropdown-menu">
+									<div class={`dropdown-menu ${isWide ? 'dropdown-menu-wide' : ''} ${isRight ? 'dropdown-menu-right' : ''}`}>
 										<div class="dropdown-menu-container">
-											{item.items.map((subItem) => (
-												<a class="dropdown-item" href={subItem.href}>{subItem.label}</a>
-											))}
+											{isGrid ? (
+												<div class="dropdown-grid-2">
+													{item.items.map((subItem) => (
+														<a class="dropdown-item" href={subItem.href}>
+															<span class="truncate">{subItem.label}</span>
+															{subItem.badge && (
+																<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-accent/15 text-accent shrink-0">
+																	{subItem.badge}
+																</span>
+															)}
+														</a>
+													))}
+												</div>
+											) : (
+												<div class="flex flex-col gap-0.5">
+													{item.items.map((subItem) => (
+														<a class="dropdown-item" href={subItem.href}>
+															<span>{subItem.label}</span>
+															{subItem.badge && (
+																<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-accent/15 text-accent shrink-0">
+																	{subItem.badge}
+																</span>
+															)}
+														</a>
+													))}
+												</div>
+											)}
+											{item.footerLink && (
+												<div class="dropdown-footer">
+													<a class="dropdown-footer-link" href={item.footerLink.href}>
+														<span>{item.footerLink.label}</span>
+													</a>
+												</div>
+											)}
 										</div>
 									</div>
 								</div>
 							);
 						}
 						return (
-							<a class="nav-link" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>{item.label}</a>
+							<a class="nav-link whitespace-nowrap" aria-current={isCurrent(item.href) ? 'page' : undefined} href={item.href}>{item.label}</a>
 						);
 					})}
 				</nav>
-				<div class="flex items-center gap-3">
+				<div class="flex items-center gap-2.5 shrink-0">
 					<div class="theme-toggle" aria-label="Color theme">
 						<button type="button" data-theme-choice="light" aria-label="Use light theme" aria-pressed="false">
-							<svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path></svg>
+							<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path></svg>
 						</button>
 						<button type="button" data-theme-choice="dark" aria-label="Use dark theme" aria-pressed="false">
-							<svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a7 7 0 1 0 10.5 10.5Z"></path></svg>
+							<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a7 7 0 1 0 10.5 10.5Z"></path></svg>
 						</button>
 					</div>
-					<a class="button-primary hidden sm:inline-flex" href="/assess">Start assessment</a>
+					<a class="button-primary hidden sm:inline-flex text-xs px-3.5 py-2 font-bold whitespace-nowrap" href="/assess">
+						Start Assessment ➔
+					</a>
 					<button id="mobile-menu-toggle" class="lg:hidden p-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground" aria-label="Toggle navigation menu" aria-expanded="false">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
 					</button>
@@ -276,25 +339,47 @@ function isCurrent(href: string) {
 			</div>
 		</header>
 		<div id="mobile-menu" class="fixed inset-0 top-16 z-30 hidden overflow-y-auto bg-background/98 backdrop-blur lg:hidden" aria-hidden="true" tabindex="-1">
-			<nav class="flex flex-col gap-2 p-6 text-lg font-bold" aria-label="Mobile navigation">
+			<nav class="flex flex-col gap-2 p-6 text-sm font-medium" aria-label="Mobile navigation">
 				{nav.map((item) => {
 					if (item.items) {
 						return (
-							<div class="flex flex-col border-b border-border py-2">
-								<a class="nav-link text-lg font-extrabold text-foreground" href={item.href}>{item.label}</a>
-								<div class="mt-1.5 flex flex-col gap-1 pl-4 mb-2">
+							<div class="border-b border-border/80 py-3">
+								<div class="flex items-center justify-between font-bold text-foreground mb-2">
+									<a class="text-base font-extrabold text-foreground hover:text-accent transition-colors" href={item.href}>
+										{item.label}
+									</a>
+								</div>
+								<div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-2 mb-1">
 									{item.items.map((subItem) => (
-										<a class="text-sm font-semibold text-muted-foreground hover:text-foreground py-1.5 transition-colors" href={subItem.href}>{subItem.label}</a>
+										<a class="flex items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground py-1.5 px-2 rounded-md hover:bg-muted transition-colors" href={subItem.href}>
+											<span>{subItem.label}</span>
+											{subItem.badge && (
+												<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-accent/15 text-accent">
+													{subItem.badge}
+												</span>
+											)}
+										</a>
 									))}
 								</div>
+								{item.footerLink && (
+									<div class="pt-2 pl-2">
+										<a class="text-xs font-bold text-accent hover:underline inline-flex items-center gap-1" href={item.footerLink.href}>
+											{item.footerLink.label}
+										</a>
+									</div>
+								)}
 							</div>
 						);
 					}
 					return (
-						<a class="nav-link text-lg py-3 border-b border-border" href={item.href}>{item.label}</a>
+						<a class="text-base font-bold py-3 border-b border-border/80 text-foreground hover:text-accent transition-colors" href={item.href}>
+							{item.label}
+						</a>
 					);
 				})}
-				<a class="button-primary mt-6 text-center" href="/assess">Start assessment</a>
+				<a class="button-primary mt-6 py-3 text-center text-sm font-bold shadow-lg" href="/assess">
+					Start Strategy Assessment ➔
+				</a>
 			</nav>
 		</div>
 		<main id="main">

@@ -964,6 +964,25 @@ a {
 	transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1), opacity 150ms ease, visibility 150ms ease;
 }
 
+.dropdown-menu.dropdown-menu-wide {
+	width: 28rem;
+}
+
+.dropdown-menu.dropdown-menu-right {
+	left: auto;
+	right: 0;
+	transform: scale(0.95);
+	transform-origin: top right;
+}
+
+.nav-dropdown:hover .dropdown-menu.dropdown-menu-right,
+.nav-dropdown:focus-within .dropdown-menu.dropdown-menu-right {
+	transform: scale(1);
+	opacity: 1 !important;
+	visibility: visible !important;
+	pointer-events: auto !important;
+}
+
 .dropdown-menu::before {
 	content: '';
 	position: absolute;
@@ -982,25 +1001,56 @@ a {
 }
 
 .dropdown-menu-container {
-	border-radius: 0.75rem;
+	border-radius: 0.85rem;
 	border: 1px solid var(--border);
 	background: var(--card);
-	backdrop-filter: blur(12px);
+	backdrop-filter: blur(16px);
 	padding: 0.5rem;
-	box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.28), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-grid-2 {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.2rem 0.4rem;
 }
 
 .dropdown-item {
-	display: block;
-	border-radius: 0.5rem;
-	padding: 0.5rem 0.75rem;
-	font-size: 0.875rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: 0.45rem;
+	padding: 0.45rem 0.6rem;
+	font-size: 0.8125rem;
 	font-weight: 500;
 	color: var(--muted-foreground);
+	white-space: nowrap;
 	transition: background-color 150ms ease, color 150ms ease;
 }
 
 .dropdown-item:hover {
 	background: var(--muted);
 	color: var(--foreground);
+}
+
+.dropdown-footer {
+	margin-top: 0.35rem;
+	padding-top: 0.35rem;
+	border-top: 1px solid var(--border);
+}
+
+.dropdown-footer-link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.4rem 0.6rem;
+	border-radius: 0.45rem;
+	font-size: 0.78rem;
+	font-weight: 700;
+	color: var(--accent);
+	transition: background-color 150ms ease;
+}
+
+.dropdown-footer-link:hover {
+	background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
